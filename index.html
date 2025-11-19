@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stackminds | Fizyoloji Sistemi</title>
+    <style>
+        /* --- SİNEMATİK ATMOSFER AYARLARI --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; /* Kaydırma çubuklarını gizle, tam ekran olsun */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- ARKA PLAN KAN HÜCRESİ ANİMASYONU --- */
+        .blood-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: radial-gradient(circle at center, #2b0505 0%, #000000 100%);
+            overflow: hidden;
+        }
+
+        .cell {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ff4d4d, #8b0000);
+            opacity: 0.6;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- MERKEZ (EKG VE BAŞLIK) --- */
+        .content {
+            z-index: 10;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: 5px;
+            font-weight: 300;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        .subtitle {
+            color: #ff4d4d;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* --- EKG ÇİZGİ ANİMASYONU --- */
+        .ekg-wrapper {
+            width: 300px;
+            height: 80px;
+            margin: 0 auto 40px auto;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .ekg-line {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: #ef4444;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 2.5s linear infinite;
+            filter: drop-shadow(0 0 8px #ef4444);
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes breathe {
+            0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+            50% { text-shadow: 0 0 30px rgba(255,255,255,0.8), 0 0 10px rgba(239, 68, 68, 0.6); }
+        }
+
+        /* --- GİRİŞ BUTONU --- */
+        .btn-enter {
+            background: transparent;
+            color: #ef4444;
+            border: 2px solid #ef4444;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none; /* Link çizgisi olmasın */
+            display: inline-block;
+        }
+
+        .btn-enter:hover {
+            background: #ef4444;
+            color: #000;
+            box-shadow: 0 0 30px #ef4444;
+        }
+
+        .btn-enter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-enter:hover::before {
+            left: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="blood-container" id="bloodContainer"></div>
+
+    <div class="content">
+        <h1>STACKMINDS</h1>
+        <div class="subtitle">GUYTON FİZYOLOJİ ARAYÜZÜ</div>
+
+        <div class="ekg-wrapper">
+            <svg class="ekg-line" viewBox="0 0 300 80">
+                <path d="M0,40 L40,40 L50,30 L60,40 L70,40 L80,10 L90,70 L100,40 L120,40 L130,30 L140,40 L300,40" />
+            </svg>
+        </div>
+
+        <a href="menu.html" class="btn-enter">SİSTEME BAĞLAN</a>
+    </div>
+
+    <script>
+        // Kan Hücrelerini Rastgele Oluşturan Script
+        const container = document.getElementById('bloodContainer');
+        
+        function createCell() {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            
+            // Rastgele boyut (küçük ve orta boy)
+            const size = Math.random() * 20 + 5; 
+            cell.style.width = `${size}px`;
+            cell.style.height = `${size}px`;
+            
+            // Rastgele yatay pozisyon
+            cell.style.left = `${Math.random() * 100}%`;
+            
+            // Rastgele hız
+            cell.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            
+            // Rastgele gecikme
+            cell.style.animationDelay = `${Math.random() * 5}s`;
+
+            container.appendChild(cell);
+
+            // Animasyon bitince hücreyi sil (Performans için)
+            setTimeout(() => {
+                cell.remove();
+            }, 15000);
+        }
+
+        // Sayfa açılınca 30 tane hücre üret
+        for(let i=0; i<30; i++) {
+            createCell();
+        }
+
+        // Sürekli yeni hücre üret
+        setInterval(createCell, 500);
+    </script>
+
+</body>
+</html>
