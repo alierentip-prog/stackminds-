@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solunum Kontrolü | Stackminds Kütüphanesi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
+        
+        /* DİYAGRAM KUTULARI */
+        .brain-box { 
+            background: white; border: 2px solid #e5e7eb; border-radius: 15px; padding: 20px; margin: 20px 0;
+            display: flex; flex-direction: column; gap: 10px; font-family: 'Segoe UI', sans-serif;
+        }
+        .center-item {
+            background: #f0f9ff; border-left: 5px solid var(--blue-ink); padding: 15px; border-radius: 5px;
+        }
+        .center-item.pons { border-color: var(--accent); background: #fef2f2; }
+
+        /* KUTULAR */
+        .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
+        .clinical-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b; }
+
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; background: var(--accent); color: white; }
+
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="solunum.html" class="chapter-link">1. Mekanik ve Hacimler</a>
+        <a href="solunum2.html" class="chapter-link">2. Gaz Değişimi</a>
+        <a href="solunum3.html" class="chapter-link active">3. Solunum Kontrolü</a>
+        <a href="solunum_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 5: Solunum Fizyolojisi</div>
+        <h1>Bölüm 3: Solunumun Düzenlenmesi</h1>
+
+        <p>
+            Solunum, hem otonom (istemsiz) hem de istemli kontrol edilebilen nadir sistemlerden biridir. 
+            Ancak uyurken bile nefes almamızı sağlayan "otomatik pilot" beyin sapında bulunur.
+        </p>
+
+        <h2>1. Solunum Merkezleri (Beyin Sapı)</h2>
+        <p>Ritmik solunumu oluşturan nöron grupları Medulla Oblongata ve Pons'ta yerleşmiştir.</p>
+
+        <div class="brain-box">
+            <div class="center-item">
+                <strong>1. Dorsal Solunum Grubu (DRG) - MEDULLA</strong><br>
+                En önemli gruptur. Temel solunum ritmini (Inspiratory Ramp Signal) başlatır. 
+                Sadece <strong>İnspirasyon</strong> (nefes alma) nöronları içerir.
+            </div>
+            <div class="center-item">
+                <strong>2. Ventral Solunum Grubu (VRG) - MEDULLA</strong><br>
+                Normal sakin solunumda pasiftir. Sadece egzersiz gibi <strong>Zorlu Solunum</strong> gerektiğinde devreye girer. 
+                Hem inspirasyon hem ekspirasyon nöronları vardır.
+            </div>
+            <div class="center-item pons">
+                <strong>3. Pnömotaksik Merkez - PONS</strong><br>
+                DRG'ye "Yeter, dur!" sinyali gönderir. İnspirasyonu erkenden keserek solunum hızını artırır. 
+                Eğer burası hasar görürse kişi derin ve yavaş nefes alır (Apneustik solunum).
+            </div>
+        </div>
+
+        
+
+        <h2>2. Kimyasal Kontrol: "Patron Kim?"</h2>
+        <p>
+            Vücut, solunumu ayarlarken kandaki $O_2$, $CO_2$ ve $H^+$ seviyelerini sürekli ölçer. 
+            Ancak bunların etkisi eşit değildir.
+        </p>
+
+        <h3>A. Merkezi Kemoreseptörler ($CO_2$ ve $H^+$)</h3>
+        <p>
+            Medulla'da, solunum merkezinin hemen yanında bulunur. 
+            Kandaki $CO_2$, Kan-Beyin Bariyerini kolayca geçip beyin omurilik sıvısına (BOS) girer. 
+            Burada suyla birleşip $H^+$ (Asit) oluşturur. 
+            <br><br>
+            <strong>Mekanizma:</strong> Merkezi reseptörler doğrudan $CO_2$'yi değil, onun oluşturduğu <strong>$H^+$ iyonunu</strong> algılar. 
+            Asitlik artarsa solunum şiddetle uyarılır (Hiperventilasyon) ki fazla $CO_2$ atılsın.
+        </p>
+
+        <h3>B. Periferik Kemoreseptörler ($O_2$)</h3>
+        <p>
+            Karotis (Şah damarı) ve Aort yayında bulunur. 
+            Kandaki oksijen düşüklüğüne (Hipoksi) duyarlıdırlar. 
+            Ancak bu sistem, $P_{O2}$ <strong>60 mmHg'nin altına düşmedikçe</strong> devreye girmez.
+        </p>
+
+        <div class="def-box">
+            <strong>Özet Kural:</strong> Normal bir insanda solunumu yöneten ana faktör <strong>Karbondioksit ($CO_2$)</strong>'tir. Oksijen sadece acil durum yedeğidir.
+        </div>
+
+        <div class="clinical-box">
+            <strong>Klinik: KOAH Hastalarında Dikkat!</strong><br>
+            Kronik KOAH hastalarında $CO_2$ hep yüksek olduğu için beyin artık buna duyarsızlaşır. 
+            Solunumu sürdüren tek güç "Düşük Oksijen" uyarısıdır (Hipoksik Drive). 
+            Bu hastalara %100 saf oksijen verirseniz, solunum durabilir (Apne)!
+        </div>
+
+        <h2>3. Hering-Breuer Enflasyon Refleksi</h2>
+        <p>
+            Akciğerler aşırı şişerse, bronşiollerdeki gerim reseptörleri Vagus siniri ile beyne sinyal yollar: "Patlayacağız, dur!". 
+            Bu refleks inspirasyonu kapatır. İnsanlarda sadece tidal hacim 1.5 Litreyi (Normalin 3 katı) geçerse çalışır. Koruyucu bir reflekstir.
+        </p>
+
+        <div class="page-nav">
+            <a href="solunum2.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Bölüm 2: Gaz Değişimi</a>
+            <a href="solunum_test.html" class="nav-btn next">Ünite Testine Başla (50 Soru) &rarr;</a>
+        </div>
+    </main>
+
+</body>
+</html>
