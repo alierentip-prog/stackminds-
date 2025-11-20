@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diyafram ve Mediastinum | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #18181b; --text: #e4e4e7; --accent: #f43f5e; --panel: #27272a; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; }
+        .sidebar { width: 250px; background: #000; padding: 20px; border-right: 1px solid #333; height: 100vh; position: fixed; overflow-y: auto; }
+        .content { margin-left: 250px; padding: 40px; max-width: 800px; }
+        .menu-link { display: block; color: #a1a1aa; text-decoration: none; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+        .menu-link:hover, .menu-link.active { background: #333; color: white; font-weight: bold; }
+        h1 { color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .table-box { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .table-box th, .table-box td { border: 1px solid #3f3f46; padding: 10px; text-align: left; }
+        .table-box th { background: #3f3f46; color: var(--accent); }
+        .nav-btn { float: right; background: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 30px; }
+        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="anatomi.html" style="color:white; font-weight:bold; text-decoration:none; font-size:1.2rem;">&larr; Atlas Menü</a>
+        <hr style="border-color:#333; margin:20px 0;">
+        <a href="anatomi_toraks.html" class="menu-link">1. Toraks Duvarı</a>
+        <a href="anatomi_diyafram.html" class="menu-link active">2. Diyafram & Mediastinum</a>
+        <a href="anatomi_kalp.html" class="menu-link">3. Kalp (Cor)</a>
+        <a href="anatomi_damar.html" class="menu-link">4. Damarlar</a>
+        <a href="anatomi_burun.html" class="menu-link">5. Burun & Sinüs</a>
+        <a href="anatomi_lenf.html" class="menu-link">6. Lenfatik Sistem</a>
+    </nav>
+
+    <div class="content">
+        <h1>Diyafragma ve Açıklıkları</h1>
+        <p>Solunumun en temel kasıdır. N. Phrenicus (C3-C4-C5) tarafından uyarılır. Üzerinde hayati yapıların geçtiği 3 büyük delik vardır.</p>
+
+        <table class="table-box">
+            <thead><tr><th>Seviye</th><th>Açıklık Adı</th><th>İçinden Geçenler</th></tr></thead>
+            <tbody>
+                <tr><td><strong>T8</strong></td><td>Foramen Vena Cavae</td><td>Vena Cava Inferior, Sağ N. Phrenicus</td></tr>
+                <tr><td><strong>T10</strong></td><td>Hiatus Oesophageus</td><td>Özofagus, N. Vaguslar (Truncus vagalis)</td></tr>
+                <tr><td><strong>T12</strong></td><td>Hiatus Aorticus</td><td>Aorta, Ductus Thoracicus, V. Azygos</td></tr>
+            </tbody>
+        </table>
+
+        <h1>Mediastinum (Göğüs Boşluğu)</h1>
+        <p>İki akciğer arasında kalan boşluktur. Kalp burada bulunur.</p>
+        <ul>
+            <li><strong>Mediastinum Superius:</strong> Arkus Aorta, Trakea, Özofagus.</li>
+            <li><strong>Mediastinum Posterius:</strong> Aorta Descendens, V. Azygos, Duktus Torasikus.</li>
+            <li><strong>Mediastinum Medium (Orta):</strong> <span style="color:#f43f5e; font-weight:bold;">KALP</span> ve Perikard burada bulunur!</li>
+        </ul>
+
+        <a href="anatomi_kalp.html" class="nav-btn">İleri: Kalp Anatomisi &rarr;</a>
+    </div>
+</body>
+</html>
