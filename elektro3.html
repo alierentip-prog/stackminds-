@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektrofizyoloji 3 | Stackminds Kütüphanesi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- GUYTON AKADEMİK TEMA --- */
+        :root {
+            --paper: #fdfbf7;
+            --ink: #111827;
+            --blue-ink: #0369a1;
+            --highlight: #fff7ed;
+            --border: #e5e7eb;
+            --accent: #b91c1c;
+            --success: #047857;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--paper);
+            color: var(--ink);
+            font-family: 'Georgia', 'Times New Roman', serif;
+            line-height: 1.8;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: #f3f4f6;
+            border-right: 1px solid #d1d5db;
+            position: fixed;
+            padding: 25px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
+        .chapter-list { list-style: none; padding: 0; }
+        .chapter-list li { margin-bottom: 10px; }
+        .chapter-link {
+            text-decoration: none; color: #4b5563; display: block; padding: 8px;
+            border-radius: 6px; font-size: 0.9rem; transition: 0.2s;
+        }
+        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* CONTENT */
+        .page-content {
+            margin-left: 260px;
+            padding: 60px 100px;
+            max-width: 800px;
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        p { margin-bottom: 20px; text-align: justify; font-size: 1.1rem; }
+
+        /* ŞEMATİK DİYAGRAM (İleti Yolu) */
+        .pathway-container {
+            display: flex; flex-direction: column; align-items: center; margin: 40px 0; gap: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .node-box {
+            background: white; border: 2px solid var(--blue-ink); padding: 15px 30px; border-radius: 30px;
+            font-weight: bold; color: var(--blue-ink); position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            width: 250px; text-align: center;
+        }
+        .node-box.fast { border-color: var(--success); color: var(--success); } /* Purkinje Hızlı */
+        .node-box.slow { border-color: var(--accent); color: var(--accent); } /* AV Yavaş */
+        
+        .arrow-down { font-size: 1.5rem; color: #9ca3af; }
+
+        .speed-badge {
+            font-size: 0.75rem; background: #f3f4f6; padding: 2px 8px; border-radius: 10px;
+            margin-left: 10px; color: #4b5563; font-weight: normal;
+        }
+
+        /* KLİNİK KUTU */
+        .clinical-box {
+            background: #f0fdf4; border-left: 4px solid var(--success);
+            padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem;
+            color: #064e3b;
+        }
+
+        /* TABLO */
+        table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
+        th, td { border: 1px solid #d1d5db; padding: 12px; text-align: left; }
+        th { background: #e5e7eb; }
+
+        /* NAVİGASYON */
+        .page-nav {
+            display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .nav-btn {
+            text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s;
+        }
+        .prev { background: #f3f4f6; color: #374151; }
+        .next { background: var(--accent); color: white; } /* Test için kırmızı buton */
+        .next:hover { background: #991b1b; }
+
+        /* Mobil */
+        @media (max-width: 1024px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 15px; }
+            .page-content { margin: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <ul class="chapter-list">
+            <li><a href="elektro.html" class="chapter-link">1. Membran Fiziği</a></li>
+            <li><a href="elektro2.html" class="chapter-link">2. Aksiyon Potansiyeli</a></li>
+            <li><a href="elektro3.html" class="chapter-link active">3. İleti ve Eşleşme</a></li>
+            <li><a href="elektro_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a></li>
+        </ul>
+    </nav>
+
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 1: Kardiyak Elektrofizyoloji</div>
+        <h1>Bölüm 3: İleti Sistemi ve Uyarılma-Kasılma</h1>
+
+        <p>
+            Kalbin düzenli çalışması için uyarının doğru yerden (SA Düğüm) çıkması, doğru hızda iletilmesi ve nihayetinde kas liflerini (Miyosit) kasmayı başarması gerekir. 
+            Bu bölümde elektriğin nasıl mekanik güce dönüştüğünü inceleyeceğiz.
+        </p>
+
+        <h2>1. Pacemaker (Doğal Pil) Mekanizması</h2>
+        <p>
+            Ventrikül hücresinin aksine, <strong>SA Düğüm</strong> hücrelerinin sabit bir dinlenme potansiyeli yoktur. 
+            Faz 4'te sürekli yukarı doğru sızan bir voltajları vardır. Buna "Pacemaker Potansiyeli" denir.
+            Eşik değere (-40 mV) ulaştıklarında kendiliğinden ateşlerler.
+        </p>
+
+        <h3>Funny Current ($I_f$) - Komik Akım</h3>
+        <p>
+            SA düğüm hücrelerinde Faz 4'te açılan özel kanallardır (HCN kanalları). 
+            Sodyumun yavaşça içeri sızmasına izin verirler. Bu sızıntı, hücreyi yavaş yavaş eşik değere taşır ve kalbin otomatik olarak atmasını sağlar.
+        </p>
+
+        <h2>2. İleti Yolu ve Hızları</h2>
+        <p>
+            Elektrik SA düğümden çıkar ve belirli bir hiyerarşi ile yayılır. Hızlar her dokuda farklıdır ve bu hayati öneme sahiptir.
+        </p>
+
+        <div class="pathway-container">
+            <div class="node-box">SA Düğüm <span class="speed-badge">0.05 m/sn</span></div>
+            <i class="fa-solid fa-arrow-down arrow-down"></i>
+            
+            <div class="node-box">Atriyal Yollar <span class="speed-badge">1 m/sn</span></div>
+            <i class="fa-solid fa-arrow-down arrow-down"></i>
+            
+            <div class="node-box slow">AV Düğüm <span class="speed-badge">0.05 m/sn (YAVAŞ)</span></div>
+            <i class="fa-solid fa-arrow-down arrow-down"></i>
+            
+            <div class="node-box fast">His - Purkinje <span class="speed-badge">4 m/sn (ÇOK HIZLI)</span></div>
+            <i class="fa-solid fa-arrow-down arrow-down"></i>
+            
+            <div class="node-box">Ventrikül Kası <span class="speed-badge">1 m/sn</span></div>
+        </div>
+
+        <h3>AV Nodal Gecikme (0.09 sn)</h3>
+        <p>
+            Elektrik AV düğüme geldiğinde ciddi şekilde yavaşlar. Bunun sebebi AV düğüm hücrelerinde <strong>Gap Junction (Oluklu Bağlantı)</strong> sayısının çok az olmasıdır.
+            <br>
+            <strong>Fizyolojik Önemi:</strong> Bu gecikme, atriyumların ventriküllerden önce kasılmasını sağlar. Böylece ventriküller kanla dolmak için zaman kazanır.
+        </p>
+
+        <h2>3. Uyarılma - Kasılma Eşleşmesi (E-C Coupling)</h2>
+        <p>
+            Elektriksel uyarının (Aksiyon Potansiyeli) kasılmaya (Sistol) dönüşme sürecidir. 
+            Bu sürecin başrol oyuncusu <strong>Kalsiyumdur ($Ca^{++}$)</strong>.
+        </p>
+
+        <div class="clinical-box">
+            <strong>Mekanizma: Kalsiyumun Tetiklediği Kalsiyum Salınımı (CICR)</strong><br><br>
+            1. Aksiyon potansiyeli <strong>T-tübüller</strong> boyunca hücrenin derinliklerine iner.<br>
+            2. T-tübül üzerindeki voltaj sensörleri, hücre dışından az miktarda $Ca^{++}$ girişine izin verir (Tetikleyici Kalsiyum).<br>
+            3. Bu giren kalsiyum, Sarkoplazmik Retikulum (SR) üzerindeki <strong>Ryanodine Reseptörlerini (RyR)</strong> uyarır.<br>
+            4. SR'dan sitoplazmaya devasa miktarda $Ca^{++}$ boşalır.<br>
+            5. Kalsiyum, <strong>Troponin-C</strong>'ye bağlanır, aktin ve miyozin etkileşime girer ve KASILMA gerçekleşir.
+        </div>
+
+        <h3>Gevşeme Nasıl Olur? (SERCA Pompası)</h3>
+        <p>
+            Kasılma bitince kalsiyumun ortamdan uzaklaştırılması gerekir. 
+            <strong>SERCA (Sarcoplasmic Endoplasmic Reticulum Calcium ATPase)</strong> pompası, kalsiyumu tekrar SR deposuna geri pompalar. 
+            Bu olay ATP harcar. Yani kalbin gevşemesi (Lusitropi) de enerji gerektiren aktif bir süreçtir.
+        </p>
+
+        <h2>Özet Tablo: Kalp Kası vs İskelet Kası</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Özellik</th>
+                    <th>Kalp Kası</th>
+                    <th>İskelet Kası</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Kalsiyum Kaynağı</strong></td>
+                    <td>Hücre Dışı + SR (CICR)</td>
+                    <td>Sadece SR</td>
+                </tr>
+                <tr>
+                    <td><strong>Sinsityum</strong></td>
+                    <td>Var (Gap Junction)</td>
+                    <td>Yok (Motor ünite)</td>
+                </tr>
+                <tr>
+                    <td><strong>Tetani</strong></td>
+                    <td>Olamaz (Uzun refrakter)</td>
+                    <td>Olabilir</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="page-nav">
+            <a href="elektro2.html" class="nav-btn prev">&larr; Bölüm 2: Aksiyon Potansiyeli</a>
+            <a href="elektro_test.html" class="nav-btn next">Bölüm Sonu Sınavı &rarr;</a>
+        </div>
+
+    </main>
+
+</body>
+</html>
