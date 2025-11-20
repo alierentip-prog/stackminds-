@@ -11,24 +11,24 @@
 
     <style>
         /* --- PROFESÖR TEMASI --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue: #0056b3; --red: #c0392b; --gold: #d35400; --success: #1abc9c; }
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
         body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
 
         /* SIDEBAR */
         .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
-        .brand { font-size: 1.2rem; font-weight: bold; color: #f1c40f; text-decoration: none; display: block; margin-bottom: 30px; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: #f1c40f; text-decoration: none;}
         .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
         .menu-item.active { background: #34495e; color: white; font-weight: bold; }
 
         /* CONTENT */
         .page-content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
-        h1 { font-size: 2.5rem; color: var(--blue); border-bottom: 3px solid var(--blue); padding-bottom: 10px; }
-        h2 { margin-top: 50px; color: var(--red); font-weight: bold; border-left: 5px solid var(--red); padding-left: 15px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: var(--blue-ink); border-bottom: 3px solid var(--blue-ink); padding-bottom: 10px; }
+        h2 { margin-top: 50px; color: var(--accent); font-weight: bold; border-left: 5px solid var(--accent); padding-left: 15px; }
         h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
-        /* KUTULAR */
-        .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
-        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; }
+        /* ÖZEL KUTULAR */
+        .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
         .trap-title { color: #c0392b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
 
@@ -37,17 +37,21 @@
         th, td { border: 1px solid #d1d5db; padding: 10px; text-align: left; }
         th { background: #f3f4f6; color: #1a1a1a; }
         
+        /* DÜZEN DÜZELTMESİ VE PARAGRAF AYARI */
+        p, ul, ol, div, table { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
+
         /* NAV */
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
-        .btn { text-decoration: none; background: var(--blue); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
+        .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <a href="index.html" class="brand"><i class="fa-solid fa-book-medical"></i> MEDBASE</a>
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
         <a href="dolasim.html" class="menu-item">1. Akışın Temel Fiziği</a>
         <a href="dolasim2.html" class="menu-item active">2. Mikro Dolaşım ve RAAS</a>
         <a href="dolasim3.html" class="menu-item">3. Baroreseptörler</a>
@@ -56,17 +60,18 @@
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 4: Dolaşım Fizyolojisi</div>
-        <h1>Bölüm 2: Starling Kuvvetleri ve Uzun Süreli Regülasyon</h1>
+        <h1>Bölüm 2: Starling Güçleri ve Uzun Süreli Regülasyon</h1>
 
         <p>
             Vücuttaki asıl alışveriş, kılcal damar (kapiller) ile doku sıvısı (interstisyum) arasında gerçekleşir. 
-            Bu sıvı hareketi, dört kuvvetin (Starling Kuvvetleri) hassas dengesi ile yönetilir.
+            Bu sıvı hareketini dört kuvvetin hassas dengesi yönetir.
         </p>
 
-        <h2>1. Starling Güçleri: Filtrasyon ve Absorpsiyon</h2>
+        <h2>1. Kapiller Alışverişi: Starling Kuvvetleri</h2>
         <p>
-            Kapillerlerdeki sıvı hareketinin ana denklemi, Hidrostatik (İtme) ve Onkotik (Çekme) basınçların farkına dayanır.
+            Net Filtrasyon Basıncı (NFP) formülü, sıvıyı dışarı iten (Hidrostatik) ve içeri çeken (Onkotik) kuvvetlerin farkını gösterir.
         </p>
+        [attachment_0](attachment)
         
         <div class="formula-box">
             $$\mathbf{NFP} = (P_c - P_i) - (\pi\text{c} - \pi\text{i})$$
@@ -74,59 +79,57 @@
         </div>
 
         <div class="logic-box">
-            <span class="logic-title"><i class="fa-solid fa-check"></i> Mekanizma: Nerede Filtrasyon Olur?</span>
-            Kapillerin **arteriyel ucunda** $P_c$ yüksektir ($\approx 35 \text{ mmHg}$). Bu yüzden net kuvvet dışarı doğrudur (Filtrasyon). Kapillerin **venöz ucunda** $P_c$ düşer ($\approx 15 \text{ mmHg}$), bu yüzden net kuvvet içeri doğrudur (Absorpsiyon).
+            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mantık: Arter vs Ven Ucu</span>
+            Kapillerin **arteriyel ucunda** $P_c$ ($\approx 35 \text{ mmHg}$) yüksektir $\rightarrow$ Net kuvvet dışarıdır (FİLTRASYON). Venöz uçta $P_c$ düşer ($\approx 15 \text{ mmHg}$) $\rightarrow$ Net kuvvet içeri doğrudur (ABSORPSİYON).
         </div>
 
         <h3>Ödem (Edema) Oluşum Mekanizmaları</h3>
-        <p>
-            Net filtrasyonun (sıvı çıkışı) lenfatik drenajı aşması durumunda dokularda sıvı birikir.
-        </p>
-
+        
         <div class="trap-box">
-            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: En Sık Görülen Ödemler</span>
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: Ödemin Dört Ana Nedeni</span>
             <ol>
-                <li><strong>$P_c$ Artışı:</strong> Vücudun su tutması (Böbrek/Tuz) veya venöz dönüşün bozulması (Konjestif Kalp Yetmezliği). **En sık sebep budur.**</li>
-                <li><strong>$\pi$c Düşüşü:</strong> Albumin (Protein) eksikliği. (Karaciğer yetmezliği, Malnütrisyon, Nefrotik Sendrom).</li>
-                <li><strong>$\pi$i Artışı:</strong> Kapiller hasarı/iltihabı (Yanık, Sepsis, Histamin salınımı) sonucu proteinlerin damardan dışarı sızması.</li>
+                <li><strong>$P_c$ Artışı (Yüksek İtme):</strong> Konjestif Kalp Yetmezliği, Venöz tıkanıklık. **En sık sebep budur.**</li>
+                <li><strong>$\pi$c Düşüşü (Düşük Çekme):</strong> Albumin eksikliği (Karaciğer yetmezliği, Nefrotik Sendrom).</li>
+                <li><strong>$\pi$i Artışı (Dışarıdaki Çekim):</strong> Kapiller hasarı/iltihabı (Proteinler dışarı sızar).</li>
+                <li><strong>Lenfatik Tıkanıklık:</strong> Drenajın engellenmesi (Filaryazis).</li>
             </ol>
-            <em>*Lenfatik tıkanıklık (Filaryazis) da ödem yapar, ancak genel popülasyonda ilk üç sebep daha sıktır.*</em>
+            <em>*Vücut, NFP'yi aşan sıvıyı lenfatik sistemle drene ederek ödemi engeller. Bu sistem yetmezse ödem olur.*</em>
         </div>
 
         <h2>2. RAAS: Uzun Süreli Tansiyon Regülasyonu</h2>
         <p>
-            RAAS (Renin-Angiotensin-Aldosteron Sistemi), kan hacmini ve tansiyonu günler/haftalar boyunca stabil tutan temel hormonal sistemdir.
+            Renin-Anjiyotensin-Aldosteron Sistemi (RAAS), kan hacmini ve tansiyonu günler/haftalar boyunca stabil tutan temel hormonal sistemdir.
         </p>
+        [attachment_1](attachment)
 
-        <div style="margin:20px 0;">
-             [attachment_0](attachment)
-        </div>
-
-        <h3>Kaskatın Kilit Adımları ve Etkileri:</h3>
+        <h3>Angiotensin II'nin Dolaşım Üzerindeki Etkileri</h3>
+        <p>
+            Anjiyotensin I'in, Akciğerdeki **ACE (Angiotensin Converting Enzyme)** ile Anjiyotensin II'ye dönüşmesiyle aktifleşir.
+        </p>
         <table style="width:100%; color:var(--ink);">
             <thead>
-                <tr><th>Adım</th><th>Madde</th><th>Etkisi</th></tr>
+                <tr><th>Etki Tipi</th><th>Sonuç</th><th>Tansiyona Etkisi</th></tr>
             </thead>
             <tbody>
-                <tr><td>Tetikleyici</td><td>Düşük Böbrek Perfüzyonu</td><td>Renin salınımı</td></tr>
-                <tr class="highlight"><td>Enzim</td><td>ACE (Akciğer)</td><td>Angiotensin I $\rightarrow$ **Angiotensin II**</td></tr>
-                <tr><td>Hormon 1</td><td>**Angiotensin II**</td><td>Güçlü **Vazokonstriksiyon** (Hızlı Tansiyon artışı)</td></tr>
-                <tr><td>Hormon 2</td><td>**Aldosteron**</td><td>Böbrekte **Na+ ve Su Tutulumu** (Kan Hacmi artışı)</td></tr>
-                <tr><td>Yan Etki</td><td>ADH</td><td>Su emilimi artar, susuzluk artar.</td></tr>
+                <tr><td>Hızlı Etki</td><td>Güçlü **Vazokonstriksiyon** (Damar büzülmesi)</td><td>Tansiyon $\uparrow$</td></tr>
+                <tr><td>Yavaş Etki</td><td>Aldosteron Salgılanması (Böbrekten Na+/Su Tutulumu)</td><td>Kan Hacmi $\uparrow$</td></tr>
+                <tr><td>Yan Etki</td><td>ADH salınımı, Susuzluk Hissi</td><td>Kan Hacmi $\uparrow$</td></tr>
             </tbody>
         </table>
 
-        <div class="pharm-box">
-            <span class="pharm-title"><i class="fa-solid fa-vial"></i> Klinik Bağlantı: Hipertansiyon Tedavisi</span><br>
-            Tansiyon ilaçları genelde bu sistemi hedefler:
-            <ul>
-                <li>**ACE İnhibitörleri:** Angiotensin II oluşumunu durdurur (Örn: Ramipril).</li>
-                <li>**ARB'ler:** Angiotensin II'nin reseptörüne ($AT_1$) bağlanmasını engeller (Örn: Losartan).</li>
-            </ul>
+        <div class="trap-box">
+            <span class="trap-title">Sınav Tuzağı: Antihipertansifler</span><br>
+            Tansiyon ilaçları hep bu kaskadı hedefler: ACE inhibitörleri (Ramipril) kaskadı keser. ARB'ler (Losartan) Angiotensin II'nin reseptörünü ($AT_1$) bloke eder.
         </div>
 
+        <h3>Aldosteron ve ADH'nın Görevleri</h3>
+        <ul>
+            <li>**Aldosteron:** Böbreklerden **$Na^+$ ve Su** tutulumunu artırır, $K^+$ atılımını artırır. Kan hacmini artırır.</li>
+            <li>**ADH (Vazopressin):** Plazma **Ozmolaritesi artınca** salınır. Sadece **su** tutar. Yüksek dozda damar büzücüdür.</li>
+        </ul>
+
         <div class="nav-area">
-            <a href="dolasim.html" class="btn" style="background:#7f8c8d">&larr; Bölüm 1: Akışın Fiziği</a>
+            <a href="dolasim.html" class="btn" style="background:#7f8c8d">&larr; Bölüm 1: Akışın Temel Fiziği</a>
             <a href="dolasim3.html" class="btn">Bölüm 3: Baroreseptörler &rarr;</a>
         </div>
     </main>
