@@ -3,159 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EKG Temelleri | Stackminds</title>
+    <title>EKG Temelleri | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <style>
-        /* --- AKADEMİK TEMA --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; }
         body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
-
-        /* SIDEBAR */
         .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
         .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none; }
         .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
-        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
         .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
-
-        /* CONTENT */
         .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
         h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
         h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
-        p { text-align: justify; margin-bottom: 20px; }
-
-        /* EKG KAĞIT EFEKTİ (CSS GRID) */
-        .ekg-paper {
-            background-color: #fff0f0;
-            background-image: 
-                linear-gradient(#ffcccc 1px, transparent 1px),
-                linear-gradient(90deg, #ffcccc 1px, transparent 1px),
-                linear-gradient(#ff9999 1px, transparent 1px),
-                linear-gradient(90deg, #ff9999 1px, transparent 1px);
-            background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
-            border: 1px solid #ff9999;
-            padding: 20px; margin: 30px 0; border-radius: 4px;
-            position: relative; height: 200px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .ekg-paper { /* CSS EKG Kağıdı Tasarımı */ background-color: #fff0f0; background-image: linear-gradient(#ffcccc 1px, transparent 1px), linear-gradient(90deg, #ffcccc 1px, transparent 1px), linear-gradient(#ff9999 1px, transparent 1px), linear-gradient(90deg, #ff9999 1px, transparent 1px); background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px; border: 1px solid #ff9999; padding: 20px; margin: 30px 0; border-radius: 4px; position: relative; height: 200px; display: flex; align-items: center; justify-content: center; }
         .ekg-draw { stroke: #111827; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* KUTULAR */
-        .note-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 20px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
         .clinical-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
-        .formula-box { background: #fdf4ff; border: 1px solid #f0abfc; padding: 15px; text-align: center; font-family: 'Courier New', monospace; margin: 20px 0; font-weight: bold; color: #86198f; }
-
-        /* NAV */
-        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
-        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
-        .prev { background: #f3f4f6; color: #374151; }
-        .next { background: var(--blue-ink); color: white; }
-
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; background: var(--blue-ink); color: white; }
     </style>
 </head>
 <body>
-
     <nav class="sidebar">
         <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px;">Bu Ünite</div>
         <a href="ekg.html" class="chapter-link active">1. EKG Temelleri</a>
         <a href="ekg2.html" class="chapter-link">2. Aritmi Simülatörü</a>
+        <a href="ekg3.html" class="chapter-link">3. İleti Blokları</a>
         <a href="ekg_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
-
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
         <h1>Bölüm 1: Normal Elektrokardiyogram</h1>
-
-        <p>
-            EKG, kalbin ürettiği elektriksel vektörlerin (akımların) vücut yüzeyinden kaydedilmesidir. 
-            Kalp bir "dipol" (iki kutuplu mıknatıs) gibi davranır. Eğer elektrik dalgası elektrota doğru geliyorsa <strong>Pozitif</strong> (yukarı), uzaklaşıyorsa <strong>Negatif</strong> (aşağı) çizim yapılır.
-        </p>
-
+        <p>EKG, kalbin elektriksel vektörlerinin vücut yüzeyinden kaydedilmesidir. Elektrik elektrota doğru geliyorsa <strong>Pozitif</strong> (yukarı), uzaklaşıyorsa <strong>Negatif</strong> (aşağı) dalga çizilir.</p>
+        
         <h2>1. Dalgalar ve Anlamları</h2>
         <div class="ekg-paper">
             <svg width="400" height="150" viewBox="0 0 400 150">
                 <path d="M10,75 L40,75 L50,60 L60,75 L70,75 L75,85 L85,10 L95,95 L100,75 L130,75 L150,50 L180,75 L220,75" class="ekg-draw" />
-                
-                <text x="45" y="50" font-family="sans-serif" font-weight="bold" fill="#111827">P</text>
-                <text x="70" y="110" font-family="sans-serif" font-weight="bold" fill="#111827">Q</text>
-                <text x="80" y="5" font-family="sans-serif" font-weight="bold" fill="#111827">R</text>
-                <text x="100" y="110" font-family="sans-serif" font-weight="bold" fill="#111827">S</text>
-                <text x="155" y="40" font-family="sans-serif" font-weight="bold" fill="#111827">T</text>
+                <text x="45" y="50" font-weight="bold">P</text><text x="80" y="5" font-weight="bold">R</text><text x="155" y="40" font-weight="bold">T</text>
             </svg>
         </div>
-
-        <h3>P Dalgası (Atriyal Depolarizasyon)</h3>
-        <p>
-            SA düğümden çıkan uyarının atriyumlara yayılmasını gösterir. Atriyum kasılmasından hemen önce oluşur.
-            Normalde D2 derivasyonunda pozitiftir.
-        </p>
-
-        <h3>QRS Kompleksi (Ventriküler Depolarizasyon)</h3>
-        <p>
-            Ventriküllerin elektriksel uyarılmasıdır. Kas kitlesi büyük olduğu için voltajı yüksektir.
-        </p>
-        <ul>
-            <li><strong>Q:</strong> İlk negatif dalga (Septum uyarılması).</li>
-            <li><strong>R:</strong> İlk pozitif dalga (Ana ventrikül kitlesi).</li>
-            <li><strong>S:</strong> R'dan sonraki negatif dalga (Taban kısmı).</li>
-        </ul>
-
-        <h3>T Dalgası (Ventriküler Repolarizasyon)</h3>
-        <p>
-            Ventriküllerin "şarj olması" veya gevşemesidir. 
-            İlginç bir şekilde, depolarizasyon ile repolarizasyon ters olaylar olmasına rağmen, T dalgası da R dalgası gibi pozitiftir. 
-            <strong>Nedeni:</strong> Repolarizasyon, depolarizasyonun tersi yönde (epikarddan endokarda) ilerler. (Çift negatif = Pozitif).
-        </p>
-
-        <h2>2. Klinik Aralıklar</h2>
+        <h3>P Dalgası ($P$ Wave)</h3>
+        <p><strong>Atriyal Depolarizasyon.</strong> Uyarının atriyumlara yayılmasıdır. Normalde D2'de pozitiftir.</p>
+        <h3>QRS Kompleksi</h3>
+        <p><strong>Ventriküler Depolarizasyon.</strong> Elektriğin Purkinje sistemiyle ventriküllere hızla yayılmasıdır. Normal QRS süresi <strong>$0.12$ saniyeden</strong> kısadır (3 küçük kare).</p>
+        <h3>T Dalgası ($T$ Wave)</h3>
+        <p><strong>Ventriküler Repolarizasyon.</strong> Ventriküllerin gevşeme ve yeniden şarj olma anıdır. T, R gibi pozitiftir çünkü repolarizasyon tersten ilerler.</p>
         
-        <h3>PR Aralığı (0.12 - 0.20 sn)</h3>
-        <p>
-            P başından QRS başına kadar olan süredir. Elektriğin atriyumdan çıkıp AV düğümde beklemesi (AV Delay) ve ventriküle ulaşmasıdır.
-            <br>
-            <strong>Uzarsa:</strong> 1. Derece AV Blok (İletim gecikmesi).
-        </p>
-
-        <h3>QT Aralığı</h3>
-        <p>
-            Ventrikülün elektriksel sistol süresidir (Depolarizasyon + Repolarizasyon). 
-            Kalp hızı arttıkça QT kısalmalıdır. Uzun QT, ölümcül aritmilere (Torsades de Pointes) zemin hazırlar.
-        </p>
-
-        <h3>ST Segmenti</h3>
-        <p>
-            QRS sonu ile T başı arasındaki düz çizgidir. Ventriküllerin tamamen depolarize olduğu andır.
-        </p>
+        <h2>2. Kritik Aralıklar</h2>
+        <h3>PR Aralığı</h3>
+        <p>P başından QRS başına kadar: $0.12 \text{ sn} - 0.20 \text{ sn}$ arası normaldir. Bu süre, elektriğin <strong>AV Düğümde bekleme</strong> zamanıdır.</p>
         <div class="clinical-box">
-            <strong>Klinik: Miyokard Enfarktüsü (STEMI)</strong><br>
-            Eğer ST segmenti taban çizgisinden yukarı kalkarsa (Elevasyon), kalbin o bölgesinde akut hasar (İskemi/Enfarktüs) var demektir.
+            <strong>Klinik: 1. Derece Blok</strong><br>
+            PR aralığı $0.20 \text{ sn}$ üzerinde ise iletim gecikmiştir.
+        </div>
+        <h3>QT Aralığı</h3>
+        <p>Ventrikülün tüm elektriksel aktivite süresidir (sistol). Kalp hızı artınca kısalır. Uzaması ölümcül aritmilere yol açar.</p>
+        <h3>ST Segmenti</h3>
+        <p>QRS sonu ile T başı arasındaki düz (izoelektrik) çizgidir. Ventrikülün tamamen depolarize olduğu andır.</p>
+        <div class="clinical-box" style="border-color:#ef4444; background:#fff1f2; color:#991b1b;">
+            <strong>Klinik: STEMI</strong><br>
+            ST segmentinin yukarı kalkması (Elevasyon), o bölgede akut kalp kası hasarı olduğunu gösterir.
         </div>
 
-        <h2>3. Kağıt Okuma Hesabı</h2>
-        <p>Standart EKG kağıdı <strong>25 mm/sn</strong> hızla akar.</p>
-        
+        <h2>3. EKG Kağıdı Hesabı</h2>
+        <p>Standart hız: $25 \text{ mm/sn}$'dir. Her büyük kare $0.20 \text{ sn}$, her küçük kare $0.04 \text{ sn}$'dir.</p>
         <div class="formula-box">
-            Küçük Kare (1mm) = 0.04 saniye<br>
-            Büyük Kare (5mm) = 0.20 saniye
+            Hız (atım/dk) = $\frac{300}{R \text{-} R \text{ arası Büyük Kare Sayısı}}$
         </div>
-
-        <p>
-            <strong>Hız Hesabı (Düzenli Ritimde):</strong><br>
-            İki R dalgası arasında kaç büyük kare var sayılır. 300 bu sayıya bölünür.<br>
-            <em>Örnek:</em> R-R arası 4 büyük kare ise: $300 / 4 = 75$ atım/dk.
-        </p>
 
         <div class="page-nav">
-            <a href="index.html" class="nav-btn prev">&larr; Ana Menü</a>
+            <a href="index.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Ana Menü</a>
             <a href="ekg2.html" class="nav-btn next">Bölüm 2: Aritmi Simülatörü &rarr;</a>
         </div>
     </main>
-
 </body>
 </html>
