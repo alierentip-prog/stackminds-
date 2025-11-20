@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikrosirkülasyon | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- GENEL TEMA (Yeşil Tonlu - Lenfatik/Doku Uyumu) --- */
+        :root {
+            --primary: #10b981; /* Zümrüt Yeşili */
+            --secondary: #3b82f6; /* Su Mavisi */
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
+            --text-main: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MENÜ --- */
+        .toc-sidebar {
+            width: 260px;
+            background: #111827;
+            padding: 30px;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+        }
+        .back-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 30px;
+        }
+        .back-btn:hover { color: var(--primary); }
+        
+        .toc-list { list-style: none; padding: 0; }
+        .toc-list a { 
+            color: #94a3b8; text-decoration: none; display: block; padding: 8px; margin-bottom: 5px; border-radius: 5px; transition:0.2s;
+        }
+        .toc-list a:hover { background: rgba(16, 185, 129, 0.1); color: var(--primary); padding-left: 12px; }
+
+        /* --- İÇERİK --- */
+        .content-area {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+        }
+
+        h1 span { color: var(--primary); }
+        
+        section {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            margin-bottom: 50px;
+        }
+
+        /* --- STARLING SİMÜLATÖRÜ --- */
+        .simulator-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Damar Görseli (Sol) */
+        .vessel-visual {
+            flex: 1;
+            min-width: 300px;
+            height: 250px;
+            background: #334155;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #475569;
+        }
+
+        .capillary {
+            height: 50%;
+            background: rgba(239, 68, 68, 0.2); /* Damar İçi */
+            border-bottom: 2px dashed #ef4444; /* Damar Duvarı */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .interstitium {
+            height: 50%;
+            background: rgba(16, 185, 129, 0.1); /* Doku Aralığı */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        /* Su Partikülleri (Mavi Noktalar) */
+        .water-molecule {
+            width: 10px;
+            height: 10px;
+            background: #3b82f6;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 1s ease;
+        }
+
+        /* Kontrol Paneli (Sağ) */
+        .sim-controls {
+            flex: 1;
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        input[type="range"] { width: 100%; accent-color: var(--primary); margin: 10px 0; }
+
+        .net-pressure {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        /* --- ÖDEM NEDENLERİ KARTLARI --- */
+        .edema-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .edema-card {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+        .edema-card h4 { margin: 0 0 5px 0; color: var(--text-main); }
+        .edema-card p { margin: 0; font-size: 0.85rem; color: #94a3b8; }
+
+        /* Mobil */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .toc-sidebar { width: 100%; height: auto; padding: 20px; }
+            .content-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="toc-sidebar">
+        <a href="menu.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Menüye Dön</a>
+        <h3>İçindekiler</h3>
+        <ul class="toc-list">
+            <li><a href="#starling">1. Starling Dengesi (Simülatör)</a></li>
+            <li><a href="#odem">2. Ödem Fizyolojisi</a></li>
+            <li><a href="#lenf">3. Lenfatik Sistem</a></li>
+        </ul>
+    </nav>
+
+    <main class="content-area">
+        <h1>Bölüm 3: <span>Mikrosirkülasyon</span></h1>
+
+        <section id="starling">
+            <h2><i class="fa-solid fa-scale-balanced"></i> Starling Güçleri</h2>
+            <p>
+                Kılcal damarlarda madde alışverişi 4 basınç tarafından kontrol edilir. 
+                Damar içi basınç sıvıyı dışarı iterken (Filtrasyon), proteinler suyu tutar (Absorpsiyon).
+            </p>
+
+            <div class="simulator-container">
+                <div class="vessel-visual" id="vesselBox">
+                    <div class="capillary">KILCAL DAMAR (Plazma)</div>
+                    <div class="interstitium">DOKU ARALIĞI</div>
+                    </div>
+
+                <div class="sim-controls">
+                    <label>Hidrostatik Basınç ($P_c$): <span id="valPc">30</span> mmHg</label>
+                    <input type="range" id="inputPc" min="10" max="60" value="30">
+                    <p style="font-size:0.8rem; color:#ef4444;">*Suyu dışarı iten güç (Kan basıncı)</p>
+
+                    <label>Onkotik Basınç ($\pi_p$): <span id="valPi">28</span> mmHg</label>
+                    <input type="range" id="inputPi" min="10" max="40" value="28">
+                    <p style="font-size:0.8rem; color:#3b82f6;">*Suyu içeride tutan güç (Albumin)</p>
+
+                    <div class="net-pressure" id="netDisplay">
+                        Net: +2 mmHg (Dışarı Çıkış)
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="odem">
+            <h2><i class="fa-solid fa-glass-water"></i> Ödemin Nedenleri</h2>
+            <p>Starling dengesi bozulduğunda doku aralığında sıvı birikir. İşte Guyton'a göre 3 temel sebep:</p>
+            
+            <div class="edema-grid">
+                <div class="edema-card" style="border-color: #ef4444;">
+                    <h4><i class="fa-solid fa-arrow-trend-up"></i> Artmış Kapiller Basınç</h4>
+                    <p>Kalp yetmezliği, venöz tıkanıklık. (Sıvı zorla dışarı itilir)</p>
+                </div>
+                <div class="edema-card" style="border-color: #3b82f6;">
+                    <h4><i class="fa-solid fa-arrow-trend-down"></i> Azalmış Protein</h4>
+                    <p>Karaciğer yetmezliği, açlık. (Sıvıyı tutacak Albumin yok)</p>
+                </div>
+                <div class="edema-card" style="border-color: #10b981;">
+                    <h4><i class="fa-solid fa-ban"></i> Lenfatik Tıkanıklık</h4>
+                    <p>Kanser, enfeksiyon. (Sızan sıvı geri toplanamaz)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="lenf">
+            <h2><i class="fa-solid fa-network-wired"></i> Lenfatik Sistem: Çöpçü Kamyonları</h2>
+            <p>
+                Kılcal damarlardan sızan sıvının %10'u geri dönemez. Bu sıvıyı ve kaçan proteinleri 
+                toplayıp tekrar kana (venöz sisteme) döken sistem lenfatiklerdir.
+            </p>
+            <ul style="color:#cbd5e1; line-height:1.8;">
+                <li>Lenf damarları tek yönlü kapakçıklara sahiptir.</li>
+                <li>Günde yaklaşık 2-3 litre lenf sıvısı toplanır.</li>
+                <li>Lenf akışı durursa dakikalar içinde ödem oluşur.</li>
+            </ul>
+        </section>
+
+    </main>
+
+    <script>
+        // --- SİMÜLATÖR MANTIĞI ---
+        const inputPc = document.getElementById('inputPc');
+        const inputPi = document.getElementById('inputPi');
+        const netDisplay = document.getElementById('netDisplay');
+        const vesselBox = document.getElementById('vesselBox');
+
+        // Su moleküllerini oluştur
+        const molecules = [];
+        for(let i=0; i<10; i++) {
+            let m = document.createElement('div');
+            m.classList.add('water-molecule');
+            // Rastgele başlangıç konumu (Damar içinde)
+            m.style.left = Math.random() * 80 + 10 + '%';
+            m.style.top = Math.random() * 30 + 10 + '%';
+            vesselBox.appendChild(m);
+            molecules.push(m);
+        }
+
+        function updateStarling() {
+            const Pc = parseInt(inputPc.value);
+            const Pi = parseInt(inputPi.value);
+
+            document.getElementById('valPc').innerText = Pc;
+            document.getElementById('valPi').innerText = Pi;
+
+            // Net Basınç = Hidrostatik - Onkotik
+            const net = Pc - Pi;
+
+            // Sonuç Yazısı ve Renkler
+            if(net > 0) {
+                netDisplay.innerText = `Net: +${net} mmHg (FİLTRASYON)`;
+                netDisplay.style.color = "#ef4444"; // Kırmızı (Dışarı)
+                netDisplay.style.borderColor = "#ef4444";
+                moveMolecules('out');
+            } else {
+                netDisplay.innerText = `Net: ${net} mmHg (ABSORPSİYON)`;
+                netDisplay.style.color = "#3b82f6"; // Mavi (İçeri)
+                netDisplay.style.borderColor = "#3b82f6";
+                moveMolecules('in');
+            }
+        }
+
+        function moveMolecules(direction) {
+            molecules.forEach(m => {
+                if(direction === 'out') {
+                    // Dokuya indir (Top > %50)
+                    m.style.top = (Math.random() * 30 + 60) + '%';
+                } else {
+                    // Damara çıkar (Top < %40)
+                    m.style.top = (Math.random() * 30 + 10) + '%';
+                }
+            });
+        }
+
+        inputPc.addEventListener('input', updateStarling);
+        inputPi.addEventListener('input', updateStarling);
+
+        // İlk açılışta çalıştır
+        updateStarling();
+    </script>
+</body>
+  </html>
+  
