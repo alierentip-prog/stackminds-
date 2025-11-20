@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalp Mekaniği 2 | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --highlight: #fff7ed; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none; }
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
+        p { text-align: justify; margin-bottom: 20px; }
+
+        /* GRAFİK ALANI */
+        .chart-wrapper { background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 10px; margin: 30px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+        /* DEFINITION BOX */
+        .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
+        .def-title { font-weight: bold; color: var(--blue-ink); display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8rem; }
+
+        /* CLINICAL BOX */
+        .clinical-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+        .prev { background: #f3f4f6; color: #374151; }
+        .next { background: var(--accent); color: white; }
+
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; padding: 15px; } .page-content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="mekanik.html" class="chapter-link">1. Kalp Döngüsü</a>
+        <a href="mekanik2.html" class="chapter-link active">2. PV Döngüleri</a>
+        <a href="mekanik_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 2: Kalp Mekaniği</div>
+        <h1>Bölüm 2: İş Yükü ve Düzenleme</h1>
+
+        <p>
+            Kalbin performansı sadece "hız" ile ölçülmez. Kalp, basınca karşı hacim pompalayan bir makinedir. 
+            Bu mekanik işi analiz etmenin en iyi yolu <strong>Basınç-Hacim (PV) Döngüsü</strong>'dür.
+        </p>
+
+        <h2>1. PV Döngüsü Analizi</h2>
+        <p>
+            Aşağıdaki grafik, sol ventrikülün bir atım sırasındaki yolculuğunu gösterir. 
+            X ekseni Hacim (Volume), Y ekseni Basınç (Pressure)'tır. Grafiğin altında kalan alan, kalbin yaptığı <strong>Dış İş (External Work)</strong> miktarını verir.
+        </p>
+
+        <div class="chart-wrapper">
+            <canvas id="pvLoopChart"></canvas>
+            <div style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:10px; font-family:'Segoe UI', sans-serif;">
+                <strong>A:</strong> Mitral Açılır &nbsp;|&nbsp; <strong>B:</strong> Mitral Kapanır (End-Diastol) &nbsp;|&nbsp; 
+                <strong>C:</strong> Aort Açılır &nbsp;|&nbsp; <strong>D:</strong> Aort Kapanır (End-Sistol)
+            </div>
+        </div>
+
+        <div class="def-box">
+            <span class="def-title">Kavram: Stroke Volume (Atım Hacmi)</span>
+            Grafikteki genişliktir. (B noktası - D noktası).<br>
+            $SV = EDV (120ml) - ESV (50ml) = 70 ml$
+        </div>
+
+        <h2>2. Kalp Performansını Belirleyen 3 Faktör</h2>
+        <p>Kalbin ne kadar kan pompalayacağını (Debi) belirleyen üç temel değişken vardır:</p>
+
+        <h3>A. Preload (Ön Yük)</h3>
+        <p>
+            Ventrikül kasılmaya başlamadan hemen önce, diyastol sonunda duvarındaki gerilimdir. Pratik olarak <strong>End-Diastolik Hacim (EDV)</strong> ile ölçülür.
+            <br><br>
+            <strong>Frank-Starling Yasası:</strong> "Kalbe ne kadar kan gelirse (Preload artarsa), kalp o kadar güçlü kasılır." 
+            PV döngüsünde grafik <strong>sağa doğru genişler</strong> ve SV artar.
+        </p>
+
+        <h3>B. Afterload (Ard Yük)</h3>
+        <p>
+            Ventrikülün kanı fırlatabilmek için yenmek zorunda olduğu dirençtir. Pratik olarak <strong>Aort Basıncı (Tansiyon)</strong> ile ilişkilidir.
+            <br><br>
+            Eğer tansiyon yüksekse (Afterload artmışsa), kalp kanı fırlatmakta zorlanır. 
+            PV döngüsü <strong>yukarı doğru uzar ama daralır</strong>. Sonuç: Atım hacmi (SV) azalır.
+        </p>
+
+        <div class="clinical-box">
+            <strong>Klinik: Hipertansiyonun Bedeli</strong><br>
+            Yüksek tansiyon (Artmış Afterload), kalbin iş yükünü (PV alanı) artırır ama fırlatılan kanı azaltır. 
+            Kalp bu yüke dayanmak için zamanla kalınlaşır (Hipertrofi) ve sonunda yetmezliğe girer.
+        </div>
+
+        <h3>C. Kontraktilite (Kasılma Gücü)</h3>
+        <p>
+            Kalp kasının kendi içsel kasılma yeteneğidir (İnotropi). Sempatik uyarı (Adrenalin) veya Digoksin ile artar.
+            <br>
+            Kontraktilite artarsa, kalp içindeki kanı daha iyi boşaltır (ESV azalır). PV döngüsü <strong>sola doğru genişler.</strong>
+        </p>
+
+        <h2>3. Kalbin Enerji Tüketimi</h2>
+        <p>
+            Kalp en çok enerjiyi (%90) <strong>Basınç Üretmek</strong> için harcar. Hacim pompalamak için harcanan enerji çok azdır.
+            <br>
+            Bu yüzden, tansiyonu yüksek bir hasta (Basınç yükü), çok koşan bir sporcudan (Hacim yükü) daha fazla kalp enerjisi tüketir ve krize daha yakındır.
+        </p>
+
+        <div class="page-nav">
+            <a href="mekanik.html" class="nav-btn prev">&larr; Bölüm 1: Kalp Döngüsü</a>
+            <a href="mekanik_test.html" class="nav-btn next">Ünite Testi (50 Soru) &rarr;</a>
+        </div>
+    </main>
+
+    <script>
+        // PV LOOP GRAFİĞİ
+        const ctx = document.getElementById('pvLoopChart').getContext('2d');
+
+        // A(50,5) -> B(120,10) -> C(120,80) -> D(50,120) -> A
+        const loopData = [
+            {x: 50, y: 5},    // A: Mitral Açılma (ESV)
+            {x: 120, y: 10},  // B: Mitral Kapanma (EDV)
+            {x: 120, y: 80},  // C: Aort Açılma
+            {x: 50, y: 120},  // D: Aort Kapanma
+            {x: 50, y: 5}     // A: Geri dönüş
+        ];
+
+        new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Normal PV Döngüsü',
+                    data: loopData,
+                    showLine: true,
+                    borderColor: '#0369a1',
+                    backgroundColor: 'rgba(3, 105, 161, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#b91c1c',
+                    pointRadius: 5,
+                    fill: true,
+                    tension: 0.1 // Köşeleri hafif yumuşat
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Hacim: ${context.parsed.x} ml, Basınç: ${context.parsed.y} mmHg`;
+                            }
+                        }
+                    },
+                    legend: { display: false },
+                    annotation: {
+                        annotations: {
+                            labelA: { type: 'label', xValue: 50, yValue: 0, content: 'A', font: {weight:'bold'} },
+                            labelB: { type: 'label', xValue: 120, yValue: 5, content: 'B (Preload)', font: {weight:'bold'} },
+                            labelC: { type: 'label', xValue: 125, yValue: 80, content: 'C (Afterload)', font: {weight:'bold'} },
+                            labelD: { type: 'label', xValue: 50, yValue: 125, content: 'D', font: {weight:'bold'} }
+                        }
+                    }
+                },
+                scales: {
+                    x: { 
+                        title: {display:true, text:'Sol Ventrikül Hacmi (ml)'}, 
+                        min: 0, max: 150 
+                    },
+                    y: { 
+                        title: {display:true, text:'Basınç (mmHg)'}, 
+                        min: 0, max: 140 
+                    }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
