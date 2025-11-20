@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalp Mekaniği 2 | Stackminds</title>
+    <title>Kalp Mekaniği 2 (Simülatör) | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
@@ -12,8 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- AKADEMİK TEMA --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --highlight: #fff7ed; --accent: #b91c1c; --success: #047857; }
+        /* --- GUYTON TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; }
         body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
         /* SIDEBAR */
@@ -24,29 +24,48 @@
         .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
 
         /* CONTENT */
-        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
-        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
-        p { text-align: justify; margin-bottom: 20px; }
+        .page-content { margin-left: 260px; padding: 40px 60px; max-width: 900px; width: 100%; }
+        h1 { font-size: 2.2rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 40px; border-bottom: 2px solid var(--blue-ink); color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        
+        /* SİMÜLATÖR KUTUSU */
+        .lab-container {
+            background: white; border: 1px solid #e5e7eb; border-radius: 15px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 30px;
+        }
+        .chart-area { position: relative; height: 350px; width: 100%; }
 
-        /* GRAFİK ALANI */
-        .chart-wrapper { background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 10px; margin: 30px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        /* KONTROL PANELİ */
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 20px; background: #f8fafc; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .control-group label { display: block; font-family: 'Segoe UI', sans-serif; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px; }
+        .slider-val { float: right; color: var(--blue-ink); }
+        input[type="range"] { width: 100%; accent-color: var(--blue-ink); cursor: pointer; }
 
-        /* DEFINITION BOX */
-        .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        .def-title { font-weight: bold; color: var(--blue-ink); display: block; margin-bottom: 5px; text-transform: uppercase; font-size: 0.8rem; }
+        /* GÖSTERGE PANELİ */
+        .readout-panel {
+            display: flex; justify-content: space-around; margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .readout-item { text-align: center; }
+        .readout-value { display: block; font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        .readout-label { font-size: 0.8rem; color: #6b7280; text-transform: uppercase; }
 
-        /* CLINICAL BOX */
-        .clinical-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+        /* SENARYO BUTONLARI */
+        .scenario-btns { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .s-btn { padding: 8px 15px; border: 1px solid var(--blue-ink); background: white; color: var(--blue-ink); border-radius: 20px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: 600; transition:0.2s; }
+        .s-btn:hover { background: var(--blue-ink); color: white; }
+        .s-btn.active { background: var(--blue-ink); color: white; }
 
         /* NAV */
-        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
-        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; border-top: 1px solid #e5e7eb; padding-top: 20px; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.2s; }
         .prev { background: #f3f4f6; color: #374151; }
         .next { background: var(--accent); color: white; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; padding: 15px; } .page-content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { 
+            body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } 
+            .controls-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -55,77 +74,77 @@
         <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
         <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
         <a href="mekanik.html" class="chapter-link">1. Kalp Döngüsü</a>
-        <a href="mekanik2.html" class="chapter-link active">2. PV Döngüleri</a>
+        <a href="mekanik2.html" class="chapter-link active">2. PV Laboratuvarı</a>
         <a href="mekanik_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 2: Kalp Mekaniği</div>
-        <h1>Bölüm 2: İş Yükü ve Düzenleme</h1>
-
+        <h1>Bölüm 2: PV Döngüsü Simülatörü</h1>
+        
         <p>
-            Kalbin performansı sadece "hız" ile ölçülmez. Kalp, basınca karşı hacim pompalayan bir makinedir. 
-            Bu mekanik işi analiz etmenin en iyi yolu <strong>Basınç-Hacim (PV) Döngüsü</strong>'dür.
+            Kalbin pompa fonksiyonunu anlamanın en iyi yolu, değişkenlerle oynamaktır. 
+            Aşağıdaki simülatörde <strong>Preload (Dolum)</strong>, <strong>Afterload (Basınç)</strong> ve <strong>Kontraktilite (Güç)</strong> değişimlerinin Atım Hacmini (SV) nasıl etkilediğini incele.
         </p>
 
-        <h2>1. PV Döngüsü Analizi</h2>
-        <p>
-            Aşağıdaki grafik, sol ventrikülün bir atım sırasındaki yolculuğunu gösterir. 
-            X ekseni Hacim (Volume), Y ekseni Basınç (Pressure)'tır. Grafiğin altında kalan alan, kalbin yaptığı <strong>Dış İş (External Work)</strong> miktarını verir.
-        </p>
+        <div class="lab-container">
+            <div class="scenario-btns">
+                <button class="s-btn active" onclick="setScenario('normal')">Normal</button>
+                <button class="s-btn" onclick="setScenario('exercise')">🏃 Egzersiz (Preload+Güç Artışı)</button>
+                <button class="s-btn" onclick="setScenario('ht')">🔴 Hipertansiyon (Afterload Yüksek)</button>
+                <button class="s-btn" onclick="setScenario('hf')">💔 Kalp Yetmezliği (Güç Düşük)</button>
+            </div>
 
-        <div class="chart-wrapper">
-            <canvas id="pvLoopChart"></canvas>
-            <div style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:10px; font-family:'Segoe UI', sans-serif;">
-                <strong>A:</strong> Mitral Açılır &nbsp;|&nbsp; <strong>B:</strong> Mitral Kapanır (End-Diastol) &nbsp;|&nbsp; 
-                <strong>C:</strong> Aort Açılır &nbsp;|&nbsp; <strong>D:</strong> Aort Kapanır (End-Sistol)
+            <div class="chart-area">
+                <canvas id="pvChart"></canvas>
+            </div>
+
+            <div class="readout-panel">
+                <div class="readout-item">
+                    <span class="readout-value" id="dispEDV">120</span>
+                    <span class="readout-label">EDV (ml)</span>
+                </div>
+                <div class="readout-item">
+                    <span class="readout-value" id="dispESV" style="color:#6b7280">50</span>
+                    <span class="readout-label">ESV (ml)</span>
+                </div>
+                <div class="readout-item">
+                    <span class="readout-value" id="dispSV" style="color:#059669">70</span>
+                    <span class="readout-label">Stroke Vol (ml)</span>
+                </div>
+                <div class="readout-item">
+                    <span class="readout-value" id="dispEF" style="color:#059669">58%</span>
+                    <span class="readout-label">EF</span>
+                </div>
+            </div>
+
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label>Preload (Venöz Dönüş) <span class="slider-val" id="valPre">120</span></label>
+                    <input type="range" id="sldPre" min="80" max="160" value="120" oninput="updateSim()">
+                    <small style="color:#64748b">Grafiği sağa genişletir.</small>
+                </div>
+                <div class="control-group">
+                    <label>Afterload (Aort Basıncı) <span class="slider-val" id="valAfter">80</span></label>
+                    <input type="range" id="sldAfter" min="50" max="140" value="80" oninput="updateSim()">
+                    <small style="color:#64748b">Grafiği yukarı uzatır.</small>
+                </div>
+                <div class="control-group">
+                    <label>Kontraktilite (Güç) <span class="slider-val" id="valCon">1.0</span></label>
+                    <input type="range" id="sldCon" min="0.5" max="1.5" step="0.1" value="1.0" oninput="updateSim()">
+                    <small style="color:#64748b">Grafiği sola genişletir.</small>
+                </div>
             </div>
         </div>
 
-        <div class="def-box">
-            <span class="def-title">Kavram: Stroke Volume (Atım Hacmi)</span>
-            Grafikteki genişliktir. (B noktası - D noktası).<br>
-            $SV = EDV (120ml) - ESV (50ml) = 70 ml$
+        <div style="margin-top:30px;">
+            <h3>Guyton Prensipleri:</h3>
+            <ul>
+                <li><strong>Frank-Starling Yasası:</strong> Preload artarsa (Slider'ı sağa çek), SV artar. Grafik sağa büyür.</li>
+                <li><strong>Afterload Etkisi:</strong> Tansiyon artarsa (Ortadaki slider), kalp kapıyı açmak için daha çok basınç üretir ama daha az kan atar (SV düşer). Grafik daralır ve uzar.</li>
+                <li><strong>İnotropik Etki:</strong> Güç artarsa (Sağdaki slider), kalp içindeki kanı iyice sıkar (ESV azalır). SV artar.</li>
+            </ul>
         </div>
-
-        <h2>2. Kalp Performansını Belirleyen 3 Faktör</h2>
-        <p>Kalbin ne kadar kan pompalayacağını (Debi) belirleyen üç temel değişken vardır:</p>
-
-        <h3>A. Preload (Ön Yük)</h3>
-        <p>
-            Ventrikül kasılmaya başlamadan hemen önce, diyastol sonunda duvarındaki gerilimdir. Pratik olarak <strong>End-Diastolik Hacim (EDV)</strong> ile ölçülür.
-            <br><br>
-            <strong>Frank-Starling Yasası:</strong> "Kalbe ne kadar kan gelirse (Preload artarsa), kalp o kadar güçlü kasılır." 
-            PV döngüsünde grafik <strong>sağa doğru genişler</strong> ve SV artar.
-        </p>
-
-        <h3>B. Afterload (Ard Yük)</h3>
-        <p>
-            Ventrikülün kanı fırlatabilmek için yenmek zorunda olduğu dirençtir. Pratik olarak <strong>Aort Basıncı (Tansiyon)</strong> ile ilişkilidir.
-            <br><br>
-            Eğer tansiyon yüksekse (Afterload artmışsa), kalp kanı fırlatmakta zorlanır. 
-            PV döngüsü <strong>yukarı doğru uzar ama daralır</strong>. Sonuç: Atım hacmi (SV) azalır.
-        </p>
-
-        <div class="clinical-box">
-            <strong>Klinik: Hipertansiyonun Bedeli</strong><br>
-            Yüksek tansiyon (Artmış Afterload), kalbin iş yükünü (PV alanı) artırır ama fırlatılan kanı azaltır. 
-            Kalp bu yüke dayanmak için zamanla kalınlaşır (Hipertrofi) ve sonunda yetmezliğe girer.
-        </div>
-
-        <h3>C. Kontraktilite (Kasılma Gücü)</h3>
-        <p>
-            Kalp kasının kendi içsel kasılma yeteneğidir (İnotropi). Sempatik uyarı (Adrenalin) veya Digoksin ile artar.
-            <br>
-            Kontraktilite artarsa, kalp içindeki kanı daha iyi boşaltır (ESV azalır). PV döngüsü <strong>sola doğru genişler.</strong>
-        </p>
-
-        <h2>3. Kalbin Enerji Tüketimi</h2>
-        <p>
-            Kalp en çok enerjiyi (%90) <strong>Basınç Üretmek</strong> için harcar. Hacim pompalamak için harcanan enerji çok azdır.
-            <br>
-            Bu yüzden, tansiyonu yüksek bir hasta (Basınç yükü), çok koşan bir sporcudan (Hacim yükü) daha fazla kalp enerjisi tüketir ve krize daha yakındır.
-        </p>
 
         <div class="page-nav">
             <a href="mekanik.html" class="nav-btn prev">&larr; Bölüm 1: Kalp Döngüsü</a>
@@ -134,68 +153,134 @@
     </main>
 
     <script>
-        // PV LOOP GRAFİĞİ
-        const ctx = document.getElementById('pvLoopChart').getContext('2d');
-
-        // A(50,5) -> B(120,10) -> C(120,80) -> D(50,120) -> A
-        const loopData = [
-            {x: 50, y: 5},    // A: Mitral Açılma (ESV)
-            {x: 120, y: 10},  // B: Mitral Kapanma (EDV)
-            {x: 120, y: 80},  // C: Aort Açılma
-            {x: 50, y: 120},  // D: Aort Kapanma
-            {x: 50, y: 5}     // A: Geri dönüş
-        ];
-
-        new Chart(ctx, {
+        const ctx = document.getElementById('pvChart').getContext('2d');
+        
+        // Chart.js Başlangıç
+        const pvChart = new Chart(ctx, {
             type: 'scatter',
             data: {
                 datasets: [{
-                    label: 'Normal PV Döngüsü',
-                    data: loopData,
+                    label: 'PV Döngüsü',
+                    data: [], // JS ile doldurulacak
                     showLine: true,
                     borderColor: '#0369a1',
-                    backgroundColor: 'rgba(3, 105, 161, 0.1)',
+                    backgroundColor: 'rgba(3, 105, 161, 0.2)',
                     borderWidth: 3,
-                    pointBackgroundColor: '#b91c1c',
-                    pointRadius: 5,
+                    pointRadius: 0,
                     fill: true,
-                    tension: 0.1 // Köşeleri hafif yumuşat
+                    tension: 0.2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `Hacim: ${context.parsed.x} ml, Basınç: ${context.parsed.y} mmHg`;
-                            }
-                        }
-                    },
-                    legend: { display: false },
-                    annotation: {
-                        annotations: {
-                            labelA: { type: 'label', xValue: 50, yValue: 0, content: 'A', font: {weight:'bold'} },
-                            labelB: { type: 'label', xValue: 120, yValue: 5, content: 'B (Preload)', font: {weight:'bold'} },
-                            labelC: { type: 'label', xValue: 125, yValue: 80, content: 'C (Afterload)', font: {weight:'bold'} },
-                            labelD: { type: 'label', xValue: 50, yValue: 125, content: 'D', font: {weight:'bold'} }
-                        }
-                    }
-                },
+                animation: { duration: 0 }, // Hızlı tepki için animasyon kapalı
                 scales: {
-                    x: { 
-                        title: {display:true, text:'Sol Ventrikül Hacmi (ml)'}, 
-                        min: 0, max: 150 
-                    },
-                    y: { 
-                        title: {display:true, text:'Basınç (mmHg)'}, 
-                        min: 0, max: 140 
-                    }
-                }
+                    x: { title: {display:true, text:'Hacim (ml)'}, min: 0, max: 200 },
+                    y: { title: {display:true, text:'Basınç (mmHg)'}, min: 0, max: 200 }
+                },
+                plugins: { legend: {display:false} }
             }
         });
+
+        // Slider Elementleri
+        const sldPre = document.getElementById('sldPre');
+        const sldAfter = document.getElementById('sldAfter');
+        const sldCon = document.getElementById('sldCon');
+
+        // Gösterge Elementleri
+        const valPre = document.getElementById('valPre');
+        const valAfter = document.getElementById('valAfter');
+        const valCon = document.getElementById('valCon');
+        const dispEDV = document.getElementById('dispEDV');
+        const dispESV = document.getElementById('dispESV');
+        const dispSV = document.getElementById('dispSV');
+        const dispEF = document.getElementById('dispEF');
+
+        function updateSim() {
+            // 1. Değerleri Oku
+            let EDV = parseInt(sldPre.value);   // End-Diastolic Volume (Preload)
+            let P_aort = parseInt(sldAfter.value); // Aortic Pressure (Afterload)
+            let Emax = parseFloat(sldCon.value); // Contractility Factor (Normal = 1.0)
+
+            // Ekrana yaz
+            valPre.innerText = EDV;
+            valAfter.innerText = P_aort;
+            valCon.innerText = Emax;
+
+            // 2. Fizyoloji Matematiği (Basitleştirilmiş Model)
+            // ESV (End-Systolic Volume) hesabı:
+            // Güçlü kalp (Emax yüksek) -> ESV düşük olur.
+            // Yüksek tansiyon (Afterload yüksek) -> ESV yüksek kalır (boşaltamaz).
+            
+            // Bazal ESV = 50.
+            // Afterload etkisi: Her 10mmHg artış ESV'yi biraz artırır.
+            // Kontraktilite etkisi: Emax artarsa ESV azalır.
+            
+            let afterloadFactor = (P_aort - 80) * 0.5; // 80 üstü her basınç kalbi zorlar
+            let baseESV = 50 + afterloadFactor;
+            let ESV = baseESV / Emax; 
+
+            // Mantıksız değerleri düzelt
+            if(ESV > EDV - 10) ESV = EDV - 10; // Kalp boşalamazsa
+            if(ESV < 10) ESV = 10; // Minimum hacim
+
+            let SV = EDV - ESV;
+            let EF = (SV / EDV) * 100;
+            let P_peak = P_aort + 20; // Sistolik zirve basıncı aorttan biraz yüksektir
+
+            // 3. Grafiği Çiz (4 Nokta)
+            // A: Mitral Açılma (ESV, düşük basınç)
+            // B: Mitral Kapanma (EDV, düşük basınç) -> PRELOAD
+            // C: Aort Açılma (EDV, Aort basıncı) -> AFTERLOAD
+            // D: Aort Kapanma (ESV, Aort basıncı + biraz düşüş)
+
+            const newData = [
+                {x: ESV, y: 5},      // A
+                {x: EDV, y: 10},     // B
+                {x: EDV, y: P_aort}, // C
+                {x: ESV, y: P_peak}, // D (Tepe)
+                {x: ESV, y: 5}       // A (Döngü tamamla)
+            ];
+
+            pvChart.data.datasets[0].data = newData;
+            pvChart.update();
+
+            // 4. Rakamları Güncelle
+            dispEDV.innerText = EDV;
+            dispESV.innerText = Math.round(ESV);
+            dispSV.innerText = Math.round(SV);
+            dispEF.innerText = Math.round(EF) + "%";
+
+            // Renklendirme (EF düşükse kırmızı yap)
+            dispEF.style.color = EF < 50 ? "#dc2626" : "#059669";
+        }
+
+        // Senaryo Butonları
+        function setScenario(type) {
+            // Buton aktiflik ayarı
+            document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(type === 'normal') {
+                sldPre.value = 120; sldAfter.value = 80; sldCon.value = 1.0;
+            } else if(type === 'exercise') {
+                // Egzersiz: Dönüş artar (Preload), Güç artar.
+                sldPre.value = 150; sldAfter.value = 90; sldCon.value = 1.4;
+            } else if(type === 'ht') {
+                // Hipertansiyon: Afterload çok yüksek.
+                sldPre.value = 120; sldAfter.value = 140; sldCon.value = 1.0;
+            } else if(type === 'hf') {
+                // Kalp Yetmezliği: Güç çok düşük, sıvı birikmiş (Preload yüksek).
+                sldPre.value = 140; sldAfter.value = 80; sldCon.value = 0.6;
+            }
+            updateSim();
+        }
+
+        // Başlat
+        updateSim();
     </script>
 
 </body>
-</html>
+    </html>
+    
