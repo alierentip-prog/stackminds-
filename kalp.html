@@ -7,107 +7,214 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* --- GENEL TEMALAR (Hemodinamik ile uyumlu) --- */
+        /* --- GENEL AYARLAR --- */
         :root {
-            --primary: #ef4444; /* Kalp için Kırmızı Odak */
-            --secondary: #3b82f6;
-            --bg-dark: #0f172a;
-            --panel-bg: #1e293b;
+            --primary: #ef4444; /* Kalp Kırmızısı */
+            --secondary: #3b82f6; /* Mavi */
+            --success: #10b981; /* Yeşil */
+            --bg-dark: #0f172a; /* Koyu Zemin */
+            --panel-bg: #1e293b; /* Kart Zemini */
             --text-main: #e2e8f0;
         }
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
             display: flex;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Mobilde taşmayı engelle */
         }
 
-        /* --- MENÜ --- */
+        /* --- SOL MENÜ (SIDEBAR) --- */
         .toc-sidebar {
-            width: 250px;
+            width: 260px;
             background: #111827;
             padding: 30px;
             border-right: 1px solid #334155;
-        }
-        .back-btn {
-            color: var(--text-main);
-            text-decoration: none;
-            display: flex; align-items: center; gap: 10px; margin-bottom: 30px;
-        }
-        .back-btn:hover { color: var(--primary); }
-        .toc-list { list-style: none; padding: 0; }
-        .toc-list li { margin-bottom: 10px; }
-        .toc-list a { color: #94a3b8; text-decoration: none; display: block; padding: 5px; transition:0.3s;}
-        .toc-list a:hover { color: var(--primary); padding-left: 10px; }
-
-        /* --- İÇERİK --- */
-        .content-area {
-            flex: 1;
-            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
             overflow-y: auto;
         }
 
+        .back-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover { color: var(--primary); transform: translateX(-5px); }
+
+        .toc-list { list-style: none; padding: 0; }
+        .toc-list li { margin-bottom: 12px; }
+        
+        .toc-list a { 
+            color: #94a3b8; 
+            text-decoration: none; 
+            display: block; 
+            padding: 8px; 
+            border-radius: 6px;
+            transition: 0.2s;
+            font-size: 0.9rem;
+        }
+        .toc-list a:hover { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: var(--primary); 
+            padding-left: 12px; 
+        }
+
+        /* --- ANA İÇERİK ALANI --- */
+        .content-area {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto; /* İçerik uzunsa kaydır */
+            scroll-behavior: smooth;
+        }
+
+        h1 { font-size: 2.2rem; margin-bottom: 10px; }
         h1 span { color: var(--primary); }
         
+        /* Kart Tasarımları */
         section {
             background: var(--panel-bg);
             padding: 30px;
-            border-radius: 15px;
+            border-radius: 16px;
             border: 1px solid #334155;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
-        /* --- FRANK-STARLING SİMÜLATÖRÜ --- */
-        .graph-container {
+        h2 { 
+            color: var(--primary); 
+            border-left: 4px solid var(--primary); 
+            padding-left: 15px; 
+            margin-top: 0;
+        }
+
+        p { line-height: 1.7; color: #cbd5e1; }
+
+        /* --- ÖZEL: FRANK-STARLING GRAFİĞİ --- */
+        .graph-wrapper {
             position: relative;
-            height: 300px;
+            height: 350px;
             width: 100%;
             margin-top: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 10px;
         }
 
         .controls {
             margin-top: 20px;
             background: #0f172a;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid #334155;
         }
 
-        input[type="range"] { width: 100%; accent-color: var(--primary); }
-
-        .info-badge {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: bold;
+        .control-header {
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 10px;
+            font-weight: 600;
         }
 
-        /* --- KALP DÖNGÜSÜ TABLOSU --- */
+        /* Slider (Kaydırma Çubuğu) */
+        input[type="range"] { 
+            width: 100%; 
+            accent-color: var(--primary); 
+            cursor: pointer;
+        }
+
+        .badge {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        /* --- ÖZEL: KALP DÖNGÜSÜ TABLOSU --- */
         .cycle-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         .cycle-table th, .cycle-table td {
             border: 1px solid #334155;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
-        .cycle-table th { background: #0f172a; color: var(--primary); }
-        .cycle-table tr:hover { background: rgba(255,255,255,0.05); }
+        .cycle-table th { 
+            background: #0f172a; 
+            color: var(--primary); 
+        }
+        .cycle-table tr:hover { background: rgba(255,255,255,0.03); }
 
-        /* Mobil */
+        /* --- ÖZEL: QUIZ CENTER --- */
+        .quiz-box {
+            background: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--secondary); /* Mavi Çizgi */
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1e293b;
+        }
+        .question-item:last-child { border-bottom: none; margin-bottom: 0; }
+
+        .options label {
+            display: block;
+            background: #1e293b;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+            font-size: 0.95rem;
+        }
+        .options label:hover { background: #334155; }
+        .options input { margin-right: 12px; }
+
+        /* Doğru/Yanlış Stilleri */
+        .correct { 
+            border-color: var(--success) !important; 
+            color: var(--success); 
+            background: rgba(16, 185, 129, 0.1) !important; 
+        }
+        .wrong { 
+            border-color: var(--primary) !important; 
+            color: var(--primary); 
+            background: rgba(239, 68, 68, 0.1) !important;
+        }
+
+        .feedback {
+            display: none; /* Başlangıçta gizli */
+            margin-top: 10px;
+            padding: 10px;
+            background: #111827;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* --- MOBİL UYUM --- */
         @media (max-width: 768px) {
             body { flex-direction: column; overflow: auto; }
-            .toc-sidebar { width: 100%; height: auto; padding: 15px; }
+            .toc-sidebar { width: 100%; height: auto; padding: 20px; border-right: none; border-bottom: 1px solid #334155; }
             .content-area { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            .graph-wrapper { height: 250px; }
         }
     </style>
 </head>
@@ -115,11 +222,12 @@
 
     <nav class="toc-sidebar">
         <a href="menu.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Menüye Dön</a>
-        <h3>Konu Başlıkları</h3>
+        
+        <h3 style="color:#fff; margin-bottom:15px;">Konu Başlıkları</h3>
         <ul class="toc-list">
             <li><a href="#starling">1. Frank-Starling Yasası</a></li>
             <li><a href="#dongu">2. Kalp Döngüsü (Cycle)</a></li>
-            <li><a href="#kapak">3. Kapak Fonksiyonları</a></li>
+            <li><a href="#quiz">3. Guyton Quiz Center</a></li>
         </ul>
     </nav>
 
@@ -127,80 +235,116 @@
         <h1>Bölüm 2: <span>Kalp Fizyolojisi</span></h1>
 
         <section id="starling">
-            <h2><i class="fa-solid fa-chart-line"></i> Frank-Starling Mekanizması</h2>
-            <p>Guyton der ki: <strong>"Kalbe ne gelirse, kalp onu pompalar."</strong> Kalp kası lifleri diyastolde ne kadar gerilirse (Preload), kasılma gücü o kadar artar.</p>
+            <h2><i class="fa-solid fa-chart-line"></i> Frank-Starling Yasası</h2>
+            <p>
+                Guyton fizyolojisinin en temel kuralı: <strong>"Kalp, kendisine gelen kanın tamamını pompalar."</strong> 
+                Kalp kası ne kadar gerilirse (Preload artışı), kasılma gücü o kadar artar.
+            </p>
 
             <div class="controls">
-                <label style="display:flex; justify-content:space-between;">
-                    <span>Venöz Dönüş (Preload):</span>
-                    <span class="info-badge" id="preloadValue">Normal</span>
-                </label>
-                <input type="range" id="preloadInput" min="0" max="100" value="50" step="1">
-                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 10px;">
-                    Slider'ı sağa çekerek kalbe gelen kanı artırın. Grafik üzerindeki noktanın nasıl yükseldiğini (Stroke Volume artışı) izleyin.
+                <div class="control-header">
+                    <span>Venöz Dönüş (Preload)</span>
+                    <span class="badge" id="preloadLabel">Normal</span>
+                </div>
+                <input type="range" id="preloadSlider" min="0" max="100" value="50">
+                <p style="font-size:0.85rem; color:#64748b; margin-top:8px;">
+                    Slider'ı sağa çekerek kalbe dönen kanı artırın. Kalbin atım hacminin nasıl arttığını grafikte izleyin.
                 </p>
             </div>
 
-            <div class="graph-container">
+            <div class="graph-wrapper">
                 <canvas id="starlingChart"></canvas>
             </div>
         </section>
 
         <section id="dongu">
-            <h2><i class="fa-solid fa-heart-pulse"></i> Kalp Döngüsü (Cardiac Cycle)</h2>
-            <p>Bir kalp atımında gerçekleşen olaylar zinciridir. Sistol (Kasılma) ve Diyastol (Gevşeme) olarak ikiye ayrılır.</p>
+            <h2><i class="fa-solid fa-heart-pulse"></i> Kalp Döngüsü Özeti</h2>
+            <p>Bir kalp atımında (Sistol ve Diyastol) gerçekleşen olayların özeti.</p>
 
             <table class="cycle-table">
                 <thead>
                     <tr>
                         <th>Evre</th>
                         <th>Kapak Durumu</th>
-                        <th>Basınç Değişimi</th>
+                        <th>Olay</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td><strong>İzovolumetrik Kasılma</strong></td>
                         <td>Tüm kapaklar KAPALI</td>
-                        <td>Basınç hızla artar, hacim değişmez.</td>
+                        <td>Ventrikül basıncı hızla artar, hacim değişmez.</td>
                     </tr>
                     <tr>
                         <td><strong>Fırlatma (Ejection)</strong></td>
-                        <td>Aort/Pulmoner AÇIK</td>
-                        <td>Ventrikül kanı damara fırlatır.</td>
+                        <td>Aort / Pulmoner AÇIK</td>
+                        <td>Basınç aort basıncını geçer, kan fırlar.</td>
                     </tr>
                     <tr>
                         <td><strong>İzovolumetrik Gevşeme</strong></td>
                         <td>Tüm kapaklar KAPALI</td>
-                        <td>Basınç hızla düşer, hacim değişmez.</td>
+                        <td>Kapaklar kapanır, basınç hızla düşer.</td>
                     </tr>
                     <tr>
                         <td><strong>Dolum (Filling)</strong></td>
-                        <td>Mitral/Triküspit AÇIK</td>
+                        <td>Mitral / Triküspit AÇIK</td>
                         <td>Ventriküller kanla dolar (Preload).</td>
                     </tr>
                 </tbody>
             </table>
         </section>
 
+        <section id="quiz">
+            <h2><i class="fa-solid fa-clipboard-question"></i> Kendini Test Et</h2>
+            <p>Guyton prensiplerini ne kadar anladın? Aşağıdaki soruları cevapla.</p>
+
+            <div class="quiz-box">
+                
+                <div class="question-item">
+                    <p><strong>Soru 1:</strong> Frank-Starling yasasına göre kalp debisini artıran ana faktör nedir?</p>
+                    <div class="options">
+                        <label onclick="checkAnswer(this, false)"><input type="radio" name="q1"> Kalp hızının artması</label>
+                        <label onclick="checkAnswer(this, true)"><input type="radio" name="q1"> Venöz dönüşün (Preload) artması</label>
+                        <label onclick="checkAnswer(this, false)"><input type="radio" name="q1"> Arteryel basıncın (Afterload) artması</label>
+                    </div>
+                    <div class="feedback">
+                        <strong style="color:#10b981">Doğru!</strong> Frank-Starling yasası, kalbe gelen kan miktarı arttıkça kas liflerinin gerileceğini ve daha güçlü kasılacağını söyler.
+                    </div>
+                </div>
+
+                <div class="question-item">
+                    <p><strong>Soru 2:</strong> "İzovolumetrik Kasılma" evresinde hangisi gerçekleşir?</p>
+                    <div class="options">
+                        <label onclick="checkAnswer(this, false)"><input type="radio" name="q2"> Aort kapağı açılır.</label>
+                        <label onclick="checkAnswer(this, false)"><input type="radio" name="q2"> Ventrikül hacmi azalır.</label>
+                        <label onclick="checkAnswer(this, true)"><input type="radio" name="q2"> Tüm kapaklar kapalıdır, basınç artar.</label>
+                    </div>
+                    <div class="feedback">
+                        <strong style="color:#10b981">Tebrikler!</strong> İzovolumetrik (eş hacimli) demek, giriş ve çıkış kapaklarının kapalı olduğu, hacmin değişmediği ama basıncın arttığı andır.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
     </main>
 
     <script>
-        // --- CHART.JS İLE FRANK-STARLING GRAFİĞİ ---
+        // --- 1. FRANK STARLING GRAFİĞİ (CHART.JS) ---
         const ctx = document.getElementById('starlingChart').getContext('2d');
         
-        // Grafik Verisi (Logaritmik artış eğrisi)
+        // Veri oluştur (Logaritmik eğri benzeri)
         const dataPoints = [];
         for(let i=0; i<=100; i+=5) {
-            // Guyton eğrisi formülü (Basitleştirilmiş): y = log(x) benzeri
+            // Formül: Basitleştirilmiş Starling eğrisi
             let sv = 100 * (1 - Math.exp(-0.05 * i)); 
             dataPoints.push(sv);
         }
 
-        const starlingChart = new Chart(ctx, {
+        const chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: Array.from({length: 21}, (_, i) => i * 5), // 0, 5, 10...
+                labels: Array.from({length: 21}, (_, i) => i * 5), // X ekseni: 0, 5, 10...
                 datasets: [{
                     label: 'Atım Hacmi (Stroke Volume)',
                     data: dataPoints,
@@ -208,38 +352,45 @@
                     backgroundColor: 'rgba(239, 68, 68, 0.2)',
                     borderWidth: 3,
                     fill: true,
-                    tension: 0.4 // Eğriyi yumuşatır
+                    tension: 0.4, // Çizgiyi yumuşat
+                    pointRadius: 0 // Çizgi üzerindeki noktaları gizle
                 }, {
-                    // Hareketli Nokta (Simülasyon için)
+                    // Hareketli Nokta (Simülasyon)
                     label: 'Mevcut Durum',
                     data: [{x: 50, y: 100 * (1 - Math.exp(-0.05 * 50))}],
-                    pointBackgroundColor: '#ffffff',
+                    pointBackgroundColor: '#fff',
                     pointBorderColor: '#ef4444',
                     pointRadius: 8,
-                    showLine: false // Sadece nokta göster
+                    showLine: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
                 scales: {
-                    x: { title: { display: true, text: 'Ventrikül Son Diyastolik Hacim (Preload)', color:'#94a3b8' } },
-                    y: { title: { display: true, text: 'Atım Gücü', color:'#94a3b8' }, min: 0, max: 100 }
-                },
-                plugins: {
-                    legend: { display: false }
+                    x: { 
+                        type: 'linear',
+                        position: 'bottom',
+                        title: {display:true, text:'Venöz Dönüş (Preload)', color:'#94a3b8'},
+                        min: 0, max: 100
+                    },
+                    y: { 
+                        title: {display:true, text:'Kardiyak Output Gücü', color:'#94a3b8'},
+                        min: 0, max: 110
+                    }
                 }
             }
         });
 
-        // --- INPUT KONTROLÜ ---
-        const slider = document.getElementById('preloadInput');
-        const label = document.getElementById('preloadValue');
+        // --- SLIDER KONTROLÜ ---
+        const slider = document.getElementById('preloadSlider');
+        const label = document.getElementById('preloadLabel');
 
         slider.addEventListener('input', (e) => {
             const val = parseInt(e.target.value);
             
-            // Etiketi Güncelle
+            // Etiketi güncelle
             if(val < 30) { label.innerText = "Düşük (Hipovolemi)"; label.style.color = "#3b82f6"; }
             else if(val > 80) { label.innerText = "Yüksek (Egzersiz)"; label.style.color = "#ef4444"; }
             else { label.innerText = "Normal"; label.style.color = "#10b981"; }
@@ -247,11 +398,34 @@
             // Grafikteki noktayı güncelle
             const sv = 100 * (1 - Math.exp(-0.05 * val));
             
-            // Chart.js veri güncelleme hilesi
-            starlingChart.data.datasets[1].data = [{x: val, y: sv}];
-            starlingChart.update('none'); // Animasyonsuz güncelle (performans için)
+            // Chart.js datasetini güncelle
+            chart.data.datasets[1].data = [{x: val, y: sv}];
+            chart.update('none'); // Animasyonsuz hızlı güncelleme
         });
 
+        // --- 2. QUIZ MANTIĞI ---
+        function checkAnswer(labelElement, isCorrect) {
+            const parent = labelElement.parentElement; // options div'i
+            const feedback = parent.nextElementSibling; // feedback div'i
+            
+            // Önceki seçimleri temizle (aynı sorudaki)
+            const allLabels = parent.querySelectorAll('label');
+            allLabels.forEach(lbl => {
+                lbl.classList.remove('correct', 'wrong');
+                lbl.style.pointerEvents = 'none'; // Tekrar tıklamayı engelle
+            });
+
+            // Seçimi işaretle
+            if(isCorrect) {
+                labelElement.classList.add('correct');
+                feedback.style.display = "block";
+                feedback.querySelector('strong').innerText = "Doğru!";
+                feedback.querySelector('strong').style.color = "#10b981";
+            } else {
+                labelElement.classList.add('wrong');
+                // Doğru cevabı da gösterelim mi? Şimdilik sadece yanlış olduğunu belirtelim.
+            }
+        }
     </script>
 </body>
 </html>
