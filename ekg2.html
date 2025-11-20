@@ -39,7 +39,7 @@
         .control-panel { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; justify-content: center; }
         .btn-rhythm { padding: 10px 15px; border: 1px solid #475569; border-radius: 5px; cursor: pointer; font-weight: 600; background: #2c3e50; color: #cbd5e1; transition: 0.2s; }
         .btn-rhythm.active { background: #10b981; color: black; border-color: #10b981; }
-        .btn-rhythm.danger.active { background: #ef4444; color: white; border-color: #ef4444; }
+        .btn-rhythm.danger.active { background: #ef4444; border-color: #ef4444; }
 
         /* KUTULAR */
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
@@ -49,7 +49,7 @@
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
         .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
@@ -83,7 +83,7 @@
                 <button class="btn-rhythm" onclick="setRhythm('tachy')">Sinüs Taşikardi</button>
                 <button class="btn-rhythm" onclick="setRhythm('afib')">Atriyal Fibrilasyon</button>
                 <button class="btn-rhythm" onclick="setRhythm('stemi')">Akut MI (STEMI)</button>
-                <button class="btn-rhythm danger" onclick="setRhythm('vfib')">V-Fib (Arrest)</button>
+                <button class="btn-rhythm danger" onclick="setRhythm('vfib')">V-Fib</button>
                 <button class="btn-rhythm danger" onclick="setRhythm('asystole')">Asistoli</button>
             </div>
         </div>
@@ -97,8 +97,8 @@
             Atriyumlar kasılmaz, sadece titreşir. Bu durum, $P$ dalgasının kaybolmasına ve EKG'nin **tamamen düzensiz** olmasına neden olur.
         </p>
         <div class="logic-box">
-            <span class="logic-title">EKG Mantığı ve Riski</span>
-            AV düğüm bu kaotik sinyallerden rastgele seçtiklerini geçirir. Sonuç: **P dalgası yokluğu** ve **tamamen düzensiz (Irregularly Irregular)** bir ritim. Bu düzensizlik, pıhtı atma ve inme riskini artırır.
+            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> EKG Mantığı ve Riski</span>
+            AV düğüm bu kaotik sinyallerden rastgele seçtiklerini geçirir. Sonuç: **P dalgası yokluğu**, **düzensiz f dalgaları** ve **tamamen düzensiz (Irregularly Irregular)** bir ritim. Bu düzensizlik, pıhtı atma ve inme riskini artırır.
         </div>
         <h3>Atriyal Flutter</h3>
         <p>
@@ -120,10 +120,10 @@
         
         <h3>Potasyumun ($K^+$) Etkisi</h3>
         <p>
-            $K^+$ iyonu, kalbin repolarizasyonunda kilit rol oynar.
+            $K^+$ iyonu, kalbin repolarizasyonunda kilit rol oynar. Kandaki dengesi bozulursa EKG anında değişir.
         </p>
         <div class="logic-box" style="border-color:#b91c1c; color:#b91c1c;">
-            **Hiperkalemi Etkisi:** EKG'de ilk olarak **dar tabanlı, sivri T dalgaları** görülür. Potasyum artmaya devam ederse QRS genişler ve kalp durur.
+            **Hiperkalemi Etkisi:** EKG'de ilk olarak **dar tabanlı, sivri T dalgaları** görülür. Potasyum artmaya devam ederse QRS genişler ve kalp durur (Diyastolik Arrest).
         </div>
 
         <h2>3. İskemi ve Enfarktüs</h2>
