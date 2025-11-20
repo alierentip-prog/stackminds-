@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalp Mekaniği | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- AYDINLIK TEMA --- */
+        :root {
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0284c7; /* Mavi */
+            --accent: #ef4444;  /* Kırmızı */
+            --text: #334155;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text); }
+
+        /* NAVİGASYON */
+        .navbar {
+            background: white; padding: 15px 30px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        .back-link { text-decoration: none; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .back-link:hover { color: var(--primary); }
+
+        /* İÇERİK */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        
+        h1 { font-size: 2.2rem; color: #1e293b; margin-bottom: 10px; }
+        p { line-height: 1.7; color: #64748b; }
+
+        /* --- PV LOOP KONTROL PANELİ --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px; /* Sol: Grafik, Sağ: Kalp Görseli */
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .chart-card {
+            background: white; border-radius: 16px; padding: 25px;
+            box-shadow: 0 4px 20px rgba(148, 163, 184, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Kalp Görseli Kutusu */
+        .heart-visual-box {
+            background: white; border-radius: 16px; padding: 25px;
+            box-shadow: 0 4px 20px rgba(148, 163, 184, 0.1);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* CSS Kalp Animasyonu */
+        .heart-shape {
+            color: var(--accent);
+            font-size: 100px;
+            transition: transform 0.5s ease;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+        /* Sistol (Küçülme) */
+        .heart-shape.systole { transform: scale(0.8); color: #b91c1c; }
+        /* Diyastol (Büyüme) */
+        .heart-shape.diastole { transform: scale(1.2); color: #ef4444; }
+
+        /* Butonlar */
+        .phase-controls {
+            display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .btn-phase {
+            padding: 8px 16px; border: 1px solid #e2e8f0; background: white; border-radius: 8px;
+            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
+        }
+        .btn-phase:hover, .btn-phase.active {
+            background: var(--primary); color: white; border-color: var(--primary);
+        }
+
+        /* Bilgi Alanı */
+        .info-panel {
+            margin-top: 20px; padding: 15px; background: #f1f5f9; border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        .info-panel h4 { margin: 0 0 5px 0; }
+
+        /* Mobilde Alt Alta */
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Menü</a>
+        <span style="color:#cbd5e1;">|</span>
+        <strong>Modül 2: Kalp Mekaniği</strong>
+    </nav>
+
+    <div class="container">
+        <h1>Basınç - Hacim (PV) Döngüsü</h1>
+        <p>Kalbin bir atımındaki iş yükünü anlamanın en iyi yolu PV döngüsüdür. Sol ventrikülün içindeki basınç ve hacim değişimlerini gösterir.</p>
+
+        <div class="phase-controls">
+            <button class="btn-phase" onclick="setPhase('filling')">1. Dolum (Diastol)</button>
+            <button class="btn-phase" onclick="setPhase('isovol_contract')">2. İzovolumetrik Kasılma</button>
+            <button class="btn-phase" onclick="setPhase('ejection')">3. Fırlatma (Sistol)</button>
+            <button class="btn-phase" onclick="setPhase('isovol_relax')">4. İzovolumetrik Gevşeme</button>
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <div class="chart-card">
+                <canvas id="pvChart"></canvas>
+                <div class="info-panel" id="infoBox">
+                    <h4 id="infoTitle">Evre Seçiniz</h4>
+                    <span id="infoText">Yukarıdaki butonlara tıklayarak döngüyü adım adım izleyin.</span>
+                </div>
+            </div>
+
+            <div class="heart-visual-box">
+                <div id="heartIcon" class="fa-solid fa-heart heart-shape"></div>
+                <h3 id="statusLabel">Diyastol</h3>
+                <p id="valveLabel" style="font-size:0.85rem; color:#64748b;">Mitral Kapak: AÇIK<br>Aort Kapak: KAPALI</p>
+                
+                <div style="margin-top:20px; font-size:0.8rem; background:#fff1f2; color:#be123c; padding:10px; border-radius:8px;">
+                    <i class="fa-solid fa-stethoscope"></i> <strong>Ses:</strong> <span id="soundLabel">Yok</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('pvChart').getContext('2d');
+        const heartIcon = document.getElementById('heartIcon');
+        const statusLabel = document.getElementById('statusLabel');
+        const valveLabel = document.getElementById('valveLabel');
+        const infoTitle = document.getElementById('infoTitle');
+        const infoText = document.getElementById('infoText');
+        const soundLabel = document.getElementById('soundLabel');
+
+        // PV Döngüsü Noktaları (Sol Ventrikül)
+        // A: Mitral Açılır (50ml, 5mmHg)
+        // B: Mitral Kapanır (120ml, 10mmHg) -> End Diastolik Volüm
+        // C: Aort Açılır (120ml, 80mmHg)
+        // D: Aort Kapanır (50ml, 100mmHg) -> End Sistolik Volüm
+        
+        const pvData = [
+            {x: 50, y: 5},   // A (Döngü sonu/başı)
+            {x: 120, y: 10}, // B (Dolum Bitti)
+            {x: 120, y: 80}, // C (Basınç Arttı, Hacim Aynı)
+            {x: 50, y: 100}, // D (Hacim Azaldı, Fırlatma Bitti)
+            {x: 50, y: 5}    // A (Basınç Düştü, Gevşeme Bitti)
+        ];
+
+        const chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'PV Döngüsü',
+                    data: pvData,
+                    showLine: true,
+                    borderColor: '#0284c7',
+                    backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    pointBackgroundColor: 'white',
+                    pointBorderColor: '#0284c7',
+                    fill: true
+                }, {
+                    // Aktif Konum Noktası
+                    label: 'Şu An',
+                    data: [{x: 50, y: 5}], 
+                    pointRadius: 10,
+                    pointBackgroundColor: '#ef4444',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: {display:true, text:'Hacim (ml)'}, min: 0, max: 150 },
+                    y: { title: {display:true, text:'Basınç (mmHg)'}, min: 0, max: 120 }
+                },
+                plugins: { legend: {display:false} }
+            }
+        });
+
+        function setPhase(phase) {
+            // Butonları temizle
+            document.querySelectorAll('.btn-phase').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(phase === 'filling') {
+                // A -> B Arası
+                updateVisual('diastole', 'DOLUM', 'Mitral: AÇIK | Aort: KAPALI', 'Yok');
+                updateInfo('Ventriküler Dolum', 'Mitral kapak açılır. Kan atriyumdan ventriküle dolar. Hacim artar (50->120ml), basınç çok az değişir.');
+                updateChartPoint(120, 10); // B Noktasına git
+            } 
+            else if(phase === 'isovol_contract') {
+                // B -> C Arası
+                updateVisual('normal', 'KASILMA (Hacim Sabit)', 'Mitral: KAPALI | Aort: KAPALI', 'S1 (Lup) - Mitral Kapanır');
+                updateInfo('İzovolumetrik Kasılma', 'Ventrikül kasılmaya başlar. Mitral kapak kapanır (S1 sesi). Basınç hızla artar ama aort kapağı henüz açılmadığı için hacim değişmez.');
+                updateChartPoint(120, 80); // C Noktasına git
+            }
+            else if(phase === 'ejection') {
+                // C -> D Arası
+                updateVisual('systole', 'FIRLATMA', 'Mitral: KAPALI | Aort: AÇIK', 'Yok');
+                updateInfo('Fırlatma (Ejection)', 'Ventrikül basıncı aort basıncını (80mmHg) geçer. Aort kapağı açılır. Kan aortaya fırlar. Hacim hızla düşer.');
+                updateChartPoint(50, 100); // D Noktasına git
+            }
+            else if(phase === 'isovol_relax') {
+                // D -> A Arası
+                updateVisual('normal', 'GEVŞEME (Hacim Sabit)', 'Mitral: KAPALI | Aort: KAPALI', 'S2 (Dup) - Aort Kapanır');
+                updateInfo('İzovolumetrik Gevşeme', 'Fırlatma biter, ventrikül gevşer. Aort kapağı kapanır (S2 sesi). Basınç hızla düşer ama mitral kapak açılana kadar hacim değişmez.');
+                updateChartPoint(50, 5); // A Noktasına git
+            }
+        }
+
+        function updateVisual(animClass, status, valves, sound) {
+            // Kalp Animasyonu
+            heartIcon.className = 'fa-solid fa-heart heart-shape'; // Reset
+            if(animClass !== 'normal') heartIcon.classList.add(animClass);
+            
+            statusLabel.innerText = status;
+            valveLabel.innerText = valves;
+            soundLabel.innerText = sound;
+
+            // Ses varsa vurgula
+            if(sound !== 'Yok') {
+                soundLabel.parentElement.style.backgroundColor = "#ffe4e6";
+                soundLabel.style.fontWeight = "bold";
+            } else {
+                soundLabel.parentElement.style.backgroundColor = "#f1f5f9";
+                soundLabel.style.fontWeight = "normal";
+            }
+        }
+
+        function updateInfo(title, text) {
+            infoTitle.innerText = title;
+            infoText.innerText = text;
+        }
+
+        function updateChartPoint(x, y) {
+            chart.data.datasets[1].data = [{x: x, y: y}];
+            chart.update();
+        }
+    </script>
+</body>
+</html>
