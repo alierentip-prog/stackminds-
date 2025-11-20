@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEGA FİZYOLOJİ SINAVI (200 SORU)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --paper: #f1f5f9; --ink: #1e293b; --blue: #2563eb; --correct: #16a34a; --wrong: #dc2626; --gold: #d97706; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .exam-header { background: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--gold); }
+        .brand { font-weight: 900; font-size: 1.2rem; letter-spacing: 1px; }
+        .quiz-container { flex: 1; padding: 20px; overflow-y: auto; max-width: 900px; margin: 0 auto; width: 100%; }
+        .question-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #cbd5e1; }
+        .q-header { display: flex; justify-content: space-between; margin-bottom: 15px; color: #64748b; font-size: 0.9rem; font-weight: bold; text-transform: uppercase; }
+        .q-text { font-size: 1.1rem; font-weight: 600; margin-bottom: 25px; line-height: 1.5; }
+        .options-grid { display: grid; gap: 10px; }
+        .option-btn { padding: 15px 20px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s; position: relative; }
+        .option-btn:hover { border-color: var(--blue); background: #eff6ff; }
+        .option-btn.correct { border-color: var(--correct); background: #dcfce7; color: #14532d; font-weight: bold; }
+        .option-btn.wrong { border-color: var(--wrong); background: #fef2f2; color: #7f1d1d; opacity: 0.8; }
+        .exp-box { margin-top: 20px; padding: 20px; background: #fffbeb; border-left: 5px solid var(--gold); border-radius: 5px; display: none; font-size: 0.95rem; }
+        .exam-footer { background: white; padding: 15px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .btn-nav { background: var(--ink); color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result-screen { text-align: center; padding: 50px 20px; display: none; }
+        .score-circle { width: 150px; height: 150px; border-radius: 50%; background: var(--ink); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; margin: 0 auto 20px auto; }
+    </style>
+</head>
+<body>
+    <div class="exam-header">
+        <div class="brand"><i class="fa-solid fa-skull"></i> FİZYOLOJİ DEV SINAV</div>
+        <div id="scoreBadge">0 Puan</div>
+    </div>
+    <div class="quiz-container" id="quizContainer">
+        <div class="question-card">
+            <div class="q-header"><span id="qTopic">Konu</span><span>Soru <span id="currQ">1</span> / 200</span></div>
+            <div class="q-text" id="qText">Yükleniyor...</div>
+            <div class="options-grid" id="optArea"></div>
+            <div class="exp-box" id="expArea"></div>
+        </div>
+    </div>
+    <div class="result-screen" id="resultScreen">
+        <h1>SINAV BİTTİ</h1>
+        <div class="score-circle" id="finalScore">0</div>
+        <p id="finalMsg"></p>
+        <a href="index.html" class="btn-nav" style="text-decoration:none;">Çıkış</a>
+    </div>
+    <div class="exam-footer" id="examFooter">
+        <button class="btn-nav" onclick="prevQ()"> &lt; </button>
+        <button class="btn-nav" id="nextBtn" onclick="nextQ()" disabled>İleri &gt;</button>
+    </div>
+
+    <script>
+        const questions = [
+            // --- 1-50: ELEKTROFİZYOLOJİ ---
+            { t: "Hücre", q: "Na+/K+ ATPaz pompası her döngüde ne taşır?", opt: ["3 Na dışarı, 2 K içeri", "3 Na içeri, 2 K dışarı", "2 Na dışarı, 3 K içeri", "Eşit"], correct: 0, exp: "3 Na atılır, 2 K alınır (Elektrojenik)." },
+            { t: "Hücre", q: "RMP (-90 mV) oluşumunda en etkili kanal?", opt: ["Na+ voltaj", "K+ sızıntı (IK1)", "Ca++ L-tipi", "Cl-"], correct: 1, exp: "Zar dinlenmede en çok potasyuma geçirgendir." },
+            { t: "Hücre", q: "Nernst denklemine göre K+ denge potansiyeli?", opt: ["+60 mV", "0 mV", "-94 mV", "-70 mV"], correct: 2, exp: "K+ için -94, Na+ için +61'dir." },
+            { t: "Hücre", q: "Hücre içinde en çok bulunan anyon?", opt: ["Klor", "Bikarbonat", "Protein/Fosfat", "Sülfat"], correct: 2, exp: "Proteinler negatiftir ve hücreden çıkamazlar." },
+            { t: "Hücre", q: "'Hep ya da Hiç' yasası nedir?", opt: ["Sadece güçlüler geçer", "Eşik aşılırsa AP tam genlikte olur", "Hız sabittir", "Refrakter yok"], correct: 1, exp: "Eşik geçilirse olay durdurulamaz." },
+            { t: "Elektro", q: "Ventrikül Faz 0 (Vuruş) sebebi?", opt: ["Ca++ giriş", "K+ çıkış", "Hızlı Na+ giriş", "Cl-"], correct: 2, exp: "Hızlı Na kanalları açılır." },
+            { t: "Elektro", q: "Plato (Faz 2) neden oluşur?", opt: ["Na+ giriş", "Ca++ giriş / K+ çıkış dengesi", "K+ çıkış", "Pompa"], correct: 1, exp: "L-Tipi Ca girişi, K çıkışını dengeler." },
+            { t: "Elektro", q: "Mutlak Refrakter Dönem nedeni?", opt: ["K+ açık", "Na+ inaktivasyon kapısı kapalı", "Ca++ açık", "Cl-"], correct: 1, exp: "Na kanalları kilitlidir, açılamaz." },
+            { t: "Elektro", q: "Faz 3 (Repolarizasyon) olayı?", opt: ["Na+ girer", "Ca++ girer", "K+ hızla çıkar", "Pompa"], correct: 2, exp: "K kanalları açılır, hücre negatifleşir." },
+            { t: "Elektro", q: "SA Düğüm Faz 0 sebebi?", opt: ["Hızlı Na+", "L-Tipi Ca++", "K+", "Mg++"], correct: 1, exp: "SA düğümde hızlı Na kanalı yoktur, Ca ile uyarılır." },
+            { t: "Elektro", q: "Pacemaker potansiyeli (Faz 4) akımı?", opt: ["IK", "ICa", "If (Funny - Na+)", "ICl"], correct: 2, exp: "Sodyum sızıntısı zarı eşiğe taşır." },
+            { t: "Elektro", q: "Lidokain hangi fazı etkiler?", opt: ["Faz 0", "Faz 2", "Faz 3", "Faz 4"], correct: 0, exp: "Na kanal blokeridir." },
+            { t: "Elektro", q: "Verapamil nereyi etkiler?", opt: ["Faz 0", "Faz 1", "Faz 2 (Plato)", "Faz 4"], correct: 2, exp: "Kalsiyum kanal blokeridir." },
+            { t: "Elektro", q: "Amiodaron etkisi?", opt: ["Na açar", "K+ blokajı (Repolarizasyon uzar)", "Beta agonist", "Ca açar"], correct: 1, exp: "QT süresini uzatır." },
+            { t: "Elektro", q: "Hiperkalemi EKG bulgusu?", opt: ["Geniş QRS", "Sivri T", "U dalgası", "ST elevasyon"], correct: 1, exp: "Repolarizasyon bozulur, T sivrileşir." },
+            { t: "İleti", q: "En yavaş iletim nerede?", opt: ["Atriyum", "AV Düğüm", "His", "Purkinje"], correct: 1, exp: "0.05 m/sn. AV Delay." },
+            { t: "İleti", q: "En hızlı iletim nerede?", opt: ["Atriyum", "AV Düğüm", "Ventrikül", "Purkinje"], correct: 3, exp: "4.0 m/sn. Senkron kasılma için." },
+            { t: "İleti", q: "Gap Junction en az nerede?", opt: ["AV Düğüm", "SA", "Purkinje", "Ventrikül"], correct: 0, exp: "Direnç yüksek olsun diye azdır." },
+            { t: "Kalsiyum", q: "Ca++ deposu neresidir?", opt: ["Mitokondri", "SR", "Çekirdek", "Lizozom"], correct: 1, exp: "Sarkoplazmik Retikulum." },
+            { t: "Kalsiyum", q: "CICR nedir?", opt: ["Na girişi", "Dışarıdan giren Ca'nın depoyu boşaltması", "ATP", "K+"], correct: 1, exp: "Tetikleyici kalsiyum mekanizması." },
+            { t: "Kalsiyum", q: "Gevşemede Ca++'u geri alan?", opt: ["Na/K pompa", "SERCA", "NCX", "Proton"], correct: 1, exp: "SR'a geri pompalar." },
+            { t: "Kalsiyum", q: "Sempatik etki gücü nasıl artırır?", opt: ["cAMP/PKA ile Ca kanallarını fosforile ederek", "K açarak", "Na durdurarak", "Hiperpolarize"], correct: 0, exp: "Daha çok kalsiyum = Daha çok güç." },
+            { t: "Yapı", q: "Kalpte T-tübül nerede?", opt: ["A-I bandı", "Z Çizgisi", "M Çizgisi", "Yok"], correct: 1, exp: "Z çizgisindedir ve geniştir." },
+            { t: "İleti", q: "Overdrive Suppression?", opt: ["Yavaşın hızlıyı susturması", "Hılzının yavaşı susturması (SA patron)", "Blok", "Vagus"], correct: 1, exp: "SA çalıştığı sürece diğerleri susar." },
+            { t: "İleti", q: "Atriyum-Ventrikül arası tek yol?", opt: ["Mitral", "His Demeti", "Sinüs", "Aort"], correct: 1, exp: "İskelet yalıtkandır, tek geçiş His'tir." },
+            { t: "Yapı", q: "Connexin-43 nerede?", opt: ["SA", "AV", "Ventrikül", "Kapak"], correct: 2, exp: "Hızlı iletim proteinidir." },
+            { t: "Yapı", q: "Fonksiyonel Sinsityum?", opt: ["Tek hücre", "Gap junction ile birleşmiş ağ", "Sinirsiz", "Kök hücre"], correct: 1, exp: "Tek birim gibi davranır." },
+            { t: "İlaç", q: "Digoksin kalsiyumu nasıl artırır?", opt: ["Kanal açar", "NCX'i bozar (Na gradyanını yıkarak)", "SR sızdırır", "Mitokondri"], correct: 1, exp: "Na pompası durunca NCX çalışamaz." },
+            { t: "İyon", q: "Hipokalemi RMP'yi ne yapar?", opt: ["Hiperpolarize (Negatifleşir)", "Depolarize", "Etkilemez", "Sıfırlar"], correct: 0, exp: "K+ dışarı daha çok kaçar." },
+            { t: "Mekanik", q: "İzovolumetrik kasılmada ne olur?", opt: ["Hacim azalır", "Hacim sabit, Basınç artar", "Basınç sabit", "İkisi artar"], correct: 1, exp: "Kapaklar kapalıdır." },
+            { t: "Ses", q: "S1 sesi (Lup)?", opt: ["Aort kapama", "Mitral/Triküspit kapama", "Dolum", "Sistol"], correct: 1, exp: "Sistol başı." },
+            { t: "Mekanik", q: "Aort kapağı kaç mmHg'de açılır?", opt: ["0", "10", "80", "120"], correct: 2, exp: "Diyastolik basıncı yenince." },
+            { t: "Yasa", q: "Frank-Starling (Preload artarsa)?", opt: ["SV artar", "Hız azalır", "ESV artar", "Güç azalır"], correct: 0, exp: "Gerilince sert atar." },
+            { t: "PV Loop", q: "PV grafiği sağa genişlerse?", opt: ["Afterload artmış", "Preload artmış", "Kontraktilite artmış", "Yetmezlik"], correct: 1, exp: "Sağ kenar dolumu gösterir." },
+            { t: "Ses", q: "S2 (Dup) ne zaman çiftleşir?", opt: ["Nefes verme", "Nefes alma (İnspirasyon)", "Ikınma", "Yatma"], correct: 1, exp: "Sağ kalp dolar, P2 gecikir." },
+            { t: "Beslenme", q: "Koroner akım ne zaman?", opt: ["Sistol", "İzovolumetrik", "Diyastol", "Hep"], correct: 2, exp: "Gevşeyince." },
+            { t: "Mekanik", q: "Atriyal 'Kick' (Sistol) katkısı?", opt: ["%100", "%80", "%50", "%20"], correct: 3, exp: "Dolumun çoğu pasiftir." },
+            { t: "Mekanik", q: "Nabız Basıncını en çok artıran?", opt: ["Aort Darlığı", "Aort Yetmezliği", "KY", "Mitral Darlık"], correct: 1, exp: "Kaçakla diyastol düşer, fark açılır." },
+            { t: "Mekanik", q: "KY'de vücut ne yapar?", opt: ["Su atar", "Su tutar (Preload artırır)", "Yavaşlar", "Gevşer"], correct: 1, exp: "Starling yasasını kullanmak ister." },
+            { t: "Mekanik", q: "Dikrotik çentik?", opt: ["Aort kapanması", "Mitral açılması", "Tepe basınç", "Atriyum"], correct: 0, exp: "Kapanma dalgası." },
+            { t: "Kapak", q: "Mitral darlık üfürümü?", opt: ["Sistol", "Diyastol", "Sürekli", "Duyulmaz"], correct: 1, exp: "Kan dolarken öter." },
+            { t: "Kapak", q: "Aort darlık basınç farkı?", opt: ["Eşit", "Ventrikül > Aort", "Aort > Ventrikül", "Sıfır"], correct: 1, exp: "Ventrikül çok zorlanır." },
+            { t: "Venöz", q: "Juguler 'a' dalgası?", opt: ["Atriyal sistol", "Ventrikül sistol", "Dolum", "Kapanma"], correct: 0, exp: "Atriyum kasılması." },
+            { t: "Hacim", q: "ESV (End-Sistolik) artarsa?", opt: ["Güç artmış", "Güç azalmış (Yetmezlik)", "Hız artmış", "Afterload azalmış"], correct: 1, exp: "Kalp boşaltamıyor." },
+            { t: "EKG", q: "Normal PR süresi?", opt: ["0.04-0.10", "0.12-0.20", "0.20-0.40", "0.44+"], correct: 1, exp: "5 küçük karedir." },
+            { t: "EKG", q: "Geniş QRS (>0.12) anlamı?", opt: ["Atriyal büyüme", "Dal Bloğu / Ventriküler", "Hızlı iletim", "Erken"], correct: 1, exp: "Yavaş kas iletimi." },
+            { t: "EKG", q: "V1'de rSR' (Tavşan)?", opt: ["Sol Blok", "Sağ Dal Bloğu", "1. Derece", "Sol Ön"], correct: 1, exp: "Sağ taraf geç uyarılır." },
+            { t: "EKG", q: "AFib özelliği?", opt: ["Testere", "P yok, düzensiz", "Geniş QRS", "Sabit PR"], correct: 1, exp: "Titreşim." },
+            { t: "EKG", q: "STEMI bulgusu?", opt: ["Q dalgası", "ST Elevasyonu", "Negatif T", "PR çökme"], correct: 1, exp: "Hasar akımı." },
+            { t: "EKG", q: "Hiperkalemi T dalgası?", opt: ["U", "Sivri/Yüksek", "Çökük", "Geniş"], correct: 1, exp: "Çadır T." },
+              { t: "EKG", q: "2. Derece AV Blok Tip 1 (Wenckebach) özelliği?", opt: ["PR sabit", "PR uzar, QRS düşer", "PR kısalır", "P yok"], correct: 1, exp: "Yorulan AV düğüm." },
+            { t: "EKG", q: "2. Derece AV Blok Tip 2 özelliği?", opt: ["PR sabit, QRS aniden düşer", "PR uzar", "QRS geniş", "Zararsız"], correct: 0, exp: "His demeti hasarı, pil gerekir." },
+            { t: "EKG", q: "3. Derece (Tam) Blok?", opt: ["PR uzun", "P ve QRS bağımsız", "Sadece P var", "Hızlı iletim"], correct: 1, exp: "AV disosiasyon." },
+            { t: "EKG", q: "aVR derivasyonu normalde?", opt: ["Pozitif", "Negatif", "Düz", "Değişken"], correct: 1, exp: "Sağ omuza bakar, elektrik uzaklaşır." },
+            { t: "EKG", q: "LBBB (Sol Dal Blok) V6 bulgusu?", opt: ["Derin S", "Çentikli R (M)", "Q", "Sivri T"], correct: 1, exp: "WiLLiaM." },
+            { t: "EKG", q: "RBBB (Sağ Dal Blok) V1 bulgusu?", opt: ["rSR' (Tavşan)", "Derin Q", "M şeklinde", "Yok"], correct: 0, exp: "MaRoW." },
+            { t: "EKG", q: "Sinüs Aritmisi nedir?", opt: ["Solunumla hız değişimi", "Patolojik", "Blok", "Fibrilasyon"], correct: 0, exp: "Nefes alınca hızlanır, verince yavaşlar. Normaldir." },
+            { t: "EKG", q: "Wolf-Parkinson-White (WPW) üçlüsü?", opt: ["Kısa PR, Delta, Geniş QRS", "Uzun PR, Delta", "Kısa QT", "Blok"], correct: 0, exp: "Kent demeti erken uyarır." },
+            { t: "EKG", q: "İskemi (Enfarktüs değil) bulgusu?", opt: ["ST elevasyon", "Simetrik T negatifliği", "Q dalgası", "U dalgası"], correct: 1, exp: "Beslenme bozukluğu." },
+            { t: "EKG", q: "Torsades de Pointes tedavisi?", opt: ["Kalsiyum", "Magnezyum", "Sodyum", "Potasyum"], correct: 1, exp: "Magnezyum sülfat." },
+            
+            // --- DOLAŞIM FİZYOLOJİSİ (AKIM, DİRENÇ, BASINÇ) ---
+            { t: "Dolaşım", q: "Direnci en çok etkileyen faktör?", opt: ["Uzunluk", "Viskozite", "Yarıçap", "Basınç"], correct: 2, exp: "Poiseuille: r üzeri 4." },
+            { t: "Dolaşım", q: "Toplam direncin (TPR) en yüksek olduğu yer?", opt: ["Aort", "Arteriyol", "Kapiller", "Ven"], correct: 1, exp: "Musluğu kısan vanalardır." },
+            { t: "Dolaşım", q: "Kan akım hızı (Velocity) nerede en yavaştır?", opt: ["Aort", "Arteriyol", "Kapiller", "Vena Cava"], correct: 2, exp: "Toplam alan en geniştir, değişim zamanı sağlar." },
+            { t: "Dolaşım", q: "Viskoziteyi artıran ana faktör?", opt: ["Albumin", "Hematokrit", "Su", "Tuz"], correct: 1, exp: "Kan hücresi sayısı." },
+            { t: "Dolaşım", q: "Reynolds sayısı neyi gösterir?", opt: ["Hız", "Türbülans", "Basınç", "Direnç"], correct: 1, exp: "2000'i geçerse üfürüm olur." },
+            { t: "Dolaşım", q: "Arteriyel 'Compliance' (Uyum) azalırsa (Yaşlılık)?", opt: ["Nabız basıncı artar", "Ortalama basınç düşer", "Akım durur", "Venöz dönüş artar"], correct: 0, exp: "Damar sertleşirse basıncı ememez, makas açılır." },
+            { t: "Dolaşım", q: "MAP (Ortalama Basınç) formülü?", opt: ["Sis+Dia/2", "Dia + 1/3 Nabız P.", "Sis-Dia", "Debi x Hız"], correct: 1, exp: "Diyastol daha uzundur." },
+            { t: "Dolaşım", q: "En büyük kan deposu (Rezervuar)?", opt: ["Kalp", "Arterler", "Venler", "Kapiller"], correct: 2, exp: "Kanın %64'ü venlerdedir." },
+            { t: "Dolaşım", q: "CVP (Sağ Atriyum Basıncı) normalde?", opt: ["0 mmHg", "10 mmHg", "20 mmHg", "80 mmHg"], correct: 0, exp: "Kalbe giriş basıncıdır." },
+            { t: "Dolaşım", q: "Venöz dönüşü artıran?", opt: ["Nefes verme", "Kas pompası", "Venodilatasyon", "Ayakta durma"], correct: 1, exp: "Kaslar damarı sıkarak kanı yukarı iter." },
+            { t: "Dolaşım", q: "Ayakta dururken ayak ven basıncı?", opt: ["0", "10", "90", "150"], correct: 2, exp: "Hidrostatik basınç eklenir." },
+            { t: "Dolaşım", q: "Laplace Yasası: Anevrizma neden yırtılır?", opt: ["Çap arttıkça duvar gerilimi artar", "Basınç düşer", "Duvar kalınlaşır", "Akım azalır"], correct: 0, exp: "T = P x r. Balon şiştikçe duvar incelir ve gerilir." },
+            { t: "Dolaşım", q: "Fick prensibi neyi ölçer?", opt: ["Hızı", "Kalp Debisini (CO)", "Direnci", "Basıncı"], correct: 1, exp: "Oksijen tüketimi üzerinden debi hesabı." },
+            { t: "Dolaşım", q: "Sistolik basıncı belirleyen ana faktör?", opt: ["Direnç", "Atım Hacmi (SV)", "Hız", "Dönüş"], correct: 1, exp: "Ne kadar çok kan atılırsa boru o kadar gerilir." },
+            { t: "Dolaşım", q: "Diyastolik basıncı belirleyen ana faktör?", opt: ["TPR (Direnç)", "SV", "Güç", "Atriyum"], correct: 0, exp: "Direnç yüksekse kan kaçamaz, basınç yüksek kalır." },
+            
+            // --- REGÜLASYON (SİNİRSEL & HUMORAL) ---
+            { t: "Regülasyon", q: "Baroreseptörler nerede?", opt: ["Kalp", "Karotis ve Aort", "Böbrek", "Beyin"], correct: 1, exp: "Yüksek basınç sensörleri." },
+            { t: "Regülasyon", q: "Baroreseptör neye duyarlı?", opt: ["Oksijen", "Basınç değişim hızı", "CO2", "pH"], correct: 1, exp: "Ani düşüş/yükselişleri algılar." },
+            { t: "Regülasyon", q: "Tansiyon düşünce baroreseptör ne yapar?", opt: ["Vagusu uyarır", "Sempatik sistemi ateşler", "İdrar yaptırır", "Uyutur"], correct: 1, exp: "Hızı ve direnci artırıp tansiyonu toplar." },
+            { t: "Regülasyon", q: "Bainbridge refleksi?", opt: ["Hız azalır", "Atriyum gerilince hız artar", "Tansiyon düşer", "Kusma"], correct: 1, exp: "Volüm yükünü atmak için hızlanır." },
+            { t: "Regülasyon", q: "Kemoreseptörler ne zaman devreye girer?", opt: ["Hafif hipoksi", "PO2 < 60 mmHg (Ağır hipoksi)", "Hipertansiyon", "Alkaloz"], correct: 1, exp: "Acil durum sistemi." },
+            { t: "Regülasyon", q: "Cushing Refleksi (Kafa içi basınç artışı)?", opt: ["Hipotansiyon", "Hipertansiyon + Bradikardi", "Taşikardi", "Şok"], correct: 1, exp: "Beyni kanlamak için tansiyonu fırlatır, baroreseptör kalbi yavaşlatır." },
+            { t: "Regülasyon", q: "Vazomotor merkez nerede?", opt: ["Korteks", "Medulla Oblongata", "Omurilik", "Kalp"], correct: 1, exp: "Beyin sapı." },
+            { t: "Regülasyon", q: "Uzun süreli tansiyon ayarını kim yapar?", opt: ["Kalp", "Damar", "Böbrek (Sıvı-Tuz)", "Beyin"], correct: 2, exp: "Sonsuz kazanç sistemi." },
+            { t: "Regülasyon", q: "Renin nereden salınır?", opt: ["Karaciğer", "Akciğer", "Böbrek (JGA)", "Adrenal"], correct: 2, exp: "Perfüzyon düşünce salınır." },
+            { t: "Regülasyon", q: "ACE enzimi nerede?", opt: ["Kalp", "Akciğer endoteli", "Böbrek", "Mide"], correct: 1, exp: "Anjiyotensin I -> II dönüşümü." },
+            { t: "Regülasyon", q: "Anjiyotensin II'nin en hızlı etkisi?", opt: ["Aldosteron", "Su tutma", "Vazokonstriksiyon", "Kalp büyümesi"], correct: 2, exp: "Güçlü damar büzücü." },
+            { t: "Regülasyon", q: "Aldosteron ne yapar?", opt: ["K tutar", "Na ve Su tutar, K atar", "Su atar", "Damar gevşetir"], correct: 1, exp: "Kan hacmini artırır." },
+            { t: "Regülasyon", q: "ADH (Vazopressin) ne zaman salınır?", opt: ["Su çoksa", "Ozmolarite artınca (Susuzluk)", "Soğukta", "Uykuda"], correct: 1, exp: "Suyu geri emer." },
+            { t: "Regülasyon", q: "ANP (Atriyal Natriüretik Peptid) ne yapar?", opt: ["Tansiyonu artırır", "Tuz/Su atar (Tansiyon düşürür)", "Renin salgılar", "Damar büzer"], correct: 1, exp: "Atriyum gerilince 'yükü at' der. RAAS'ın tersidir." },
+            { t: "Regülasyon", q: "Adrenalin reseptörleri?", opt: ["Alfa (Damar), Beta (Kalp)", "Muskarinik", "Nikotinik", "Histamin"], correct: 0, exp: "Damarı büzer, kalbi coşturur." },
+            
+            // --- ÖZEL DOLAŞIMLAR & MİKRO ---
+            { t: "Mikro", q: "Starling: Suyu dışarı iten güç?", opt: ["Onkotik", "Kapiller Hidrostatik (Pc)", "Doku basıncı", "Lenf"], correct: 1, exp: "Kan basıncı iter." },
+            { t: "Mikro", q: "Starling: Suyu damarda tutan güç?", opt: ["Pc", "Plazma Onkotik (Pi-p)", "Lenf", "Doku"], correct: 1, exp: "Albumin çeker." },
+            { t: "Mikro", q: "Ödem nedeni değildir?", opt: ["Pc artışı", "Protein azalması", "Lenf tıkanıklığı", "Doku basıncı artışı"], correct: 3, exp: "Doku basıncı artarsa su damara girer, ödem azalır (Varis çorabı mantığı)." },
+            { t: "Mikro", q: "Serebral akım neye duyarlı?", opt: ["O2", "CO2", "pH", "Hormon"], correct: 1, exp: "CO2 artarsa damar genişler." },
+            { t: "Mikro", q: "Koroner akım neye duyarlı?", opt: ["Sempatik", "Lokal metabolizma (Adenozin)", "Parasempatik", "Basınç"], correct: 1, exp: "İskemide adenozin damarı açar." },
+            { t: "Mikro", q: "Aktif Hiperemi nedir?", opt: ["Tıkanıklık sonrası kanlanma", "Çalışan dokuya kan gitmesi", "İltihap", "Alerji"], correct: 1, exp: "Egzersiz yapan kasa kan hücumu." },
+            { t: "Mikro", q: "Reaktif Hiperemi nedir?", opt: ["Egzersiz", "Turnike açılınca kan hücumu", "Soğuk", "Sıcak"], correct: 1, exp: "Borçlanılan kanın ödenmesi." },
+            { t: "Mikro", q: "Nitrik Oksit (NO) etkisi?", opt: ["Büzer", "Gevşetir (Vazodilatasyon)", "Pıhtı yapar", "Ağrı"], correct: 1, exp: "Endotelden salınır." },
+            { t: "Mikro", q: "Endotelin etkisi?", opt: ["Gevşetir", "Güçlü büzücü (Vazokonstriktör)", "Sıvı tutar", "Ödem"], correct: 1, exp: "Hasarda kanamayı durdurur." },
+            { t: "Mikro", q: "Histamin etkisi?", opt: ["Büzer", "Gevşetir ve Geçirgenliği artırır (Ödem)", "Kalbi durdurur", "Pıhtı"], correct: 1, exp: "Alerjide şişlik yapar." },
+                  { t: "Mikro", q: "Lenfatik sistemin en büyük damarı?", opt: ["Ductus Thoracicus", "Ductus Lymphaticus Dexter", "Vena Cava", "Aorta"], correct: 0, exp: "Vücudun %75'ini toplar." },
+            { t: "Mikro", q: "Renin salgısını uyaran?", opt: ["Yüksek tansiyon", "Düşük böbrek perfüzyonu", "Hipernatremi", "ANP"], correct: 1, exp: "Böbrek kanlanamazsa tansiyon düştü sanar." },
+
+            // --- SOLUNUM FİZYOLOJİSİ (111-200) ---
+            { t: "Solunum", q: "İnspirasyon (Nefes alma) sırasında intraplevra basıncı ne olur?", opt: ["Pozitifleşir", "Daha negatif olur (-7.5 cmH2O)", "Sıfırlanır", "Değişmez"], correct: 1, exp: "Göğüs genişledikçe vakum etkisi artar." },
+            { t: "Solunum", q: "Spirometre ile ÖLÇÜLEMEYEN hacim?", opt: ["Tidal Hacim", "Vital Kapasite", "Rezidüel Hacim (RV)", "IRV"], correct: 2, exp: "RV dışarı üflenemez, içeride kalır." },
+            { t: "Solunum", q: "Sürfaktan ne işe yarar?", opt: ["Yüzey gerilimini azaltır (Kollapsı önler)", "Gerilimi artırır", "Gaz değişimini bozar", "Mukus üretir"], correct: 0, exp: "Laplace yasasına göre küçük alveollerin sönmesini engeller." },
+            { t: "Solunum", q: "Vital Kapasite formülü?", opt: ["TV + IRV + ERV", "TLC - RV", "İkisi de", "Sadece TV"], correct: 2, exp: "Maksimum nefes alıp vermedir." },
+            { t: "Solunum", q: "Hemoglobin oksijen eğrisini SAĞA kaydıran (Bırakmayı kolaylaştıran)?", opt: ["Asidoz (H+ artışı) ve Isı artışı", "Alkaloz", "Soğuk", "HbF"], correct: 0, exp: "Bohr etkisi. Doku çalışıyorsa asit üretir, O2 ister." },
+            { t: "Solunum", q: "CO2 kanda en çok nasıl taşınır?", opt: ["Çözünmüş", "Karbamino Hb", "Bikarbonat (HCO3)", "Proteinle"], correct: 2, exp: "%70 bikarbonat formundadır." },
+            { t: "Solunum", q: "Solunumun temel ritmini başlatan merkez?", opt: ["DRG (Dorsal Grup)", "VRG", "Pons", "Korteks"], correct: 0, exp: "İnspirasyon rampa sinyali üretir." },
+            { t: "Solunum", q: "Hering-Breuer refleksi?", opt: ["Nefesi başlatır", "Aşırı şişmeyi önlemek için inspirasyonu keser", "Öksürük", "Hıçkırık"], correct: 1, exp: "Akciğer koruyucu reflekstir." },
+            { t: "Solunum", q: "Merkezi kemoreseptörler neye duyarlıdır?", opt: ["O2", "BOS'taki H+ (CO2 kaynaklı)", "Arteriyel pH", "Kan şekeri"], correct: 1, exp: "CO2 bariyeri geçer, aside dönüşür ve uyarır." },
+            { t: "Solunum", q: "Periferik kemoreseptörler ne zaman devreye girer?", opt: ["PO2 < 60 mmHg olunca", "Her zaman", "CO2 artınca", "pH artınca"], correct: 0, exp: "Oksijen düşüklüğüne (Hipoksi) duyarlıdır." },
+            { t: "Solunum", q: "Fizyolojik ölü boşluk formülü?", opt: ["Bohr denklemi", "Fick", "Ohm", "Starling"], correct: 0, exp: "PECO2 kullanılarak hesaplanır." },
+            { t: "Solunum", q: "Obstrüktif hastalıkta (KOAH) ne azalır?", opt: ["TLC", "FEV1 ve FEV1/FVC oranı", "RV", "FRC"], correct: 1, exp: "Hava yolu daraldığı için hızlı üfleyemez." },
+            { t: "Solunum", q: "Restriktif hastalıkta (Fibrozis) ne azalır?", opt: ["Sadece akım hızı", "Tüm hacimler (TLC, VC)", "Oran", "Sürfaktan"], correct: 1, exp: "Akciğer küçülür ve sertleşir." },
+            { t: "Solunum", q: "V/Q oranı (Ventilasyon/Perfüzyon) normalde?", opt: ["0.8", "1.0", "0.1", "Sonsuz"], correct: 0, exp: "Alveoler ventilasyon 4L, Debi 5L." },
+            { t: "Solunum", q: "V/Q = 0 ne demektir?", opt: ["Şant (Hava yok, Kan var)", "Ölü boşluk", "Normal", "Emboli"], correct: 0, exp: "Tıkalı hava yolu." },
+            { t: "Solunum", q: "V/Q = Sonsuz ne demektir?", opt: ["Şant", "Ölü Boşluk (Hava var, Kan yok - Emboli)", "Normal", "Ateletazi"], correct: 1, exp: "Kan gitmeyen alveol." },
+            { t: "Solunum", q: "Haldane etkisi?", opt: ["O2 bağlanması", "O2 ayrılınca Hb'nin CO2 taşıma kapasitesinin artması", "pH", "Isı"], correct: 1, exp: "Venöz kanda önemlidir." },
+            { t: "Solunum", q: "Klor kayması (Chloride Shift) nerede olur?", opt: ["Eritrosit", "Plazma", "Alveol", "Böbrek"], correct: 0, exp: "HCO3 çıkarken Cl girer." },
+            { t: "Solunum", q: "Yüksek irtifada adaptasyon?", opt: ["Solunum yavaşlar", "Polisitemi (Hb artışı) ve 2,3-DPG artışı", "Kalp durur", "Damar büzülür"], correct: 1, exp: "Oksijen taşıma kapasitesi artırılır." },
+            { t: "Solunum", q: "Vurgun (Dekompresyon) gazı?", opt: ["Azot (Nitrojen)", "Oksijen", "CO2", "Helyum"], correct: 0, exp: "Baloncuk yapar." },
+            { t: "Solunum", q: "Karbonmonoksit (CO) zehirlenmesi?", opt: ["Morarma yapar", "Kiraz kırmızısı renk, O2 taşıma kapasitesi düşer", "Solunum durur", "Öksürük"], correct: 1, exp: "Hb'ye yapışır, bırakmaz." },
+            { t: "Solunum", q: "Hipoksik vazokonstriksiyon nerede?", opt: ["Beyin", "Kalp", "Akciğer", "Deri"], correct: 2, exp: "Akciğerde oksijen azsa damar büzülür (Şantı önlemek için)." },
+            { t: "Solunum", q: "Pnömotaksik merkez görevi?", opt: ["İnspirasyonu sonlandırır (Hızı artırır)", "Derin nefes aldırır", "Ekspirasyon yapar", "Apne"], correct: 0, exp: "Solunumu limitleyen merkezdir." },
+            { t: "Solunum", q: "KOAH'lı hastaya %100 O2 verirsen ne olur?", opt: ["İyileşir", "Solunumu durabilir (Hipoksik drive kaybolur)", "Tansiyon düşer", "Öksürür"], correct: 1, exp: "Tek uyarısı oksijen düşüklüğüdür, onu da düzeltirseniz nefes almayı unutur." },
+            { t: "Solunum", q: "Siyanoz ne zaman görülür?", opt: ["Anemi", "Redükte (Oksijensiz) Hb > 5 g/dL", "CO zehirlenmesi", "Her zaman"], correct: 1, exp: "Anemide hemoglobin az olduğu için morarma görülmez." },
+            { t: "Solunum", q: "Alveol ile kan arası bariyer kalınlaşırsa (Ödem/Fibrozis) ne bozulur?", opt: ["Difüzyon", "Ventilasyon", "Perfüzyon", "Akım"], correct: 0, exp: "Gaz geçişi zorlaşır." },
+            { t: "Solunum", q: "Hangi gaz difüzyon kısıtlıdır?", opt: ["N2O", "CO (Karbonmonoksit)", "O2", "CO2"], correct: 1, exp: "CO hemoglobine çok hızlı bağlandığı için parsiyel basıncı artmaz." },
+            { t: "Solunum", q: "Sürfaktan eksikliği hastalığı?", opt: ["Astım", "Yenidoğan RDS (Hyalin Membran)", "KOAH", "Pnömoni"], correct: 1, exp: "Prematürelerde görülür." },
+            { t: "Solunum", q: "Akciğer tabanında (Base) ventilasyon ve perfüzyon nasıldır?", opt: ["İkisi de tepeye göre daha fazladır", "Daha azdır", "Eşittir", "Sadece kan fazladır"], correct: 0, exp: "Yerçekimi etkisiyle taban daha iyi kanlanır ve havalanır." },
+            { t: "Solunum", q: "Biot solunumu nedir?", opt: ["Hızlı derin", "Düzensiz ve apne periyotlu (Beyin hasarı)", "Yavaş", "İç çekme"], correct: 1, exp: "Medulla hasarında görülür." },
+            { t: "Solunum", q: "Kussmaul solunumu nerede görülür?", opt: ["Metabolik Asidoz (Diyabet)", "Alkaloz", "Uyku", "Astım"], correct: 0, exp: "Asidi atmak için derin ve hızlı nefes." },
+            { t: "Solunum", q: "Cheyne-Stokes solunumu?", opt: ["Artan-azalan ve apne (Kalp yetmezliği/Beyin)", "Düzenli", "Yüzeysel", "Hızlı"], correct: 0, exp: "CO2 duyarlılığı değişmiştir." },
+            { t: "Solunum", q: "FRC (Fonksiyonel Rezidüel Kapasite)?", opt: ["RV + ERV", "TV + IRV", "TLC", "VC"], correct: 0, exp: "Normal nefes verince kalan hava." },
+            { t: "Solunum", q: "İnspirasyon kasları?", opt: ["İç interkostal", "Karın", "Diyafram ve Dış interkostal", "Sadece boyun"], correct: 2, exp: "Diyafram asıl kastır." },
+            { t: "Solunum", q: "Zorlu ekspirasyon kasları?", opt: ["Diyafram", "Karın kasları ve İç interkostal", "Boyun", "Sırt"], correct: 1, exp: "Normalde pasiftir, zorluda karın kasları çalışır." },
+            { t: "Solunum", q: "Transpulmoner basınç?", opt: ["Alveol - Plevra", "Ağız - Alveol", "Atmosfer - Plevra", "Karın - Göğüs"], correct: 0, exp: "Akciğeri açık tutan basınçtır." },
+            { t: "Solunum", q: "Akciğer compliance (uyum) ne zaman azalır?", opt: ["Amfizem", "Fibrozis (Sertleşme)", "Yaşlılık", "Astım"], correct: 1, exp: "Akciğer sertleşirse şişmesi zorlaşır." },
+            { t: "Solunum", q: "Amfizem de compliance?", opt: ["Artar (Gevşek torba)", "Azalır", "Değişmez", "Sıfır"], correct: 0, exp: "Elastik doku yıkıldığı için akciğer kolay şişer ama sönemez." },
+            { t: "Solunum", q: "Diffüzyon hızı neyle doğru orantılıdır (Fick)?", opt: ["Kalınlık", "Yüzey alanı ve Basınç farkı", "Molekül ağırlığı", "Viskozite"], correct: 1, exp: "Alan ne kadar büyükse o kadar hızlı geçer." },
+            { t: "Solunum", q: "CO2 mi O2 mi daha hızlı difüze olur?", opt: ["CO2 (20 kat)", "O2", "Eşit", "N2"], correct: 0, exp: "CO2'nin çözünürlüğü çok yüksektir." },
+            { t: "Solunum", q: "Oksijen kanda nasıl taşınır?", opt: ["%98 Hb'ye bağlı", "%50 çözünmüş", "Bikarbonat", "Plazma"], correct: 0, exp: "Çözünmüş miktar hayatı idame ettiremez." },
+            { t: "Solunum", q: "Hb-O2 eğrisinin S (Sigmoid) şekli neyi sağlar?", opt: ["Yüksek basınçta yükleme, düşükte bırakma", "Hep tutma", "Hiç tutmama", "Sabit akım"], correct: 0, exp: "Akciğerde doygunluk, dokuda (PO2 düşünce) hızlı salınım sağlar." },
+            { t: "Solunum", q: "Methemoglobinemi nedir?", opt: ["Demirin +3 (Ferrik) olması, O2 bağlayamaması", "CO zehirlenmesi", "Orak hücre", "Talasemi"], correct: 0, exp: "Oksijen sadece +2 (Ferroz) demire bağlanır." },
+            { t: "Solunum", q: "Siyanoz görülmeyen hipoksi?", opt: ["Hipoksik", "Anemik ve Histotoksik", "Durgun", "İskemik"], correct: 1, exp: "Renk değişimi için 5gr deoksi-Hb gerekir." },
+            { t: "Solunum", q: "Ventilasyonun en iyi göstergesi?", opt: ["Arteriyel PCO2", "PO2", "pH", "Bikarbonat"], correct: 0, exp: "PCO2 yüksekse hipoventilasyon (yetersiz solunum) vardır." },
+            { t: "Solunum", q: "Alveoler gaz denklemi neyi hesaplar?", opt: ["PAO2 (Alveol oksijeni)", "PCO2", "Difüzyon", "Şant"], correct: 0, exp: "Atmosferik O2 ve arteriyel CO2 kullanılarak hesaplanır." },
+            { t: "Solunum", q: "A-a gradyanı (Alveol-Arter O2 farkı) ne zaman artar?", opt: ["Hipoventilasyon", "Akciğer hastalığı (Şant, V/Q bozukluğu)", "Yüksek irtifa", "Uyku"], correct: 1, exp: "Akciğerde sorun varsa oksijen kana geçemez, fark açılır." },
+            { t: "Solunum", q: "Egzersizde O2 tüketimi?", opt: ["Değişmez", "20 katına kadar artabilir", "Azalır", "Sıfırlanır"], correct: 1, exp: "Metabolizma hızlanır." },
+            { t: "Solunum", q: "Anaerobik eşik nedir?", opt: ["Laktatın kanda birikmeye başladığı an", "O2 bitişi", "CO2 düşüşü", "Kalp durması"], correct: 0, exp: "Oksijen yetmeyince glikoliz başlar." },
+            { t: "Solunum", q: "Solunum işinin %50'si neye harcanır?", opt: ["Doku direnci", "Hava yolu direnci ve Elastik güç", "Sürfaktan", "Kan akımı"], correct: 1, exp: "Akciğeri genişletmek enerji ister." }
+        ];
+
+        let qIdx = 0; let score = 0;
+        const qArea = document.getElementById('optArea');
+        const qTxt = document.getElementById('qText');
+        const expBox = document.getElementById('expArea');
+
+        function loadQ() {
+            const q = questions[qIdx];
+            qTxt.innerHTML = (qIdx+1) + ". " + q.q;
+            qArea.innerHTML = '';
+            expBox.style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('currQ').innerText = qIdx+1;
+
+            q.opt.forEach((o, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = o;
+                btn.onclick = () => check(i, btn, q);
+                qArea.appendChild(btn);
+            });
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function check(i, btn, q) {
+            const btns = qArea.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            if(i === q.correct) { btn.classList.add('correct'); score++; }
+            else { btn.classList.add('wrong'); btns[q.correct].classList.add('correct'); }
+            
+            document.getElementById('expArea').innerHTML = "<strong>Açıklama:</strong> " + q.exp;
+            expBox.style.display = 'block';
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('scoreBadge').innerText = score + " Puan";
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function nextQuestion() {
+            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
+            else {
+                document.getElementById('quizContainer').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                document.getElementById('finalScore').innerText = score + "/200";
+                document.getElementById('finalPercent').innerText = Math.round((score/200)*100);
+                
+                let msg = "";
+                if(score >= 160) msg = "TEBRİKLER DOKTOR! BU KURULU PARÇALADIN.";
+                else if(score >= 120) msg = "İYİ İŞ. BİRAZ DAHA TEKRARLA EFSANE OLURSUN.";
+                else msg = "RİSKLİ BÖLGE. KONU ANLATIMLARINA DÖN.";
+                
+                document.getElementById('finalMsg').innerText = msg;
+                document.getElementById('examFooter').style.display = 'none';
+            }
+        }
+
+        // Geri gitme fonksiyonu (Basit)
+        function prevQ() {
+            if(qIdx > 0) { qIdx--; loadQ(); }
+        }
+
+        loadQ();
+    </script>
+</body>
+</html>
