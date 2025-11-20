@@ -3,278 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elektrofizyoloji 2 | Stackminds Kütüphanesi</title>
+    <title>Aksiyon Potansiyeli (Deep Dive) | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>
-    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
-    </script>
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        /* --- GUYTON AKADEMİK TEMA --- */
-        :root {
-            --paper: #fdfbf7;
-            --ink: #111827;
-            --blue-ink: #0369a1;
-            --highlight: #fff7ed;
-            --border: #e5e7eb;
-            --accent: #b91c1c;
-        }
+        /* --- PROFESÖR TEMASI --- */
+        :root { --paper: #fffbf0; --ink: #1a1a1a; --blue: #0056b3; --red: #c0392b; --gold: #d35400; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
+        
+        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; z-index:10; }
+        .brand { font-size: 1.2rem; font-weight: bold; color: #f1c40f; text-decoration: none; display: block; margin-bottom: 30px; }
+        .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
+        .menu-item:hover, .menu-item.active { color: white; background: #34495e; padding-left: 15px; transition: 0.3s; }
 
-        body {
-            margin: 0;
-            background-color: var(--paper);
-            color: var(--ink);
-            font-family: 'Georgia', 'Times New Roman', serif;
-            line-height: 1.8;
-            display: flex;
-        }
+        .content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        
+        h1 { font-size: 2.5rem; color: var(--blue); border-bottom: 3px solid var(--blue); padding-bottom: 10px; }
+        h2 { margin-top: 50px; color: var(--red); font-weight: bold; border-left: 5px solid var(--red); padding-left: 15px; }
+        
+        /* KUTULAR */
+        .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .logic-title { color: #16a085; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: #f3f4f6;
-            border-right: 1px solid #d1d5db;
-            position: fixed;
-            padding: 25px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            font-family: 'Segoe UI', sans-serif;
-            z-index: 10;
-        }
-
-        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        .chapter-list { list-style: none; padding: 0; }
-        .chapter-list li { margin-bottom: 10px; }
-        .chapter-link {
-            text-decoration: none; color: #4b5563; display: block; padding: 8px;
-            border-radius: 6px; font-size: 0.9rem; transition: 0.2s;
-        }
-        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
-        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
-
-        /* CONTENT */
-        .page-content {
-            margin-left: 260px;
-            padding: 60px 100px;
-            max-width: 800px;
-        }
-
-        h1 { font-size: 2.5rem; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        p { margin-bottom: 20px; text-align: justify; font-size: 1.1rem; }
-
-        /* ÖZEL KUTULAR */
-        .clinical-box {
-            background: #fef2f2; border-left: 4px solid var(--accent);
-            padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d;
-        }
-        .clinical-title { color: var(--accent); font-weight: bold; text-transform: uppercase; font-size: 0.8rem; display: block; margin-bottom: 5px; }
-
-        .channel-box {
-            background: #f0f9ff; border: 1px solid #bae6fd; padding: 15px; border-radius: 8px;
-            margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-family: 'Segoe UI', sans-serif;
-        }
-        .channel-icon { font-size: 1.5rem; color: var(--blue-ink); width: 40px; text-align: center; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; }
+        .trap-title { color: #c0392b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        
+        .pharm-box { background: #eef2ff; border: 2px solid #4f46e5; padding: 15px; margin: 20px 0; border-radius: 8px; font-size: 0.95rem; }
+        .pharm-title { color: #4f46e5; font-weight: bold; }
 
         /* GRAFİK */
-        .chart-wrapper {
-            background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb;
-            margin: 40px 0; height: 400px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
+        .chart-container { background: white; padding: 20px; border: 1px solid #ccc; margin: 30px 0; border-radius: 10px; height: 400px; position: relative; }
 
-        /* NAVİGASYON BUTONLARI */
-        .page-nav {
-            display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .nav-btn {
-            text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s;
-        }
-        .prev { background: #f3f4f6; color: #374151; }
-        .next { background: var(--blue-ink); color: white; }
-        .next:hover { background: #075985; }
+        /* NAV */
+        .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
+        .btn { text-decoration: none; background: var(--blue); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; padding: 15px; }
-            .page-content { margin: 0; padding: 20px; }
-        }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
-        
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
-        <ul class="chapter-list">
-            <li><a href="elektro.html" class="chapter-link">1. Membran Fiziği</a></li>
-            <li><a href="elektro2.html" class="chapter-link active">2. Aksiyon Potansiyeli</a></li>
-            <li><a href="elektro3.html" class="chapter-link">3. İleti ve Eşleşme</a></li>
-            <li><a href="elektro_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a></li>
-        </ul>
+        <a href="index.html" class="brand"><i class="fa-solid fa-book-medical"></i> MEDBASE</a>
+        <a href="elektro.html" class="menu-item">1. Membran ve İyonlar</a>
+        <a href="elektro2.html" class="menu-item active">2. Aksiyon Potansiyeli</a>
+        <a href="elektro3.html" class="menu-item">3. İleti ve Eşleşme</a>
+        <a href="elektro_test.html" class="menu-item" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
-    <main class="page-content">
-        <div style="color:#6b7280; font-size:0.9rem;">Ünite 1: Kardiyak Elektrofizyoloji</div>
+    <main class="content">
         <h1>Bölüm 2: Hızlı Yanıtlı Aksiyon Potansiyeli</h1>
-        
+
         <p>
-            Kalp kası hücreleri (ventrikül, atriyum) ve Purkinje lifleri, <strong>"Hızlı Yanıtlı" (Fast Response)</strong> hücrelerdir. 
-            Bu hücrelerin aksiyon potansiyeli, 5 evreden oluşan çok özel bir şekle sahiptir. 
-            Bu şekil, kalbin ritmik kasılmasını ve kanı pompalamasını sağlayan temel mekanizmadır.
+            Kalp kası hücreleri (Ventrikül, Atriyum ve Purkinje) <strong>"Hızlı Yanıtlı"</strong> dokulardır. Yani çok hızlı uyarılırlar ve çok hızlı iletirler.
+            Bunu sağlayan şey, "Hızlı Sodyum Kanalları"dır.
         </p>
 
-        <div class="chart-wrapper">
+        <div class="chart-container">
             <canvas id="apChart"></canvas>
-            <p style="text-align:center; font-size:0.8rem; color:#64748b; margin-top:10px; font-family:'Segoe UI', sans-serif;">Şekil 2.1: Ventriküler Aksiyon Potansiyeli Fazları</p>
+            <div style="text-align:center; font-family:sans-serif; font-size:0.8rem; color:#666; margin-top:10px;">
+                <strong>Şekil 2.1:</strong> Ventriküler Kas Hücresi Aksiyon Potansiyeli (5 Faz)
+            </div>
         </div>
 
         <h2>Faz 0: Hızlı Depolarizasyon (Vuruş)</h2>
-        <div class="channel-box">
-            <div class="channel-icon"><i class="fa-solid fa-bolt"></i></div>
-            <div>
-                <strong>Ana Oyuncu:</strong> Voltaj Kapılı Hızlı $Na^+$ Kanalları<br>
-                <strong>Olay:</strong> $Na^+$ İçe Akımı ($I_{Na}$)
-            </div>
-        </div>
         <p>
-            Membran potansiyeli eşik değere (yaklaşık -70 mV) ulaştığında, binlerce hızlı sodyum kanalı aynı anda açılır. 
-            Bu kanalların <strong>"m kapısı" (aktivasyon)</strong> açılırken, <strong>"h kapısı" (inaktivasyon)</strong> henüz kapanmamıştır.
-            <br><br>
-            Sodyumun elektrokimyasal gradyanı çok yüksek olduğu için, iyonlar hücre içine patlayıcı bir hızla girer. 
-            Membran potansiyeli saniyenin binde biri içinde -90 mV'dan <strong>+20 mV'a (Overshoot)</strong> fırlar.
+            Hücre eşik değere (-70 mV) ulaşınca kıyamet kopar. 
+            Voltaj kapılı <strong>Hızlı $Na^+$ kanalları</strong> açılır.
+            Sodyum içeri hücum eder. Voltaj -90'dan +20 mV'a fırlar (Overshoot).
+        </p>
+        <div class="pharm-box">
+            <span class="pharm-title"><i class="fa-solid fa-pills"></i> İlaç Mekanizması: Sınıf 1 Antiaritmikler</span><br>
+            Lidokain ve Prokainamid gibi ilaçlar, tam olarak bu kanalları tıkar. 
+            Faz 0'ın eğimini ($V_{max}$) düşürürler $\rightarrow$ İletim yavaşlar.
+        </div>
+
+        <h2>Faz 1: Erken Repolarizasyon (Çentik)</h2>
+        <p>
+            Voltaj +20 mV olunca iki şey olur:
+            1. Sodyum kanallarının <strong>$h$ kapısı (inaktivasyon)</strong> kapanır. Giriş durur.
+            2. Geçici dışa akım <strong>$K^+$ kanalları ($I_{to}$)</strong> açılır. Biraz potasyum çıkar.
+            Bu, voltajı hafifçe düşürür ve grafikteki o küçük "çentiği" oluşturur.
+        </p>
+
+        <h2>Faz 2: Plato (Plateau) - En Kritik Faz</h2>
+        <p>
+            Voltaj 0 mV civarında asılı kalır. Bu süre (200-300 msn) kalbin kasılı kalıp kanı pompalaması için şarttır.
         </p>
         
-        <div class="clinical-box">
-            <span class="clinical-title">Farmakoloji: Sınıf I Antiaranitmikler</span>
-            <strong>Lidokain</strong> ve <strong>Prokainamid</strong> gibi ilaçlar, tam olarak bu $Na^+$ kanallarına bağlanarak onları bloke eder. 
-            Böylece Faz 0'ın eğimini ($V_{max}$) düşürürler ve kalpteki iletim hızını yavaşlatırlar.
+        <div class="logic-box">
+            <span class="logic-title">Mantık: Grafik Neden Düz Gidiyor?</span>
+            Bu fazda "Mükemmel bir Denge" vardır:
+            <ul>
+                <li><strong>İçeri Giren:</strong> L-Tipi $Ca^{++}$ kanalları (Yavaş kanallar) açılır, kalsiyum girer (+ yük girişi).</li>
+                <li><strong>Dışarı Çıkan:</strong> $K^+$ kanalları (Gecikmiş rektifiye) açıktır, potasyum çıkar (- yük çıkışı).</li>
+            </ul>
+            <strong>Giren (+) = Çıkan (+)</strong> olduğu için voltaj değişmez, düz çizgi (Plato) oluşur.
+        </div>
+        
+        <div class="trap-box">
+            <span class="trap-title">Sınav Tuzağı!</span>
+            Soru: "Kalp kasını İskelet kasından ayıran en temel elektrofizyolojik fark nedir?"
+            <br><strong>Cevap:</strong> Plato (Faz 2) varlığıdır. İskelet kasında plato yoktur, hemen gevşer. Kalpte ise kalsiyum girişi sayesinde kasılma uzun sürer.
         </div>
 
-        <h2>Faz 1: Erken Hızlı Repolarizasyon</h2>
-        <div class="channel-box">
-            <div class="channel-icon"><i class="fa-solid fa-arrow-trend-down"></i></div>
-            <div>
-                <strong>Ana Oyuncu:</strong> Geçici Dışa Akım $K^+$ Kanalları ($I_{to}$)<br>
-                <strong>Olay:</strong> Kısa süreli $K^+$ çıkışı.
-            </div>
-        </div>
+        <h2>Faz 3: Hızlı Repolarizasyon</h2>
         <p>
-            Overshoot (+20 mV) zirvesinde iki şey olur:
-            1. $Na^+$ kanallarının "h kapıları" kapanır (İnaktivasyon).
-            2. Özel bir $K^+$ kanalı ($I_{to}$) açılır ve potasyum dışarı çıkar.
-            Bu, voltajı hafifçe düşürür (+20 mV'dan 0 mV'a) ve grafikteki o meşhur "çentik" (notch) oluşur.
+            Plato biter çünkü $Ca^{++}$ kanalları kapanır. 
+            Ancak $K^+$ kanalları ($I_{Kr}, I_{Ks}$) sonuna kadar açılır.
+            Artık sadece dışarı potasyum çıkışı vardır. Hücre hızla negatifleşir ve dinlenme potansiyeline döner.
         </p>
 
-        <h2>Faz 2: Plato (Plateau) - Kalbin İmzası</h2>
-        <div class="channel-box">
-            <div class="channel-icon"><i class="fa-solid fa-scale-balanced"></i></div>
-            <div>
-                <strong>Ana Oyuncu:</strong> L-Tipi $Ca^{++}$ Kanalları ($I_{Ca-L}$)<br>
-                <strong>Olay:</strong> $Ca^{++}$ girişi = $K^+$ çıkışı
-            </div>
-        </div>
+        <h2>Faz 4: Dinlenme</h2>
         <p>
-            Bu faz, kalp kasını iskelet kasından ayıran en kritik farktır. Voltaj 0 mV civarındayken <strong>L-Tipi (Long Lasting) Kalsiyum Kanalları</strong> aktive olur. 
-            Kalsiyum yavaşça içeri girer. Bu sırada $K^+$ dışarı çıkmaya devam eder. 
-        </p>
-        <p>
-            <strong>Mükemmel Denge:</strong> İçeri giren pozitif yük ($Ca^{++}$), dışarı çıkan pozitif yükü ($K^+$) dengeler. Sonuç olarak voltaj değişmez ve bir "Plato" oluşur. 
-            Bu süre (200-300 ms), ventriküllerin kanı pompalaması için gereken uzun kasılma süresini sağlar.
+            Hücre -90 mV'a geri dönmüştür. Na/K pompası çalışarak içeri giren sodyumları atar, dışarı çıkan potasyumları geri alır. Pil şarj olur.
         </p>
 
-        <h2>Faz 3: Son Hızlı Repolarizasyon</h2>
-        <div class="channel-box">
-            <div class="channel-icon"><i class="fa-solid fa-water"></i></div>
-            <div>
-                <strong>Ana Oyuncu:</strong> Gecikmiş Rektifiye $K^+$ Kanalları ($I_{Kr}, I_{Ks}$)<br>
-                <strong>Olay:</strong> Masif $K^+$ çıkışı.
-            </div>
-        </div>
-        <p>
-            Plato sonunda $Ca^{++}$ kanalları kapanır. Ancak $K^+$ kanalları sonuna kadar açılır. 
-            Denge bozulur; sadece dışarı çıkan pozitif yük ($K^+$) kalır. Hücre hızla negatifleşerek dinlenme potansiyeline geri döner.
-        </p>
+        <h2>Refrakter Dönemler (Yanıtsızlık)</h2>
+        <p>Kalbin "kramp girmesini" (Tetani) engelleyen mekanizmadır.</p>
+        <ul>
+            <li><strong>Mutlak Refrakter Dönem (ARP):</strong> Faz 0, 1, 2 ve 3'ün başı. $Na^+$ kanallarının $h$ kapısı kapalıdır. Ne kadar güçlü uyarırsan uyar, kapı açılmaz. <strong>Yeni aksiyon potansiyeli oluşamaz.</strong></li>
+            <li><strong>Rölatif Refrakter Dönem (RRP):</strong> Faz 3'ün sonu. Bazı sodyum kanalları kendine gelmiştir. Çok güçlü bir uyarı gelirse zayıf bir AP oluşabilir (R-on-T fenomeni riski).</li>
+        </ul>
 
-        <h2>Faz 4: Dinlenme ve İyon Dengesi</h2>
-        <p>
-            Membran potansiyeli tekrar -90 mV'a ulaşmıştır. Bu potansiyel, bir sonraki uyarı gelene kadar <strong>Inward Rectifier $K^+$ kanalları ($I_{K1}$)</strong> sayesinde korunur.
-            <br>
-            Hücre içinde biriken $Na^+$ ve $Ca^{++}$, <strong>Na+/K+ Pompası</strong> ve <strong>Na+/Ca++ Değiştiricisi (NCX)</strong> tarafından dışarı atılır.
-        </p>
-
-        <div class="clinical-box">
-            <span class="clinical-title">Klinik: Hiperkalemi (Yüksek Potasyum)</span>
-            Kanda $K^+$ artarsa, $K^+$'un hücre dışına çıkma isteği azalır (Gradyan bozulur). 
-            Bu durum hücreyi kısmen depolarize eder ama paradoksal olarak iletimi yavaşlatır ve kalbi durdurabilir (Diastolik Arrest).
-        </div>
-
-        <div class="page-nav">
-            <a href="elektro.html" class="nav-btn prev">&larr; Bölüm 1: Membran Fiziği</a>
-            <a href="elektro3.html" class="nav-btn next">Bölüm 3: İleti ve Eşleşme &rarr;</a>
+        <div class="nav-area">
+            <a href="elektro.html" class="btn" style="background:#7f8c8d">&larr; Bölüm 1</a>
+            <a href="elektro3.html" class="btn">Bölüm 3: İleti ve Eşleşme &rarr;</a>
         </div>
 
     </main>
 
     <script>
-        // --- CHART.JS: AP GRAFİĞİ ---
         const ctx = document.getElementById('apChart').getContext('2d');
-        
-        const dataPoints = [
-            {x: 0, y: -90},  // Faz 4
-            {x: 10, y: -90}, // Uyarı
-            {x: 12, y: 20},  // Faz 0
-            {x: 15, y: 0},   // Faz 1
-            {x: 20, y: 5},   // Faz 2 Başı
-            {x: 100, y: 5},  // Faz 2 Sonu
-            {x: 130, y: -90},// Faz 3 Sonu
-            {x: 160, y: -90} // Faz 4
-        ];
+        const dataPoints = [ {x: 0, y: -90}, {x: 10, y: -90}, {x: 12, y: 20}, {x: 15, y: 0}, {x: 20, y: 5}, {x: 100, y: 5}, {x: 130, y: -90}, {x: 160, y: -90} ];
 
-        const chart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'scatter',
             data: {
                 datasets: [{
-                    label: 'Membran Potansiyeli (mV)',
+                    label: 'Voltaj (mV)',
                     data: dataPoints,
-                    showLine: true,
-                    borderColor: '#0369a1',
-                    backgroundColor: 'rgba(3, 105, 161, 0.1)',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    pointRadius: 0, // Noktaları gizle
-                    fill: true
+                    showLine: true, borderColor: '#0056b3', backgroundColor: 'rgba(0, 86, 179, 0.1)', borderWidth: 3, pointRadius: 0, fill: true, tension: 0.4
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { 
                     legend: { display: false },
                     annotation: {
                         annotations: {
-                            label0: { type: 'label', xValue: 14, yValue: 10, content: '0', color: '#b91c1c', font: {size:14, weight:'bold'} },
-                            label1: { type: 'label', xValue: 16, yValue: 10, content: '1', color: '#b91c1c', font: {size:14, weight:'bold'} },
-                            label2: { type: 'label', xValue: 60, yValue: 15, content: '2 (Plato)', color: '#b91c1c', font: {size:14, weight:'bold'} },
-                            label3: { type: 'label', xValue: 115, yValue: -40, content: '3', color: '#b91c1c', font: {size:14, weight:'bold'} },
-                            label4: { type: 'label', xValue: 145, yValue: -80, content: '4', color: '#b91c1c', font: {size:14, weight:'bold'} }
+                            l0: { type: 'label', xValue: 14, yValue: 10, content: '0', color: '#c0392b', font: {size:16, weight:'bold'} },
+                            l1: { type: 'label', xValue: 18, yValue: 5, content: '1', color: '#c0392b', font: {size:14} },
+                            l2: { type: 'label', xValue: 60, yValue: 15, content: '2 (PLATO)', color: '#c0392b', font: {size:14, weight:'bold'} },
+                            l3: { type: 'label', xValue: 120, yValue: -40, content: '3', color: '#c0392b', font: {size:16, weight:'bold'} },
+                            l4: { type: 'label', xValue: 145, yValue: -80, content: '4', color: '#c0392b', font: {size:16, weight:'bold'} }
                         }
                     }
                 },
-                scales: {
-                    x: { type: 'linear', title: {display:true, text:'Zaman (ms)'}, min: 0, max: 160 },
-                    y: { title: {display:true, text:'Voltaj (mV)'}, min: -100, max: 40 }
-                }
+                scales: { x: { title: {display:true, text:'Zaman (ms)'}, min: 0, max: 160 }, y: { title: {display:true, text:'mV'}, min: -100, max: 40 } }
             }
         });
     </script>
-
 </body>
-    </html>
-    
+</html>
