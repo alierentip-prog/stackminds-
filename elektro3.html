@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elektrofizyoloji 3 | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         /* --- GUYTON AKADEMİK TEMA --- */
         :root {
@@ -37,6 +43,7 @@
             box-sizing: border-box;
             overflow-y: auto;
             font-family: 'Segoe UI', sans-serif;
+            z-index: 10;
         }
 
         .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
@@ -58,9 +65,10 @@
 
         h1 { font-size: 2.5rem; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
         h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { margin-top: 30px; font-size: 1.2rem; font-weight: bold; color: #374151; }
         p { margin-bottom: 20px; text-align: justify; font-size: 1.1rem; }
 
-        /* ŞEMATİK DİYAGRAM (İleti Yolu) */
+        /* DİYAGRAMLAR */
         .pathway-container {
             display: flex; flex-direction: column; align-items: center; margin: 40px 0; gap: 15px;
             font-family: 'Segoe UI', sans-serif;
@@ -68,29 +76,27 @@
         .node-box {
             background: white; border: 2px solid var(--blue-ink); padding: 15px 30px; border-radius: 30px;
             font-weight: bold; color: var(--blue-ink); position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            width: 250px; text-align: center;
+            width: 300px; text-align: center;
         }
-        .node-box.fast { border-color: var(--success); color: var(--success); } /* Purkinje Hızlı */
-        .node-box.slow { border-color: var(--accent); color: var(--accent); } /* AV Yavaş */
+        .node-box.fast { border-color: var(--success); color: var(--success); background: #f0fdf4; }
+        .node-box.slow { border-color: var(--accent); color: var(--accent); background: #fef2f2; }
         
         .arrow-down { font-size: 1.5rem; color: #9ca3af; }
-
         .speed-badge {
-            font-size: 0.75rem; background: #f3f4f6; padding: 2px 8px; border-radius: 10px;
-            margin-left: 10px; color: #4b5563; font-weight: normal;
-        }
-
-        /* KLİNİK KUTU */
-        .clinical-box {
-            background: #f0fdf4; border-left: 4px solid var(--success);
-            padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem;
-            color: #064e3b;
+            font-size: 0.8rem; background: rgba(0,0,0,0.05); padding: 3px 10px; border-radius: 10px;
+            margin-left: 10px; color: #374151; font-weight: normal; display: inline-block;
         }
 
         /* TABLO */
         table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
         th, td { border: 1px solid #d1d5db; padding: 12px; text-align: left; }
         th { background: #e5e7eb; }
+
+        /* KLİNİK KUTU */
+        .clinical-box {
+            background: #f0fdf4; border-left: 4px solid var(--success);
+            padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b;
+        }
 
         /* NAVİGASYON */
         .page-nav {
@@ -104,7 +110,6 @@
         .next { background: var(--accent); color: white; } /* Test için kırmızı buton */
         .next:hover { background: #991b1b; }
 
-        /* Mobil */
         @media (max-width: 1024px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; padding: 15px; }
@@ -131,22 +136,29 @@
         <h1>Bölüm 3: İleti Sistemi ve Uyarılma-Kasılma</h1>
 
         <p>
-            Kalbin düzenli çalışması için uyarının doğru yerden (SA Düğüm) çıkması, doğru hızda iletilmesi ve nihayetinde kas liflerini (Miyosit) kasmayı başarması gerekir. 
-            Bu bölümde elektriğin nasıl mekanik güce dönüştüğünü inceleyeceğiz.
+            Kalbin düzenli çalışması için elektriksel uyarının doğru yerden (SA Düğüm) çıkması, doğru hızda iletilmesi ve nihayetinde kas liflerini (Miyosit) kasmayı başarması gerekir. 
+            Bu bölümde elektriğin nasıl mekanik güce dönüştüğünü (E-C Coupling) inceleyeceğiz.
         </p>
 
         <h2>1. Pacemaker (Doğal Pil) Mekanizması</h2>
         <p>
-            Ventrikül hücresinin aksine, <strong>SA Düğüm</strong> hücrelerinin sabit bir dinlenme potansiyeli yoktur. 
-            Faz 4'te sürekli yukarı doğru sızan bir voltajları vardır. Buna "Pacemaker Potansiyeli" denir.
-            Eşik değere (-40 mV) ulaştıklarında kendiliğinden ateşlerler.
+            Ventrikül hücresinin aksine, <strong>Sinoatriyal (SA) Düğüm</strong> hücrelerinin sabit bir dinlenme potansiyeli yoktur. 
+            Bu hücreler asla "dinlenmez". Faz 4'te sürekli yukarı doğru sızan (pozitifleşen) bir voltajları vardır. 
+            Buna <strong>"Pacemaker Potansiyeli"</strong> denir. Eşik değere (-40 mV) ulaştıklarında kendiliğinden ateşlerler.
         </p>
 
         <h3>Funny Current ($I_f$) - Komik Akım</h3>
         <p>
             SA düğüm hücrelerinde Faz 4'te açılan özel kanallardır (HCN kanalları). 
-            Sodyumun yavaşça içeri sızmasına izin verirler. Bu sızıntı, hücreyi yavaş yavaş eşik değere taşır ve kalbin otomatik olarak atmasını sağlar.
+            Bu kanallar hem $Na^+$ hem $K^+$ geçirir ancak net etki <strong>Sodyum girişidir</strong>. 
+            Bu yavaş sızıntı, hücreyi yavaş yavaş eşik değere taşır ve kalbin otomatik olarak atmasını sağlar (Otomatiklik).
         </p>
+        
+        <div class="clinical-box" style="background:#eff6ff; border-color:#3b82f6; color:#1e3a8a;">
+            <strong>Klinik İpucu: İvabradin</strong><br>
+            İvabradin isimli ilaç, doğrudan bu "Funny" kanalları ($I_f$) bloke eder. Böylece Faz 4'ün eğimi azalır ve kalp hızı yavaşlar. 
+            Diğer mekanizmaları etkilemediği için kasılma gücünü düşürmez.
+        </div>
 
         <h2>2. İleti Yolu ve Hızları</h2>
         <p>
@@ -160,35 +172,44 @@
             <div class="node-box">Atriyal Yollar <span class="speed-badge">1 m/sn</span></div>
             <i class="fa-solid fa-arrow-down arrow-down"></i>
             
-            <div class="node-box slow">AV Düğüm <span class="speed-badge">0.05 m/sn (YAVAŞ)</span></div>
+            <div class="node-box slow">AV Düğüm <br><span class="speed-badge">0.05 m/sn (EN YAVAŞ)</span></div>
             <i class="fa-solid fa-arrow-down arrow-down"></i>
             
-            <div class="node-box fast">His - Purkinje <span class="speed-badge">4 m/sn (ÇOK HIZLI)</span></div>
+            <div class="node-box fast">His - Purkinje Sistemi <br><span class="speed-badge">4 m/sn (EN HIZLI)</span></div>
             <i class="fa-solid fa-arrow-down arrow-down"></i>
             
             <div class="node-box">Ventrikül Kası <span class="speed-badge">1 m/sn</span></div>
         </div>
 
-        <h3>AV Nodal Gecikme (0.09 sn)</h3>
+        <h3>Neden AV Düğüm Çok Yavaş? (AV Delay)</h3>
         <p>
-            Elektrik AV düğüme geldiğinde ciddi şekilde yavaşlar. Bunun sebebi AV düğüm hücrelerinde <strong>Gap Junction (Oluklu Bağlantı)</strong> sayısının çok az olmasıdır.
-            <br>
-            <strong>Fizyolojik Önemi:</strong> Bu gecikme, atriyumların ventriküllerden önce kasılmasını sağlar. Böylece ventriküller kanla dolmak için zaman kazanır.
+            Elektrik AV düğüme geldiğinde 0.09 saniye kadar bekler. Bunun sebebi AV düğüm hücrelerinde hücreler arası geçişi sağlayan <strong>Gap Junction (Oluklu Bağlantı)</strong> sayısının çok az olmasıdır.
+            <br><br>
+            <strong>Fizyolojik Önemi:</strong> Bu gecikme, atriyumların ventriküllerden önce kasılmasını sağlar. 
+            Böylece ventriküller kanla dolmak için zaman kazanır. Eğer bu gecikme olmasaydı, kalp verimli pompalama yapamazdı.
+        </p>
+
+        <h3>Neden Purkinje Çok Hızlı?</h3>
+        <p>
+            Purkinje lifleri 4 m/sn gibi devasa bir hızla iletir. Sebebi çok fazla Gap Junction içermeleri ve çaplarının geniş olmasıdır. 
+            Bu hız, her iki ventrikülün aynı anda kasılmasını (Senkronizasyon) sağlar.
         </p>
 
         <h2>3. Uyarılma - Kasılma Eşleşmesi (E-C Coupling)</h2>
         <p>
             Elektriksel uyarının (Aksiyon Potansiyeli) kasılmaya (Sistol) dönüşme sürecidir. 
-            Bu sürecin başrol oyuncusu <strong>Kalsiyumdur ($Ca^{++}$)</strong>.
+            Bu sürecin başrol oyuncusu <strong>Kalsiyumdur ($Ca^{++}$)</strong>. Guyton buna "Kalsiyumun Tetiklediği Kalsiyum Salınımı" (CICR) der.
         </p>
 
         <div class="clinical-box">
-            <strong>Mekanizma: Kalsiyumun Tetiklediği Kalsiyum Salınımı (CICR)</strong><br><br>
-            1. Aksiyon potansiyeli <strong>T-tübüller</strong> boyunca hücrenin derinliklerine iner.<br>
-            2. T-tübül üzerindeki voltaj sensörleri, hücre dışından az miktarda $Ca^{++}$ girişine izin verir (Tetikleyici Kalsiyum).<br>
-            3. Bu giren kalsiyum, Sarkoplazmik Retikulum (SR) üzerindeki <strong>Ryanodine Reseptörlerini (RyR)</strong> uyarır.<br>
-            4. SR'dan sitoplazmaya devasa miktarda $Ca^{++}$ boşalır.<br>
-            5. Kalsiyum, <strong>Troponin-C</strong>'ye bağlanır, aktin ve miyozin etkileşime girer ve KASILMA gerçekleşir.
+            <strong>Adım Adım CICR Mekanizması:</strong><br><br>
+            <ol style="margin:0; padding-left:20px;">
+                <li>Aksiyon potansiyeli hücre zarından <strong>T-tübüller</strong> boyunca hücrenin derinliklerine iner.</li>
+                <li>T-tübül üzerindeki voltaj sensörleri (L-Tipi kanallar), hücre dışından az miktarda $Ca^{++}$ girişine izin verir (Tetikleyici Kalsiyum).</li>
+                <li>Bu giren kalsiyum, Sarkoplazmik Retikulum (SR) üzerindeki <strong>Ryanodine Reseptörlerini (RyR)</strong> uyarır.</li>
+                <li>SR deposundan sitoplazmaya devasa miktarda $Ca^{++}$ boşalır (Çığ etkisi).</li>
+                <li>Kalsiyum, <strong>Troponin-C</strong>'ye bağlanır, tropomiyozin çekilir, aktin ve miyozin etkileşime girer ve KASILMA gerçekleşir.</li>
+            </ol>
         </div>
 
         <h3>Gevşeme Nasıl Olur? (SERCA Pompası)</h3>
@@ -211,24 +232,29 @@
                 <tr>
                     <td><strong>Kalsiyum Kaynağı</strong></td>
                     <td>Hücre Dışı + SR (CICR)</td>
-                    <td>Sadece SR</td>
+                    <td>Sadece SR (Mekanik bağ)</td>
                 </tr>
                 <tr>
                     <td><strong>Sinsityum</strong></td>
-                    <td>Var (Gap Junction)</td>
-                    <td>Yok (Motor ünite)</td>
+                    <td>Var (Gap Junction ile)</td>
+                    <td>Yok (İzole motor üniteler)</td>
                 </tr>
                 <tr>
                     <td><strong>Tetani</strong></td>
-                    <td>Olamaz (Uzun refrakter)</td>
+                    <td>Olamaz (Uzun refrakter dönem)</td>
                     <td>Olabilir</td>
+                </tr>
+                <tr>
+                    <td><strong>T-Tübüller</strong></td>
+                    <td>Z çizgisinde, geniş çaplı</td>
+                    <td>A-I bandı birleşiminde, ince</td>
                 </tr>
             </tbody>
         </table>
 
         <div class="page-nav">
             <a href="elektro2.html" class="nav-btn prev">&larr; Bölüm 2: Aksiyon Potansiyeli</a>
-            <a href="elektro_test.html" class="nav-btn next">Bölüm Sonu Sınavı &rarr;</a>
+            <a href="elektro_test.html" class="nav-btn next">Ünite Testine Başla (50 Soru) &rarr;</a>
         </div>
 
     </main>
