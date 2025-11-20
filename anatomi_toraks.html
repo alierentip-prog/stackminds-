@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toraks Anatomisi | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #18181b; --text: #e4e4e7; --accent: #f43f5e; --panel: #27272a; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; }
+        .sidebar { width: 250px; background: #000; padding: 20px; border-right: 1px solid #333; height: 100vh; position: fixed; overflow-y: auto; }
+        .content { margin-left: 250px; padding: 40px; max-width: 800px; }
+        .menu-link { display: block; color: #a1a1aa; text-decoration: none; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+        .menu-link:hover, .menu-link.active { background: #333; color: white; font-weight: bold; }
+        h1 { color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .info-box { background: var(--panel); padding: 20px; border-left: 4px solid var(--accent); margin: 20px 0; border-radius: 5px; }
+        .nav-btn { float: right; background: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 30px; }
+        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="anatomi.html" style="color:white; font-weight:bold; text-decoration:none; font-size:1.2rem;">&larr; Atlas Menü</a>
+        <hr style="border-color:#333; margin:20px 0;">
+        <a href="anatomi_toraks.html" class="menu-link active">1. Toraks Duvarı</a>
+        <a href="anatomi_diyafram.html" class="menu-link">2. Diyafram & Mediastinum</a>
+        <a href="anatomi_kalp.html" class="menu-link">3. Kalp (Cor)</a>
+        <a href="anatomi_damar.html" class="menu-link">4. Damarlar</a>
+        <a href="anatomi_burun.html" class="menu-link">5. Burun & Sinüs</a>
+        <a href="anatomi_lenf.html" class="menu-link">6. Lenfatik Sistem</a>
+    </nav>
+
+    <div class="content">
+        <h1>Toraks Duvarı Anatomisi</h1>
+        
+        <h3>1. Sternum (Göğüs Kemiği)</h3>
+        <p>Üç parçadan oluşur: Manubrium, Corpus, Xiphoid Process.</p>
+        <div class="info-box">
+            <strong>★ Angulus Sterni (Louis Açısı):</strong><br>
+            Manubrium ile Corpus'un birleştiği yerdir (T4-T5 seviyesi).<br>
+            1. 2. Kosta buraya tutunur (Kosta sayımı buradan başlar).<br>
+            2. Trakea burada ikiye ayrılır (Bifurcatio).<br>
+            3. Arkus Aorta burada başlar ve biter.
+        </div>
+
+        <h3>2. Kostalar (Kaburgalar)</h3>
+        <ul>
+            <li><strong>Gerçek Kostalar (1-7):</strong> Direkt sternuma tutunur.</li>
+            <li><strong>Yalancı Kostalar (8-10):</strong> 7. kostanın kıkırdağına tutunur.</li>
+            <li><strong>Yüzen Kostalar (11-12):</strong> Uçları serbesttir.</li>
+        </ul>
+
+        <h3>3. İnterkostal Aralıklar ve VAN Paketi</h3>
+        <p>İki kaburga arasındaki kaslarda damar ve sinirler bulunur.</p>
+        <div class="info-box" style="border-color:#3b82f6;">
+            <strong>⚠️ Klinik: Torasentez / Ponksiyon</strong><br>
+            V.A.N. (Vein, Artery, Nerve) paketi, üstteki kostanın <strong>ALT kenarındaki</strong> olukta (Sulcus Costae) seyreder.<br>
+            Bu yüzden iğne batırırken daima <strong>alt kostanın ÜST kenarından</strong> girilmelidir!
+        </div>
+
+        <a href="anatomi_diyafram.html" class="nav-btn">İleri: Diyafram &rarr;</a>
+    </div>
+</body>
+</html>
