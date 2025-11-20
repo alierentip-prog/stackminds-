@@ -11,7 +11,7 @@
 
     <style>
         /* --- PROFESÖR TEMASI --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0056b3; --accent: #b91c1c; --success: #047857; }
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0056b3; --accent: #b91c1c; }
         body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
         /* SIDEBAR */
@@ -30,16 +30,12 @@
         p, ul, ol, div, table { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
 
         /* KUTULAR */
-        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #c0392b; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
         .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; margin: 20px 0; border-radius: 8px; font-size: 1rem; }
 
         /* EKG KAĞIT EFEKTİ */
-        .ekg-paper {
-            background-color: #fff0f0; background-image: linear-gradient(#ffcccc 1px, transparent 1px), linear-gradient(90deg, #ffcccc 1px, transparent 1px);
-            background-size: 10px 10px, 10px 10px; border: 1px solid #ff9999; padding: 20px; margin: 30px 0; border-radius: 4px;
-            position: relative; height: 180px; display: flex; align-items: center; justify-content: center;
-        }
+        .ekg-paper { background-color: #fff0f0; background-image: linear-gradient(#ffcccc 1px, transparent 1px), linear-gradient(90deg, #ffcccc 1px, transparent 1px); background-size: 10px 10px, 10px 10px; border: 1px solid #ff9999; padding: 20px; margin: 30px 0; border-radius: 4px; position: relative; height: 180px; display: flex; align-items: center; justify-content: center; }
         .ekg-draw { stroke: #111827; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
         /* NAV */
@@ -64,7 +60,7 @@
         <h1>Bölüm 1: EKG'nin Hesapları ve Kuralları</h1>
 
         <p>
-            EKG, kalbin elektriksel olaylarının zaman ve voltaj ekseninde kaydedilmesidir. EKG okumanın ilk adımı, kağıdın hızını ve dalgaların fizyolojik karşılığını bilmektir.
+            EKG, kalbin elektriksel akımlarının bir ortalama vektörünü (dipol) ölçer. Bir derivasyon (elektrot), elektrik dalgası kendisine doğru geliyorsa **pozitif** (yukarı), uzaklaşıyorsa **negatif** (aşağı) dalga çizer.
         </p>
 
         <div class="ekg-paper">
@@ -76,7 +72,7 @@
 
         <h2>1. EKG Kağıdı ve Hız Hesapları</h2>
         <p>
-            Standart EKG kağıdı $\mathbf{25 \text{ mm/sn}}$ hızla akar.
+            Standart EKG kağıdı $\mathbf{25 \text{ mm/sn}}$ hızla akar. Kağıttaki kareler, EKG'deki süreyi ve voltajı hesaplamanın anahtarıdır.
         </p>
 
         <div class="formula-box">
@@ -90,11 +86,11 @@
             Normal **QRS** süresi $\mathbf{\le 0.12 \text{ sn}}$ ($\mathbf{3 \text{ küçük kare}}$)'dir. Eğer QRS genişlerse, ileti Purkinje sistemi yerine kas üzerinden yayılıyor demektir (Dal bloğu veya Ventriküler ritim).
         </div>
 
-        <h2>2. Dalgalar ve Fizyolojik Karşılıkları</h2>
+        <h2>2. Dalgalar ve Fizyolojik Kökenleri</h2>
 
         <h3>P Dalgası (Atriyal Depolarizasyon)</h3>
         <p>
-            **Köken:** Sağ-sol atriyumların uyarılması. Normalde $0.12 \text{ sn}$'den kısadır. P dalgası uzar ve çentiklenirse Sol Atriyal Büyüme (P Mitrale), sivrilir ve yükselirse Sağ Atriyal Büyüme (P Pulmonale) düşünülür.
+            **Köken:** Sağ atriyumdan başlayıp sola ve aşağı doğru yayılan uyarı. Normalde $0.12 \text{ sn}$'den kısadır. P dalgası şekli, atriyumların büyüklüğü hakkında bilgi verir.
         </p>
 
         <h3>PR Aralığı ($\mathbf{0.12 \text{ - } 0.20 \text{ sn}}$)</h3>
@@ -104,20 +100,25 @@
 
         <h3>T Dalgası (Ventriküler Repolarizasyon)</h3>
         <p>
-            Ventriküllerin gevşeme anıdır. **İskemide** T dalgası simetrik olarak negatife döner (inversiyon). **Hiperkalemide** ise dar tabanlı, sivri T dalgası (Çadır T) görülür.
+            Ventriküllerin elektriksel gevşeme anıdır. T dalgası, repolarizasyonun ters yönde ilerlemesi nedeniyle R dalgası ile aynı yöndedir.
         </p>
+        <div class="clinical-box" style="border-color:#ef4444; background:#fff1f2; color:#991b1b;">
+            <strong>Klinik: T Dalgası Değişiklikleri</strong><br>
+            * **İskemi/Enfarktüs:** T dalgası simetrik olarak negatife döner (inversiyon).<br>
+            * **Hiperkalemi:** T dalgası dar tabanlı, sivri (Çadır T) halini alır.
+        </div>
         
         <h2>3. QRS Aksının Hesaplanması (Hızlı Yöntem)</h2>
         <p>
-            QRS aksı, kalbin elektriksel vektörünün hangi yöne baktığını gösterir. Normalde sol alt kadrandadır ($\mathbf{-30^\circ}$ ile $\mathbf{+90^\circ}$ arası).
+            QRS aksı, kalbin elektriksel vektörünün hangi yöne baktığını gösterir. Normal eksen $\mathbf{-30^\circ}$ ile $\mathbf{+90^\circ}$ arasındadır.
         </p>
 
         <div class="logic-box">
             <span class="logic-title"><i class="fa-solid fa-calculator"></i> Mantık: Hızlı Aks Hesaplama (Kadrant Yöntemi)</span>
             <ul>
                 <li><strong>Normal Aks:</strong> Lead I $\mathbf{(+)}$ ve aVF $\mathbf{(+)}$ olmalıdır.</li>
-                <li><strong>Sol Aks Sapması (LAD):</strong> Lead I $\mathbf{(+)}$ ve aVF $\mathbf{(-)}$ (Sol ventrikül büyümesi/Blok).</li>
-                <li><strong>Sağ Aks Sapması (RAD):</strong> Lead I $\mathbf{(-)}$ ve aVF $\mathbf{(+)}$ (Sağ ventrikül büyümesi/Pulmoner emboli).</li>
+                <li><strong>Sol Aks Sapması (LAD):</strong> Lead I $\mathbf{(+)}$ ve aVF $\mathbf{(-)}$ (LVH, Sol Dal Blokları).</li>
+                <li><strong>Sağ Aks Sapması (RAD):</strong> Lead I $\mathbf{(-)}$ ve aVF $\mathbf{(+)}$ (RVH, Pulmoner Emboli).</li>
             </ul>
         </div>
 
