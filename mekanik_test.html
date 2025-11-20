@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ünite Testi | Kalp Mekaniği</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --paper: #f8fafc; --ink: #0f172a; --blue-ink: #0369a1; --correct: #059669; --wrong: #dc2626; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 260px; background: #1e293b; color: #e2e8f0; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid #334155; }
+        .brand { font-weight: bold; font-size: 1.2rem; color: white; text-decoration: none; margin-bottom: 40px; }
+        .menu-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background: #334155; color: white; }
+        .menu-item.active { background: var(--blue-ink); color: white; font-weight: bold; }
+        .quiz-area { flex: 1; padding: 20px 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; }
+        .quiz-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .score-badge { background: #e0f2fe; color: var(--blue-ink); padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+        .question-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; animation: fadeIn 0.4s ease; }
+        .q-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
+        .options-grid { display: grid; gap: 12px; }
+        .option-btn { padding: 15px 20px; border: 2px solid #e2e8f0; background: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 1rem; transition: all 0.2s; position: relative; }
+        .option-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+        .option-btn.correct { border-color: var(--correct); background: #ecfdf5; color: var(--correct); font-weight: bold; }
+        .option-btn.wrong { border-color: var(--wrong); background: #fef2f2; color: var(--wrong); opacity: 0.7; }
+        .explanation-box { margin-top: 25px; padding: 20px; background: #f8fafc; border-left: 5px solid var(--blue-ink); border-radius: 4px; display: none; }
+        .btn-nav { background: var(--ink); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result-screen { text-align: center; display: none; padding-top: 50px; }
+        .final-score { font-size: 4rem; font-weight: 900; color: var(--blue-ink); }
+        @media (max-width: 768px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; flex-direction: row; padding: 15px; justify-content: space-between; } .brand { margin: 0; } .menu-item { display: none; } .quiz-area { padding: 20px; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Menü</a>
+        <a href="mekanik.html" class="menu-item"><i class="fa-solid fa-book-open"></i> Konu 1</a>
+        <a href="mekanik2.html" class="menu-item"><i class="fa-solid fa-chart-area"></i> Konu 2</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+    <main class="quiz-area">
+        <div class="quiz-header" id="quizHeader">
+            <div><h2 style="margin:0;">Kardiyovasküler Sınavı</h2><small>Bölüm: Kalp Mekaniği</small></div>
+            <div class="score-badge">Soru: <span id="currentQ">1</span> / <span id="totalQ">50</span></div>
+        </div>
+        <div id="quizContainer">
+            <div class="question-card">
+                <div class="q-text" id="questionText">Yükleniyor...</div>
+                <div class="options-grid" id="optionsArea"></div>
+                <div class="explanation-box" id="expBox"><span style="font-weight:bold; display:block; color:#64748b;">AÇIKLAMA:</span><span id="expText"></span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;"><button class="btn-nav" id="nextBtn" onclick="nextQuestion()" disabled>Sonraki &rarr;</button></div>
+        </div>
+        <div class="result-screen" id="resultScreen">
+            <h1>Sınav Tamamlandı!</h1>
+            <div class="final-score" id="finalScoreDisplay">0</div>
+            <p id="finalMessage" style="font-size:1.2rem; margin-top:20px;"></p>
+            <button class="btn-nav" onclick="location.reload()">Tekrar Dene ↻</button>
+        </div>
+    </main>
+        <script>
+        const questions = [
+            { q: "Sol ventrikül PV döngüsünde 'Mitral Kapağın Kapandığı' nokta hangisidir?", opt: ["End-Sistolik Hacim", "End-Diastolik Hacim", "Aort basıncı en düşük", "Gevşeme sonu"], correct: 1, exp: "Mitral kapak diyastol sonunda (B Noktası) kapanır." },
+            { q: "İzovolumetrik kasılmada değişim nasıldır?", opt: ["Hacim azalır, Basınç artar", "Hacim artar, Basınç sabit", "Hacim sabit, Basınç artar", "İkisi de azalır"], correct: 2, exp: "Kapaklar kapalı, hacim değişmez, basınç artar." },
+            { q: "S1 kalp sesi (Lup) neyi temsil eder?", opt: ["Aort kapanması", "Mitral/Triküspit kapanması", "Dolum", "Atriyal sistol"], correct: 1, exp: "Sistol başında AV kapaklar kapanır." },
+            { q: "Afterload (Tansiyon) artarsa PV döngüsü ne olur?", opt: ["Sağa genişler", "Yukarı uzar ve daralır", "Sola kayar", "Küçülür"], correct: 1, exp: "Basınç artar ama atılan kan (SV) azalır." },
+            { q: "Frank-Starling: Preload artarsa ne olur?", opt: ["Hız azalır", "Stroke Volume artar", "ESV artar", "Güç azalır"], correct: 1, exp: "Lifler gerildikçe güç artar." },
+            { q: "S2 kalp sesi (Dup) ne zaman duyulur?", opt: ["Kasılma başı", "Fırlatma ortası", "Gevşeme başı (Aort kapanışı)", "Diyastol ortası"], correct: 2, exp: "Sistol sonu Aort kapağı kapanır." },
+            { q: "Aort darlığı üfürümü ne zaman duyulur?", opt: ["Diyastolde", "Sistolde", "Sürekli", "Nefes alırken"], correct: 1, exp: "Sistolik ejeksiyon üfürümüdür." },
+            { q: "Normal Kardiyak Output yaklaşık ne kadardır?", opt: ["2 L", "5 L", "10 L", "20 L"], correct: 1, exp: "Dakikada 5 Litre." },
+            { q: "Kalbi en çok yoran yük hangisidir?", opt: ["Hacim yükü", "Basınç yükü (Afterload)", "Hız düşüklüğü", "AF"], correct: 1, exp: "Basınç üretmek çok ATP harcatır." },
+            { q: "Dikrotik çentik neyi ifade eder?", opt: ["Aort kapanması", "Mitral açılması", "Maksimum basınç", "Atriyal sistol"], correct: 0, exp: "Aort kapanırken oluşan basınç dalgasıdır." },
+            { q: "Atriyal sistol dolumun ne kadarını sağlar?", opt: ["%0", "%20", "%50", "%80"], correct: 1, exp: "Son %20'yi atriyum basar." },
+            { q: "Mitral yetmezliğinde PV döngüsü nasıl olur?", opt: ["İzovolumetrik faz kaybolur", "Aort basıncı artar", "Hacim azalır", "Değişmez"], correct: 0, exp: "Kaçak olduğu için hacim sabit kalamaz." },
+            { q: "Juguler 'a dalgası' nedir?", opt: ["Atriyal sistol", "Ventriküler sistol", "Dolum", "Kapanma"], correct: 0, exp: "Atriyum kasılması." },
+            { q: "EF formülü nedir?", opt: ["SV / EDV", "CO / HR", "EDV - ESV", "BP / R"], correct: 0, exp: "Atım Hacmi / Toplam Hacim." },
+            { q: "S3 sesi kimde patolojiktir?", opt: ["Çocuk", "Hamile", "Yaşlı (Yetmezlik)", "Sporcu"], correct: 2, exp: "Yaşlıda ventrikül sertliğini gösterir." },
+            { q: "Laplace yasası: Duvar gerilimini ne artırır?", opt: ["Duvar kalınlığı", "Yarıçap artışı (Dilatasyon)", "Basınç düşüşü", "Hacim azalışı"], correct: 1, exp: "Kalp büyüdükçe (Dilatasyon) gerilim artar." },
+            { q: "Sol ventrikül ne zaman beslenir (Koroner akım)?", opt: ["Sistol", "Diyastol", "Her ikisi", "Kasılma"], correct: 1, exp: "Sadece gevşediğinde." },
+            { q: "Sempatik uyarıda PV döngüsü?", opt: ["Sağa kayar", "Sola genişler", "Daralır", "Aşağı iner"], correct: 1, exp: "Daha iyi boşaltır, sola kayar." },
+            { q: "Tansiyon 120/80 ise Nabız Basıncı?", opt: ["40", "93", "120", "200"], correct: 0, exp: "120 - 80 = 40." },
+            { q: "Fırlatma ne zaman başlar?", opt: ["Mitral açılınca", "Ventrikül basıncı aortu geçince", "Atriyum kasılınca", "T dalgasında"], correct: 1, exp: "80 mmHg aşılınca kapak açılır." },
+            { q: "S4 sesi nedir?", opt: ["Açılma sesi", "Dolum sesi", "Atriyal vuruş (Sert kalp)", "Kapanma"], correct: 2, exp: "Hipertrofide duyulur." },
+            { q: "Mitral darlığı üfürümü?", opt: ["Sistolik", "Diyastolik (Rulman)", "Sürekli", "Yok"], correct: 1, exp: "Diyastolde kan geçerken öter." },
+            { q: "Normal ESV ne kadardır?", opt: ["0 ml", "50 ml", "120 ml", "150 ml"], correct: 1, exp: "Kalp tam boşalmaz, 50ml kalır." },
+            { q: "Kalp debisi formülü?", opt: ["SV x HR", "BP / R", "EDV - ESV", "EF x EDV"], correct: 0, exp: "Hız x Hacim." },
+            { q: "Sistoldeki maksimum aort basıncı?", opt: ["Diyastolik", "Sistolik", "Ortalama", "Nabız"], correct: 1, exp: "Sistolik basınçtır." },
+            { q: "PV döngüsü ne zaman yuvarlaklaşır?", opt: ["Aort darlığı", "Mitral darlığı", "Mitral yetmezliği", "Aort yetmezliği"], correct: 2, exp: "İzovolumetrik faz yoksa kare olamaz." },
+            { q: "Juguler 'v dalgası'?", opt: ["Kasılma", "Venöz dolum", "Atriyal sistol", "Aort"], correct: 1, exp: "Atriyuma kan dolması." },
+            { q: "Kalp yetmezliği kompanzasyonu?", opt: ["Sıvı tutulumu (Preload artışı)", "Yavaşlama", "Gevşeme", "İdrar"], correct: 0, exp: "Starling yasasını kullanmak ister." },
+            { q: "Ortalama Arter Basıncı (MAP)?", opt: ["Ortalama", "Diyastolik + 1/3 Nabız Basıncı", "Fark", "Çarpım"], correct: 1, exp: "Diyastole daha yakındır." },
+            { q: "Hangi kapak en erken kapanır?", opt: ["Aort (A2)", "Pulmoner (P2)", "Mitral", "Triküspit"], correct: 0, exp: "Sol taraf daha güçlüdür." },
+            { q: "Fizyolojik S2 çiftleşmesi?", opt: ["Nefes verme", "Nefes alma (İnspirasyon)", "Ikınma", "Yatma"], correct: 1, exp: "Sağ kalbe kan dolar, P2 gecikir." },
+            { q: "İzovolumetrik gevşemede basınç nereye düşer?", opt: ["80", "100", "0-5 mmHg", "Değişmez"], correct: 2, exp: "Atriyum seviyesine inmeli." },
+            { q: "PDA üfürümü?", opt: ["Sistolik", "Diyastolik", "Sürekli (Makine)", "Geç"], correct: 2, exp: "Basınç farkı hep vardır." },
+            { q: "Aort yetmezliğinde Nabız Basıncı?", opt: ["Sistolik düşer", "Diyastolik artar", "Aralık açılır (Artar)", "Değişmez"], correct: 2, exp: "Sistolik artar, diyastolik düşer." },
+            { q: "Sporcu kalbinde ne olur?", opt: ["Taşikardi", "Bradikardi ve Yüksek SV", "Düşük EF", "HT"], correct: 1, exp: "Güçlüdür, yavaş atar." },
+            { q: "Preload göstergesi?", opt: ["Aort basıncı", "EDV (End-Diastolik Hacim)", "Hız", "Kalınlık"], correct: 1, exp: "Dolum hacmidir." },
+            { q: "Lusitropi nedir?", opt: ["Güç", "Gevşeme hızı", "İletim", "Hız"], correct: 1, exp: "Gevşeme yeteneği." },
+            { q: "Kalp neden kramp girmez?", opt: ["Kalsiyum az", "Refrakter dönem uzun", "Sodyum yok", "ATP az"], correct: 1, exp: "Kasılma bitmeden uyarılamaz." },
+            { q: "Kardiyak İndeks?", opt: ["Debi / Vücut Yüzey Alanı", "SV / Kilo", "Hız / Boy", "EF"], correct: 0, exp: "Metrekareye düşen debi." },
+            { q: "PCWP neyi gösterir?", opt: ["Sağ basınç", "Sol atriyum basıncı", "Aort", "Vena"], correct: 1, exp: "Sol dolum basıncı." },
+            { q: "Reynolds sayısı?", opt: ["Hız", "Türbülans ihtimali", "Oksijen", "Esneklik"], correct: 1, exp: "2000'i geçerse üfürüm olur." },
+            { q: "Viskoziteyi belirleyen?", opt: ["Albumin", "Hematokrit", "Sodyum", "Şeker"], correct: 1, exp: "Kan hücresi yoğunluğu." },
+            { q: "Bernoulli: Darlıkta hız?", opt: ["Yavaşlar", "Artar", "Değişmez", "Durur"], correct: 1, exp: "Basınç düşer, hız artar." },
+            { q: "Eko E dalgası?", opt: ["Atriyal sistol", "Erken hızlı dolum", "Aort", "Kaçak"], correct: 1, exp: "Erken dolum." },
+            { q: "Konsantrik Hipertrofi nedeni?", opt: ["Hacim", "Basınç yükü", "Spor", "Hız"], correct: 1, exp: "Duvar kalınlaşır." },
+            { q: "Eksantrik Hipertrofi nedeni?", opt: ["Basınç", "Hacim yükü (Kaçak)", "İskemi", "Şok"], correct: 1, exp: "Oda genişler." },
+            { q: "Nabız dalgası hızı?", opt: ["Kandan yavaştır", "Kandan çok hızlıdır", "Eşittir", "Yoktur"], correct: 1, exp: "Dalga 10 m/sn, kan 0.5 m/sn." },
+            { q: "EDV 120, ESV 60 ise EF?", opt: ["40", "50", "60", "70"], correct: 1, exp: "60/120 = %50." },
+            { q: "Triküspit dinleme odağı?", opt: ["Apeks", "2. Sağ", "Sol alt sternal kenar", "Koltuk"], correct: 2, exp: "4-5. aralık." },
+            { q: "Paradoksal çiftleşme?", opt: ["Sağ blok", "Sol blok / Aort darlığı", "Normal", "PDA"], correct: 1, exp: "Aort çok gecikir, nefes verince ayrılır." }
+        ];
+             </script>
+                 <script>
+        let qIdx = 0; let score = 0;
+        const qArea = document.getElementById('optionsArea');
+        const qTxt = document.getElementById('questionText');
+        const expBox = document.getElementById('expBox');
+
+        function loadQ() {
+            const q = questions[qIdx];
+            qTxt.innerHTML = (qIdx+1) + ". " + q.q;
+            qArea.innerHTML = '';
+            expBox.style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('currentQ').innerText = qIdx+1;
+
+            q.opt.forEach((o, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = o;
+                btn.onclick = () => check(i, btn, q);
+                qArea.appendChild(btn);
+            });
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function check(i, btn, q) {
+            const btns = qArea.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            if(i === q.correct) { btn.classList.add('correct'); score++; }
+            else { btn.classList.add('wrong'); btns[q.correct].classList.add('correct'); }
+            
+            document.getElementById('expText').innerHTML = q.exp;
+            expBox.style.display = 'block';
+            document.getElementById('nextBtn').disabled = false;
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function nextQuestion() {
+            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
+            else {
+                document.getElementById('quizContainer').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                document.getElementById('finalScoreDisplay').innerText = score + " / 50";
+                let msg = score >= 40 ? "Tebrikler Doktor!" : score >= 25 ? "İdare eder." : "Kaldın. Tekrar çalış.";
+                document.getElementById('finalMessage').innerText = msg;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>
