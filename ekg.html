@@ -16,33 +16,25 @@
 
         /* SIDEBAR */
         .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; z-index:10; font-family: sans-serif; }
-        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: #f1c40f; text-decoration: none;}
-        .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
-        .menu-item.active { background: #34495e; color: white; font-weight: bold; }
-
+        
         /* CONTENT */
-        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 900px; background: white; min-height: 100vh; }
         h1 { font-size: 2.5rem; font-family: sans-serif; color: var(--blue-ink); border-bottom: 3px solid var(--blue-ink); padding-bottom: 10px; }
         h2 { margin-top: 50px; color: var(--accent); font-weight: bold; border-left: 5px solid var(--accent); padding-left: 15px; }
-        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
         /* DÜZEN DÜZELTMESİ (KRİTİK) */
         p, ul, ol, div, table { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
 
         /* KUTULAR */
-        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #c0392b; }
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
         .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; margin: 20px 0; border-radius: 8px; font-size: 1rem; }
-
-        /* EKG KAĞIT EFEKTİ */
-        .ekg-paper { background-color: #fff0f0; background-image: linear-gradient(#ffcccc 1px, transparent 1px), linear-gradient(90deg, #ffcccc 1px, transparent 1px); background-size: 10px 10px, 10px 10px; border: 1px solid #ff9999; padding: 20px; margin: 30px 0; border-radius: 4px; position: relative; height: 180px; display: flex; align-items: center; justify-content: center; }
-        .ekg-draw { stroke: #111827; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
         /* NAV */
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
         .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
@@ -90,7 +82,7 @@
 
         <h3>P Dalgası (Atriyal Depolarizasyon)</h3>
         <p>
-            **Köken:** Sağ atriyumdan başlayıp sola ve aşağı doğru yayılan uyarı. Normalde $0.12 \text{ sn}$'den kısadır. P dalgası şekli, atriyumların büyüklüğü hakkında bilgi verir.
+            **Köken:** Sağdan sola ve aşağı doğru yayılan uyarı. Normalde $0.12 \text{ sn}$'den kısadır. P dalgası şekli, atriyumların büyüklüğü hakkında bilgi verir.
         </p>
 
         <h3>PR Aralığı ($\mathbf{0.12 \text{ - } 0.20 \text{ sn}}$)</h3>
@@ -100,7 +92,7 @@
 
         <h3>T Dalgası (Ventriküler Repolarizasyon)</h3>
         <p>
-            Ventriküllerin elektriksel gevşeme anıdır. T dalgası, repolarizasyonun ters yönde ilerlemesi nedeniyle R dalgası ile aynı yöndedir.
+            Ventriküllerin elektriksel gevşeme anıdır. **İskemide** T dalgası simetrik olarak negatife döner (inversiyon). **Hiperkalemide** ise dar tabanlı, sivri T dalgası (Çadır T) görülür.
         </p>
         <div class="clinical-box" style="border-color:#ef4444; background:#fff1f2; color:#991b1b;">
             <strong>Klinik: T Dalgası Değişiklikleri</strong><br>
@@ -129,4 +121,5 @@
     </main>
 
 </body>
-</html>
+    </html>
+            
