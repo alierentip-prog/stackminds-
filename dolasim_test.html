@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ünite Testi | Dolaşım Final</title>
+    <title>Ünite Testi | Dolaşım Fizyolojisi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
     <style>
         :root { --paper: #f8fafc; --ink: #0f172a; --blue-ink: #0369a1; --correct: #059669; --wrong: #dc2626; }
         body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 260px; background: #1e293b; color: #e2e8f0; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid #334155; }
         .brand { font-weight: bold; font-size: 1.2rem; color: white; text-decoration: none; margin-bottom: 40px; }
         .menu-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background: #334155; color: white; }
         .menu-item.active { background: var(--blue-ink); color: white; font-weight: bold; }
         .quiz-area { flex: 1; padding: 20px 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; }
         .quiz-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
@@ -32,6 +31,7 @@
         .result-screen { text-align: center; display: none; padding-top: 50px; }
         .final-score { font-size: 4rem; font-weight: 900; color: var(--blue-ink); }
         @media (max-width: 768px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; flex-direction: row; padding: 15px; justify-content: space-between; } .brand { margin: 0; } .menu-item { display: none; } .quiz-area { padding: 20px; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -39,11 +39,12 @@
         <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Menü</a>
         <a href="dolasim.html" class="menu-item"><i class="fa-solid fa-book-open"></i> Konu 1</a>
         <a href="dolasim2.html" class="menu-item"><i class="fa-solid fa-water"></i> Konu 2</a>
+        <a href="dolasim3.html" class="menu-item"><i class="fa-solid fa-brain"></i> Konu 3</a>
         <a href="#" class="menu-item active"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
     <main class="quiz-area">
         <div class="quiz-header" id="quizHeader">
-            <div><h2 style="margin:0;">Dolaşım Fizyolojisi Final Sınavı</h2><small>Bölüm: Akım, Direnç ve Regülasyon</small></div>
+            <div><h2 style="margin:0;">Dolaşım Fizyolojisi Sınavı</h2><small>Bölüm: Hemodinamik ve Regülasyon</small></div>
             <div class="score-badge">Soru: <span id="currentQ">1</span> / <span id="totalQ">50</span></div>
         </div>
         <div id="quizContainer">
@@ -101,7 +102,7 @@
             { q: "MAP'ın normalin altına düşmesi neyi tetikler?", opt: ["Baroreseptörleri bloke eder", "Kemoreseptörleri uyarır", "RAAS'ı inhibe eder", "Böbrek su çıkışını artırır"], correct: 1, exp: "Basınç çok düşünce doku perfüzyonu bozulur. Kemoreseptörler (Oksijen/CO2) uyarılır." },
             { q: "Kanın hidrolik basıncı ile ilgili ifade hangisidir?", opt: ["Arterlerde en düşüktür", "Kapillerden venlere doğru artar", "Kapillerden venlere doğru azalır", "Atriyumda en yüksektir"], correct: 2, exp: "Kalpten uzaklaştıkça sürtünme ve iş kaybı nedeniyle basınç düşer." },
             { q: "Nabız basıncının azalmasının (örn. 90/80 mmHg) en sık nedeni nedir?", opt: ["Aort yetmezliği", "Kardiyojenik şok / Sıvı kaybı (Düşük SV)", "Hipertansiyon", "Yaşlılık"], correct: 1, exp: "Şokta SV çok düşer, tansiyonlar birbirine yaklaşır." },
-            { q: "Lenfatik akış ne zaman artar?", opt: ["Kapiller basıncı düşerse", "Dokuda protein ve sıvı birikimi (Ödem) artarsa", "Kan viskozitesi artarsa", "Vazokonstriksiyon olursa"], correct: 1, exp: "Doku aralığına sızan sıvı ve protein artınca, lenfatik damarların basınç farkı artar ve akış hızlanır." },
+            { q: "Lenfatik akış ne zaman artar?", opt: ["Kapiller basıncı düşerse", "Dokuda protein ve sıvı birikimi (Ödem) artarsa", "Kan viskozitesinin artarsa", "Vazokonstriksiyon olursa"], correct: 1, exp: "Doku aralığına sızan sıvı ve protein artınca, lenfatik damarların basınç farkı artar ve akış hızlanır." },
             { q: "Renal arterin stenozu (daralması) neye yol açar?", opt: ["Hiponatremi", "Primer Hipertansiyon", "Sekonder Hipertansiyon (RAAS aktivasyonu)", "Hipovolemi"], correct: 2, exp: "Böbrek, kan akımı azaldığı için vücudun tansiyonu düşük sanar ve RAAS'ı devreye sokar." },
             { q: "Anti-diüretik hormon (ADH) hangi basınç dengesini sağlar?", opt: ["Sadece $P_c$", "Sadece $P_i$", "Ozmolarite ve Hacim", "Total periferik direnç"], correct: 2, exp: "Ozmolarite yükselince (su eksikliği) hipotalamus uyarılır ve ADH salınır." },
             { q: "Aşağıdakilerden hangisi vazokonstriktör (damar büzücü) etkiye sahiptir?", opt: ["Nitrik Oksit (NO)", "Anjiyotensin II", "Histamin", "Adenozin"], correct: 1, exp: "Anjiyotensin II, vücudun en güçlü vazokonstriktörlerindendir." },
@@ -117,8 +118,8 @@
             { q: "End-Diastolik Hacim (EDV) neden her zaman End-Systolic Volume (ESV)'den büyüktür?", opt: ["SV her zaman pozitiftir", "Kalp tam boşalmaz", "Kan basıncı sabittir", "Kapaklar kapalıdır"], correct: 0, exp: "Stroke Volume (SV) her zaman pozitif bir değer olduğu için EDV > ESV olmak zorundadır." },
             { q: "Vagal (Parasempatik) uyarım tansiyonu nasıl düşürür?", opt: ["Vazokonstriksiyon ile", "Hız artışı ile", "Kalp hızını düşürüp (CO'yu azaltarak)", "Hacim artışı"], correct: 2, exp: "CO = SV x HR. HR'yi düşürerek CO'yu düşürür." }
         ];
-        </script>
-            <script>
+                                                                                 </script>
+                                                                                     <script>
         let qIdx = 0; let score = 0;
         const qArea = document.getElementById('optionsArea');
         const qTxt = document.getElementById('questionText');
