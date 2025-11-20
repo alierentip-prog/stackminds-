@@ -10,32 +10,36 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        /* --- AKADEMİK TEMA --- */
+        /* --- PROFESÖR TEMASI --- */
         :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
-        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
-        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
-        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
-        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: #f1c40f; text-decoration: none;}
+        .chapter-link { display: block; padding: 10px; margin-bottom: 5px; text-decoration: none; color: #bdc3c7; border-bottom: 1px solid #34495e; }
+        .chapter-link.active { background: #34495e; color: white; font-weight: bold; }
 
         /* CONTENT */
-        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
-        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: var(--blue-ink); border-bottom: 3px solid var(--blue-ink); padding-bottom: 10px; }
+        h2 { margin-top: 50px; color: var(--accent); font-weight: bold; border-left: 5px solid var(--accent); padding-left: 15px; }
         h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
+        /* DÜZEN DÜZELTMESİ VE PARAGRAF AYARI */
+        p, ul, ol, div, table { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
+
         /* ÖZEL KUTULAR */
         .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        .game-panel { background: #fff; border: 2px solid #ccc; padding: 20px; border-radius: 10px; text-align: center; margin: 30px 0; }
-        .bp-display { font-size: 2.5rem; font-weight: bold; color: #b91c1c; margin: 10px 0; font-family: 'Courier New', monospace; }
-        .btn-action { background: var(--blue-ink); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
-
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
+        .trap-title { color: #c0392b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
+        
         /* NAV */
-        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
-        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; background: var(--accent); color: white; }
+        .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
+        .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
@@ -46,7 +50,7 @@
         <a href="dolasim.html" class="chapter-link">1. Akışın Temel Fiziği</a>
         <a href="dolasim2.html" class="chapter-link">2. Mikro Dolaşım ve RAAS</a>
         <a href="dolasim3.html" class="chapter-link active">3. Baroreseptörler</a>
-        <a href="dolasim_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+        <a href="dolasim_test.html" class="chapter-link" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
     <main class="page-content">
@@ -54,91 +58,77 @@
         <h1>Bölüm 3: Kısa Süreli Tansiyon Regülasyonu</h1>
 
         <p>
-            Vücudun anlık pozisyon değişikliklerine (örn. aniden ayağa kalkma) veya hafif kan kayıplarına karşı tansiyonu saniyeler içinde düzelten sinirsel mekanizmaları inceleyeceğiz.
+            Dolaşım sisteminin en hızlı yanıt veren kontrol mekanizmaları sinirsel kökenlidir. Bu sistemler, tansiyonun saniyeler içinde düşmesi veya yükselmesi durumunda, özellikle beyin kan akımını korumak için hayati önem taşır.
         </p>
 
-        <h2>1. Baroreseptör Refleksi (Sinirsel Regülasyon)</h2>
+        <h2>1. Baroreseptör Refleksi: Sürat Mekanizması</h2>
         <p>
-            Baroreseptörler, kan basıncına hassas sinir uçlarıdır. Esas olarak Aort yayı ve Karotid Sinüs (şah damarı) duvarında bulunurlar.
+            Baroreseptörler, arter duvarındaki basınç değişikliklerine (gerilmeye) son derece duyarlı sinir sonlanmalarıdır. Bu refleks, tansiyonu birkaç kalp atımı içinde hızla normale döndürme yeteneğine sahiptir, bu yüzden **"Yastıklama Sistemi"** olarak da adlandırılır.
         </p>
 
-        <h3>Refleks Yayı (Arc)</h3>
+        <h3>Anatomi ve İletim Yolu:</h3>
         <p>
-            Baroreseptörler tansiyon yükseldiğinde daha çok sinyal, düştüğünde daha az sinyal gönderirler. Bu sinyaller, beyindeki **Vazomotor Merkeze (VMC)** gider.
+            Baroreseptör sinyalleri iki ana yolla taşınır:
         </p>
-        <ul>
-            <li><strong>Tansiyon Yükselirse:</strong> VMC, sempatik sistemi **frenler** ve parasempatik sistemi (Vagus) **aktive eder**. Sonuç: Kalp yavaşlar ve damarlar gevşer (Tansiyon düşer).</li>
-            <li><strong>Tansiyon Düşerse:</strong> VMC, sempatik sistemi **ateşler**. Sonuç: Kalp hızlanır, damarlar kasılır (Vazokonstriksiyon) (Tansiyon yükselir).</li>
-        </ul>
-
-        <div class="def-box">
-            <i class="fa-solid fa-gauge-high"></i> <strong>Özellik:</strong> Baroreseptörler en çok **basınç değişim hızına** hassastır. Kronik (uzun süreli) yüksek tansiyonda (Hipertansiyon) ise adapte olurlar ve yeni yüksek seviyeyi "normal" kabul etmeye başlarlar.
-        </div>
-
-        <h3>İnteraktif Senaryo: Ortostatik Hipotansiyon</h3>
-        <p>Simülasyonu başlatın. Ayağa kalkınca tansiyonunuz düşecek, VMC'nin tepki vermesini bekleyin.</p>
+        <ol>
+            <li><strong>Karotis Sinüsü:</strong> Karotis bifurkasyonunda (şah damarı ayrım noktası) bulunur. Sinyaller, **Glossopharyngeal Sinir (IX. Kraniyal Sinir)** ile beyin sapındaki Vazomotor Merkeze (VMC) iletilir.</li>
+            <li><strong>Aort Yayı:</strong> Aortun yaylandığı bölgede bulunur. Sinyaller, **Vagus Siniri (X. Kraniyal Sinir)** ile VMC'ye iletilir.</li>
+        </ol>
         
-        <div class="game-panel">
-            <p>Durum: <span id="situation">Dinlenmede</span></p>
-            <div class="bp-display" id="bpDisplay">120/80</div>
-            <p id="feedback">Tansiyon stabil. Sempatik/Parasempatik denge korunuyor.</p>
-            <button class="btn-action" onclick="startScenario()">Aniden Ayağa Kalk</button>
+        <div class="logic-box">
+            <i class="fa-solid fa-bolt"></i> **Refleksin Çalışma Prensibi:**
+            Tansiyon $\uparrow$ $\rightarrow$ Baroreseptör uyarı frekansı $\uparrow$ $\rightarrow$ VMC'ye İNHİBİSYON $\rightarrow$ **Sempatik Sistem $\downarrow$** ve **Parasempatik (Vagal) Sistem $\uparrow$** $\rightarrow$ Kalp Hızı $\downarrow$ ve Damar Genişlemesi (Vazodilatasyon) $\rightarrow$ Tansiyon $\downarrow$.
         </div>
 
+        <div class="trap-box">
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Kritik Bilgi: Baroreseptör Adaptasyonu</span>
+            Baroreseptörler, tansiyonu **kısa vadede** ayarlar. Eğer tansiyon kronik olarak (birkaç gün) yüksek kalırsa, reseptörler **adapte olur** ve yeni yüksek basıncı "normal" kabul etmeye başlar. Bu yüzden uzun süreli hipertansiyon tedavisinde **etkili değillerdir**.
+        </div>
+        
         <h2>2. Lokal Kan Akımı Kontrolü (Oto-regülasyon)</h2>
         <p>
-            Beyin ve kalp gibi kritik organların kendi kan akımlarını ayarlama yetenekleri vardır. Buna **Oto-regülasyon** denir.
+            Damarların bir sistemik kontrol (Sinirsel/Hormonal) beklemeden, **lokal** metabolik ihtiyaca veya basınç değişimine yanıt verme yeteneğidir.
         </p>
+
+        <h3>a) Metabolik Kontrol (Adenozin ve Oksijen)</h3>
         <ul>
-            <li><strong>Metabolik Kontrol:</strong> Dokular çalışınca $O_2$ azalır, $CO_2$, $H^+$ (asit) ve <strong>Adenozin</strong> gibi atıklar birikir. Bu maddeler direk damar duvarını gevşetir (Vazodilatasyon) ve akımı artırır.</li>
-            <li><strong>Miyojenik Kontrol:</strong> Damar duvarının gerilmesi, kasın refleks olarak kasılmasına (Vazokonstriksiyon) neden olur. Bu, kan basıncı dalgalansa bile akımı sabit tutmaya çalışır.</li>
+            <li>**Vazodilatör Maddeler:** Doku çalışırken $O_2$ azalır ve metabolitler birikir. Bu maddeler (özellikle **Adenozin**, $CO_2$, $K^+$, $H^+$, Laktat, Histamin) direkt olarak damar düz kasını gevşetir ve akımı artırır (**Aktif Hiperemi**).</li>
+            <li>**Adenozin'in Önemi:** Özellikle kalpteki (Koroner Dolaşım) lokal akımın ayarlanmasında en güçlü vazodilatördür. İskemi (Oksijen Açlığı) durumunda hızla salınır.</li>
         </ul>
         
-        <div class="warning-box" style="border-color:#047857; color:#064e3b;">
-            <strong>Klinik İpucu: Adenozin</strong><br>
-            Kalp kası oksijensiz kaldığında (İskemi), doku savunma amacıyla Adenozin salgılar. Adenozin, koroner damarları genişleterek bölgeye daha fazla kan gelmesini sağlar.
+        <h3>b) Miyojenik Kontrol (Basınç Tepkisi)</h3>
+        <p>
+            Damar duvarındaki düz kas, ani gerilmeye (yüksek basınç) yanıt olarak refleks olarak kasılır (**Vazokonstriksiyon**). Bu, yüksek basınç altında bile organa giden kan akımını **sabit** tutmaya yardımcı olur (Oto-regülasyon).
+        </p>
+
+        <div class="logic-box">
+            <span class="logic-title">Klinik Öncelik Sırası</span>
+            Kılcal yatak düzeyinde, akım kontrolünde **lokal metabolik ihtiyaçlar**, sistemik sinirsel kontrolden (Baroreseptörler) bile daha önceliklidir.
         </div>
 
+        <h2>3. Kritik Durum Refleksleri</h2>
+        
+        <h3>a) CNS İskemik Yanıt (CNS Ischemic Response)</h3>
+        <p>
+            Ortalama Arteriyel Basınç (MAP) $< 60 \text{ mmHg}$ altına düştüğünde, beyin sapı ciddi kan akımı eksikliği yaşar.
+        </p>
+        <div class="trap-box" style="border-color:#b91c1c;">
+            <span class="trap-title">Cushing Refleksi (Maksimum Alarm)</span>
+            Bu durum, **Sempatik Sistemin** şimdiye kadarki en güçlü ve genel aktivasyonunu tetikler. Tüm periferik arterler maksimum seviyede büzülür (Vazokonstriksiyon), bu da tansiyonu bazen $250 \text{ mmHg}$'ye kadar fırlatır. Amaç: **Beyni hayatta tutmaktır.** Bu tepki, Baroreseptör refleksini bile geçersiz kılar.
+        </div>
+        
+        <h3>b) Kemoreseptör Refleksi</h3>
+        <p>
+            Karotis ve Aort cisimciklerinde bulunan kemoreseptörler, esas olarak düşük $O_2$ ($P_aO_2$) ve yüksek $CO_2$/$H^+$ (pH düşüşü) seviyelerine duyarlıdır.
+        </p>
+        <ul>
+            <li>Oksijenin çok düşmesi durumunda VMC'yi uyararak güçlü vazokonstriksiyon başlatır. Bu, Baroreseptörlerin yetersiz kaldığı **düşük oksijenli şok** durumlarında önemli bir yedek mekanizmadır.</li>
+        </ul>
 
-        <div class="page-nav">
-            <a href="dolasim2.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Bölüm 2: Mikro Dolaşım ve RAAS</a>
-            <a href="dolasim_test.html" class="nav-btn next">Ünite Testi (50 Soru) &rarr;</a>
+        <div class="nav-area">
+            <a href="dolasim2.html" class="btn prev" style="background:#7f8c8d">&larr; Bölüm 2: Mikro Dolaşım ve RAAS</a>
+            <a href="dolasim_test.html" class="btn next">Ünite Testi (50 Soru) &rarr;</a>
         </div>
     </main>
-
-    <script>
-        // --- BARORESEPTÖR SENARYOSU ---
-        const bpDisplay = document.getElementById('bpDisplay');
-        const feedback = document.getElementById('feedback');
-        const situation = document.getElementById('situation');
-        const btnAction = document.querySelector('.btn-action');
-        let currentHR = 70;
-
-        function updateDisplay(systolic, diastolic, hr, statusText, color) {
-            bpDisplay.innerText = `${systolic}/${diastolic}`;
-            bpDisplay.style.color = color;
-            feedback.innerText = statusText;
-            situation.innerText = statusText.split('.')[0];
-            currentHR = hr;
-        }
-
-        function startScenario() {
-            btnAction.disabled = true;
-            btnAction.innerText = "REFLEKS BAŞLIYOR...";
-            
-            // 1. Düşüş (Ortostatik Hipotansiyon)
-            updateDisplay(100, 60, 70, "Başlangıç: Tansiyon DÜŞTÜ (Refleks tetiklendi)", '#b91c1c');
-
-            // 2. Sempatik Tepki (3 saniye sonra)
-            setTimeout(() => {
-                updateDisplay(115, 75, 95, "Sempatik Tepki: Kalp Hızlandı ve Damarlar Daraldı (Kompansasyon)", '#047857');
-                btnAction.innerText = "Ayağa Kalktı (Stabil)";
-                btnAction.disabled = false;
-            }, 3000);
-        }
-        
-        // Başlangıçta Normal Durum
-        updateDisplay(120, 80, 70, "Dinlenmede. Tansiyon stabil.", '#333');
-    </script>
 </body>
 </html>
