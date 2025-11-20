@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EKG Temelleri ve Vektörler | Stackminds Kütüphanesi</title>
+    <title>EKG Temelleri ve Hesaplamalar | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
@@ -11,8 +11,8 @@
 
     <style>
         /* --- PROFESÖR TEMASI --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
-        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0056b3; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
         /* SIDEBAR */
         .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; z-index:10; font-family: sans-serif; }
@@ -26,11 +26,11 @@
         h2 { margin-top: 50px; color: var(--accent); font-weight: bold; border-left: 5px solid var(--accent); padding-left: 15px; }
         h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
-        /* DÜZEN DÜZELTMESİ VE PARAGRAF AYARI */
+        /* DÜZEN DÜZELTMESİ (KRİTİK) */
         p, ul, ol, div, table { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
 
         /* KUTULAR */
-        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #c0392b; }
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
         .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; margin: 20px 0; border-radius: 8px; font-size: 1rem; }
 
@@ -46,7 +46,7 @@
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
         .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
@@ -61,10 +61,10 @@
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
-        <h1>Bölüm 1: EKG'nin Elektriksel Temelleri</h1>
+        <h1>Bölüm 1: EKG'nin Hesapları ve Kuralları</h1>
 
         <p>
-            EKG, kalpteki elektrik akımlarının bir ortalama vektörünü (dipol) ölçer. Bir derivasyon (elektrot), elektrik dalgası kendisine doğru geliyorsa **pozitif** (yukarı), uzaklaşıyorsa **negatif** (aşağı) dalga çizer.
+            EKG, kalbin elektriksel olaylarının zaman ve voltaj ekseninde kaydedilmesidir. EKG okumanın ilk adımı, kağıdın hızını ve dalgaların fizyolojik karşılığını bilmektir.
         </p>
 
         <div class="ekg-paper">
@@ -74,56 +74,51 @@
             </svg>
         </div>
 
-        <h2>1. Dalgaların Fizyolojik Kökeni</h2>
+        <h2>1. EKG Kağıdı ve Hız Hesapları</h2>
+        <p>
+            Standart EKG kağıdı $\mathbf{25 \text{ mm/sn}}$ hızla akar.
+        </p>
+
+        <div class="formula-box">
+            $$\text{Küçük Kare (1mm)} = 0.04 \text{ sn}$$
+            $$\text{Büyük Kare (5mm)} = 0.20 \text{ sn}$$
+            $$\text{Hız} (\text{atım/dk}) = \frac{300}{\text{İki R arası Büyük Kare Sayısı}}$$
+        </div>
+
+        <div class="trap-box">
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: QRS Süresi</span>
+            Normal **QRS** süresi $\mathbf{\le 0.12 \text{ sn}}$ ($\mathbf{3 \text{ küçük kare}}$)'dir. Eğer QRS genişlerse, ileti Purkinje sistemi yerine kas üzerinden yayılıyor demektir (Dal bloğu veya Ventriküler ritim).
+        </div>
+
+        <h2>2. Dalgalar ve Fizyolojik Karşılıkları</h2>
 
         <h3>P Dalgası (Atriyal Depolarizasyon)</h3>
         <p>
-            **Köken:** SA düğümden çıkan uyarının sağdan sola ve aşağı doğru tüm atriyumları uyarmasıdır. Vektör aşağı-sola baktığı için D2'de pozitiftir.
-            <br><em>Klinik:</em> P dalgasının genişleyip çentiklenmesi (P Mitrale) sol atriyum büyümesi; sivrileşip yükselmesi (P Pulmonale) sağ atriyum büyümesi demektir.
+            **Köken:** Sağ-sol atriyumların uyarılması. Normalde $0.12 \text{ sn}$'den kısadır. P dalgası uzar ve çentiklenirse Sol Atriyal Büyüme (P Mitrale), sivrilir ve yükselirse Sağ Atriyal Büyüme (P Pulmonale) düşünülür.
         </p>
-
-        <h3>QRS Kompleksi (Ventriküler Depolarizasyon)</h3>
-        <p>
-            Ventriküllerin elektriksel uyarılmasıdır. Vektör, büyük kas kütlesi nedeniyle çok büyük ve hızlıdır.
-        </p>
-        <div class="logic-box">
-            <span class="logic-title">QRS Mantığı</span>
-            Q dalgası (ilk negatif dalga): Septumun soldan sağa doğru ilk uyarılması. R dalgası (ilk pozitif): Ventrikül kasının ana kütlesi. S dalgası: Kalp tabanının son uyarılması.
-        </div>
-
-        <h3>T Dalgası (Ventriküler Repolarizasyon)</h3>
-        <p>
-            Ventriküllerin elektriksel gevşeme anıdır.
-            <br><em>Klinik:</em> İskemide (beslenme bozukluğu) T dalgası simetrik olarak negatifleşebilir (inversiyon).
-        </p>
-        
-        <h2>2. Kritik Aralıklar ve Segmentler</h2>
 
         <h3>PR Aralığı ($\mathbf{0.12 \text{ - } 0.20 \text{ sn}}$)</h3>
         <p>
-            P dalgasının başlangıcından QRS kompleksinin başlangıcına kadar olan süredir. Bu, **AV Düğümdeki bekletme süresini** içerir.
+            P başlangıcından QRS başlangıcına kadar geçen süredir. Bu aralık, **AV Düğümdeki bekletme süresini** içerir. $\mathbf{0.20 \text{ sn}}$'yi aşarsa **1. Derece AV Blok** demektir.
         </p>
-        <div class="trap-box">
-            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: İletim Süreleri</span>
-            **Uzun PR** ($\mathbf{> 0.20 \text{ sn}}$): 1. Derece AV Blok.<br>
-            **Kısa PR** ($\mathbf{< 0.12 \text{ sn}}$): WPW (Aksesuar yolun erken uyarması).
-        </div>
 
-        <h3>QT Aralığı ($\mathbf{0.36 \text{ - } 0.44 \text{ sn}}$)</h3>
+        <h3>T Dalgası (Ventriküler Repolarizasyon)</h3>
         <p>
-            Ventrikülün tüm elektriksel aktivite süresidir (elektriksel sistol). Kalp hızına göre düzeltilmelidir ($\text{QTc}$).
+            Ventriküllerin gevşeme anıdır. **İskemide** T dalgası simetrik olarak negatife döner (inversiyon). **Hiperkalemide** ise dar tabanlı, sivri T dalgası (Çadır T) görülür.
         </p>
-        <div class="logic-box" style="border-color:#4f46e5; color:#4f46e5;">
-            **Mantık:** Uzun QT, repolarizasyonun çok yavaşladığını gösterir. Bu, kalbin faz 3'te olduğu ve kırılgan olduğu anlamına gelir. **Torsades de Pointes** (Ölümcül VT) riskini artırır.
-        </div>
         
-        <h3>ST Segmenti</h3>
+        <h2>3. QRS Aksının Hesaplanması (Hızlı Yöntem)</h2>
         <p>
-            QRS sonu ile T dalgasının başı arasındaki izoelektrik (düz) çizgidir. Ventriküllerin tamamen depolarize olduğu andır.
+            QRS aksı, kalbin elektriksel vektörünün hangi yöne baktığını gösterir. Normalde sol alt kadrandadır ($\mathbf{-30^\circ}$ ile $\mathbf{+90^\circ}$ arası).
         </p>
-        <div class="clinical-box" style="border-color:#ef4444; background:#fff1f2; color:#991b1b;">
-            <strong>Klinik: ST Elevasyonu (STEMI)</strong><br>
-            ST segmentinin kalkması, kalp kasında akut hasar (injury current) olduğunu gösterir. Acil müdahale gerektirir.
+
+        <div class="logic-box">
+            <span class="logic-title"><i class="fa-solid fa-calculator"></i> Mantık: Hızlı Aks Hesaplama (Kadrant Yöntemi)</span>
+            <ul>
+                <li><strong>Normal Aks:</strong> Lead I $\mathbf{(+)}$ ve aVF $\mathbf{(+)}$ olmalıdır.</li>
+                <li><strong>Sol Aks Sapması (LAD):</strong> Lead I $\mathbf{(+)}$ ve aVF $\mathbf{(-)}$ (Sol ventrikül büyümesi/Blok).</li>
+                <li><strong>Sağ Aks Sapması (RAD):</strong> Lead I $\mathbf{(-)}$ ve aVF $\mathbf{(+)}$ (Sağ ventrikül büyümesi/Pulmoner emboli).</li>
+            </ul>
         </div>
 
         <div class="nav-area">
