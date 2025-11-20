@@ -3,229 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elektrofizyoloji 1 | Stackminds Kütüphanesi</title>
+    <title>Elektrofizyoloji (Deep Dive) | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>
-    window.MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      }
-    };
-    </script>
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-        /* --- GUYTON AKADEMİK TEMA --- */
-        :root {
-            --paper: #fdfbf7;
-            --ink: #111827;
-            --blue-ink: #0369a1;
-            --highlight: #fff7ed;
-            --border: #e5e7eb;
-            --accent: #b91c1c;
-        }
-
-        body {
-            margin: 0;
-            background-color: var(--paper);
-            color: var(--ink);
-            font-family: 'Georgia', 'Times New Roman', serif; 
-            line-height: 1.8;
-            display: flex;
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: #f3f4f6;
-            border-right: 1px solid #d1d5db;
-            position: fixed;
-            padding: 25px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            font-family: 'Segoe UI', sans-serif;
-            z-index: 10;
-        }
-
-        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        .chapter-list { list-style: none; padding: 0; }
-        .chapter-list li { margin-bottom: 10px; }
-        .chapter-link {
-            text-decoration: none; color: #4b5563; display: block; padding: 8px;
-            border-radius: 6px; font-size: 0.9rem; transition: 0.2s;
-        }
-        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
-        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
-
-        /* --- CONTENT --- */
-        .page-content {
-            margin-left: 260px;
-            padding: 60px 100px;
-            max-width: 800px;
-        }
-
-        h1 { font-size: 2.5rem; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        h3 { margin-top: 30px; font-size: 1.2rem; font-weight: bold; color: #374151; }
-        p { margin-bottom: 20px; text-align: justify; font-size: 1.1rem; }
+        /* --- PROFESÖR TEMASI --- */
+        :root { --paper: #fffbf0; --ink: #1a1a1a; --blue: #0056b3; --red: #c0392b; --gold: #d35400; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
         
-        table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        th, td { border: 1px solid #d1d5db; padding: 12px; text-align: left; }
-        th { background: #e5e7eb; color: #111827; }
-        tr:nth-child(even) { background: #f9fafb; }
+        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; }
+        .brand { font-size: 1.2rem; font-weight: bold; color: #f1c40f; text-decoration: none; display: block; margin-bottom: 30px; }
+        .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
+        .menu-item:hover, .menu-item.active { color: white; background: #34495e; padding-left: 15px; transition: 0.3s; }
 
-        .guyton-box {
-            background: var(--highlight); border-left: 4px solid var(--accent);
-            padding: 20px; margin: 30px 0; font-style: italic; color: #4b5563;
+        .content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        
+        h1 { font-size: 2.8rem; color: var(--blue); border-bottom: 3px solid var(--blue); padding-bottom: 10px; }
+        h2 { margin-top: 50px; color: var(--red); font-weight: bold; border-left: 5px solid var(--red); padding-left: 15px; }
+        h3 { margin-top: 30px; font-weight: bold; color: #2c3e50; }
+        
+        /* ÖZEL KUTULAR */
+        .logic-box { 
+            background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px;
         }
-        .formula-box {
-            background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px;
-            text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink);
-            margin: 20px 0; border-radius: 8px; font-size: 1.1rem;
-        }
+        .logic-title { color: #16a085; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
 
-        .page-nav {
-            display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;
-            font-family: 'Segoe UI', sans-serif;
+        .trap-box { 
+            background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; 
+            position: relative;
         }
-        .nav-btn {
-            text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s;
-        }
-        .prev { background: #f3f4f6; color: #374151; }
-        .next { background: var(--blue-ink); color: white; }
-        .next:hover { background: #075985; }
+        .trap-title { color: #c0392b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        .trap-box::before { content: '\f071'; font-family: "Font Awesome 6 Free"; position: absolute; right: 20px; top: 20px; color: #e74c3c; font-size: 2rem; opacity: 0.2; font-weight: 900; }
 
-        @media (max-width: 1024px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; padding: 15px; }
-            .page-content { margin: 0; padding: 20px; }
-        }
+        .formula { background: #edf2f7; padding: 15px; text-align: center; font-family: monospace; font-weight: bold; border-radius: 5px; margin: 20px 0; border: 1px solid #cbd5e1; }
+
+        /* NAV */
+        .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
+        .btn { text-decoration: none; background: var(--blue); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
+
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
-        
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
-        <ul class="chapter-list">
-            <li><a href="elektro.html" class="chapter-link active">1. Membran Fiziği</a></li>
-            <li><a href="elektro2.html" class="chapter-link">2. Aksiyon Potansiyeli</a></li>
-            <li><a href="elektro3.html" class="chapter-link">3. İleti ve Eşleşme</a></li>
-            <li><a href="elektro_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a></li>
-        </ul>
+        <a href="index.html" class="brand"><i class="fa-solid fa-book-medical"></i> MEDBASE</a>
+        <a href="elektro.html" class="menu-item active">1. Membran ve İyonlar</a>
+        <a href="elektro2.html" class="menu-item">2. Aksiyon Potansiyeli</a>
+        <a href="elektro3.html" class="menu-item">3. İleti ve Eşleşme</a>
+        <a href="elektro_test.html" class="menu-item" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
-    <main class="page-content">
-        <div style="color:#6b7280; font-size:0.9rem;">Ünite 1: Kardiyak Elektrofizyoloji</div>
-        <h1>Bölüm 1: Membran Potansiyelleri ve Temel Fizik</h1>
-        
-        <div class="guyton-box">
-            <strong>Guyton Prensibi:</strong> "Kalp fonksiyonlarının temeli, hücre zarının seçici geçirgenliğine ve iyonların elektrokimyasal gradyanlarına dayanır. Elektrik yoksa, pompa yoktur."
+    <main class="content">
+        <h1>Bölüm 1: Membran Fiziği ve İyonik Temeller</h1>
+
+        <p>
+            Kardiyak fizyolojiyi anlamak için önce hücrenin "pil" gibi nasıl çalıştığını, voltajın (Potansiyel) nereden geldiğini anlamalıyız. 
+            Ezberlenecek ilk kural şudur: <strong>Hücre içi daima negatiftir.</strong> Ama neden?
+        </p>
+
+        <h2>1. Nernst Potansiyeli: "Denge Nerede?"</h2>
+        <p>
+            Bir iyonun (örneğin $K^+$) sadece kendine ait kanalları açık olsaydı ve başka hiçbir güç olmasaydı, zar potansiyelini nereye çekerdi? Buna <strong>Nernst Potansiyeli</strong> denir.
+        </p>
+
+        <div class="formula">
+            $$EMF = -61 \times \log \left( \frac{C_{iç}}{C_{dış}} \right)$$
         </div>
 
-        <p>
-            Kardiyak elektrofizyolojiyi anlamak için, önce hücrenin "pil" gibi nasıl çalıştığını anlamalıyız. 
-            Hücre zarı (sarkolemma), yüklü iyonların ($Na^+$, $K^+$, $Ca^{++}$) geçişini kontrol eden bir bariyerdir. 
-            Dinlenme halindeki bir ventrikül hücresi, içi dışına göre negatiftir. Buna <strong>Dinlenme Membran Potansiyeli (RMP)</strong> denir.
-        </p>
-
-        <h2>1. İyon Konsantrasyon Farkları</h2>
-        <p>
-            Hücre içi (Intracellular) ve hücre dışı (Extracellular) sıvıların iyonik içerikleri dramatik şekilde farklıdır. 
-            Bu fark, membran potansiyelini oluşturan kimyasal itici güçtür. Aşağıdaki tablo, memeli bir kalp kası hücresindeki yaklaşık değerleri gösterir:
-        </p>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>İyon</th>
-                    <th>Hücre Dışı (mM)</th>
-                    <th>Hücre İçi (mM)</th>
-                    <th>Oran (Dış/İç)</th>
-                    <th>Nernst Potansiyeli</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Sodyum ($Na^+$)</strong></td>
-                    <td>145</td>
-                    <td>15</td>
-                    <td>~10:1</td>
-                    <td>+60 mV</td>
-                </tr>
-                <tr>
-                    <td><strong>Potasyum ($K^+$)</strong></td>
-                    <td>4</td>
-                    <td>140</td>
-                    <td>1:35</td>
-                    <td>-94 mV</td>
-                </tr>
-                <tr>
-                    <td><strong>Kalsiyum ($Ca^{++}$)</strong></td>
-                    <td>2</td>
-                    <td>0.0001</td>
-                    <td>20,000:1</td>
-                    <td>+132 mV</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h2>2. Nernst Denklemi: "Denge Nerede?"</h2>
-        <p>
-            Eğer membran sadece tek bir iyona (örneğin Potasyuma) geçirgen olsaydı, voltajın nerede duracağını hesaplayan formüldür.
-            Potasyum için hesaplandığında sonuç <strong>-94 mV</strong> çıkar. Bu, hücrenin gerçek dinlenme potansiyeline (-90 mV) çok yakındır.
-        </p>
-        
-        <div class="formula-box">
-            $$EMF (mV) = -61 \times \log \left(\frac{Konsantrasyon_{iç}}{Konsantrasyon_{dış}}\right)$$
+        <div class="logic-box">
+            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mantık: Kim nereye çeker?</span>
+            <ul>
+                <li><strong>Potasyum ($K^+$):</strong> Hücre içinde çoktur (140 mM). Dışarı çıkmak ister. Pozitif yük dışarı kaçtığı için içeriyi <strong>NEGATİF (-94 mV)</strong> yapar.</li>
+                <li><strong>Sodyum ($Na^+$):</strong> Hücre dışında çoktur (142 mM). İçeri girmek ister. Pozitif yük içeri girdiği için içeriyi <strong>POZİTİF (+61 mV)</strong> yapar.</li>
+                <li><strong>Kalsiyum ($Ca^{++}$):</strong> Dışarıda çoktur. İçeri girmek ister. İçeriyi <strong>ÇOK POZİTİF (+132 mV)</strong> yapar.</li>
+            </ul>
         </div>
 
+        <h2>2. Dinlenme Membran Potansiyeli (RMP)</h2>
         <p>
-            Bu denklem bize şunu kanıtlar: <strong>Dinlenme halindeki hücre zarı, en çok Potasyuma ($K^+$) geçirgendir.</strong> 
-            Çünkü RMP (-90 mV), Potasyumun denge potansiyeline (-94 mV) Sodyumunkinden (+60 mV) çok daha yakındır.
-        </p>
-
-        <h2>3. Goldman-Hodgkin-Katz Denklemi</h2>
-        <p>
-            Gerçek hayatta membran birden fazla iyona geçirgendir. Goldman denklemi, $Na^+$, $K^+$ ve $Cl^-$ iyonlarının tamamını ve bunların geçirgenlik katsayılarını ($P$) hesaba katar.
+            Ventrikül hücresi dinlenirken (Diyastolde) voltajı <strong>-90 mV</strong>'tur. Peki neden Sodyumun (+61) değil de Potasyumun (-94) değerine bu kadar yakındır?
         </p>
         <p>
-            Dinlenme halinde geçirgenlik sıralaması şöyledir: <br>
-            <strong>$$P_K > P_{Na} > P_{Ca}$$</strong>
+            Cevap <strong>Goldman Denklemi</strong>nde gizlidir: Zarın geçirgenliği ($P$).
+            Dinlenme halindeki zar, $K^+$ iyonuna, $Na^+$ iyonundan <strong>100 kat daha geçirgendir.</strong>
         </p>
 
-        <h2>4. Dinlenme Potansiyelini Oluşturan 3 Mekanizma</h2>
-        <p>Ventrikül hücresinin içini -90 mV'da tutan üç temel mekanizma vardır:</p>
+        <div class="trap-box">
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı!</span>
+            Soru sana "Dinlenme potansiyelini oluşturan <strong>ANA</strong> faktör nedir?" diye sorarsa:
+            <br><br>
+            ❌ Yanlış Cevap: Na+/K+ ATPaz Pompası.<br>
+            ✅ <strong>Doğru Cevap:</strong> Potasyum Sızıntı Kanalları ($I_{K1}$).
+            <br><br>
+            <em>Açıklama:</em> Pompa sadece -4 mV katkı sağlar. Asıl işi (-86 mV), potasyumun sızması yapar.
+        </div>
 
-        <h3>A. K+ Sızıntı Kanalları (Ana Faktör)</h3>
+        <h2>3. Na+/K+ ATPaz Pompası: "Bekçi"</h2>
         <p>
-            Bu kanallar (Inward Rectifier K+ channels - $I_{K1}$), dinlenme halinde sürekli açıktır. 
-            Hücre içindeki yüksek konsantrasyonlu $K^+$, konsantrasyon gradyanı nedeniyle dışarı sızar. 
-            Pozitif yük dışarı kaçtığı için, hücre içi negatifleşir.
+            Sızıntı kanalları yüzünden sürekli dışarı $K^+$ kaçar, içeri az da olsa $Na^+$ sızar. Eğer birisi bunları yerine koymazsa pil biter (Hücre ölür).
         </p>
+        <ul>
+            <li><strong>Görevi:</strong> Konsantrasyon farkını korumak.</li>
+            <li><strong>İşlemi:</strong> 3 $Na^+$ DIŞARI, 2 $K^+$ İÇERİ.</li>
+            <li><strong>Sonuç:</strong> Dışarıya net 1 pozitif yük attığı için <strong>Elektrojeniktir</strong> (İçeriyi negatifleştirir).</li>
+        </ul>
 
-        <h3>B. Na+/K+ ATPaz Pompası (Elektrojenik Pompa)</h3>
-        <p>
-            Bu aktif taşıma sistemi, ATP harcayarak konsantrasyon farklarını korur. 
-            Her döngüde <strong>3 $Na^+$ dışarı</strong> atarken, <strong>2 $K^+$ içeri</strong> alır. 
-            Net olarak dışarıya 1 pozitif yük fazladan gönderdiği için, hücre içinin negatif olmasına (-4 mV kadar) katkı sağlar.
-        </p>
+        <h2>4. İyon Kanallarının Yapısı (Mekanizma)</h2>
+        <p>Hocalar kanalın sadece "açık/kapalı" olmasını değil, kapıların (Gate) durumunu sormayı sever.</p>
 
-        <h3>C. Hücre İçi Anyonlar</h3>
-        <p>
-            Hücre içindeki proteinler, sülfatlar ve fosfatlar negatif yüklüdür. 
-            Bunlar hücre zarından geçemeyecek kadar büyüktür ve hücre içinde hapsolur. 
-            Bu "sabit anyonlar" içerinin negatif kalmasına yardım eder.
-        </p>
+        <h3>Hızlı Sodyum Kanalı (3 Durum)</h3>
+        <ol>
+            <li><strong>Dinlenme (Resting):</strong> Kapalı ama açılabilir. ($m$ kapısı kapalı, $h$ kapısı açık). Voltaj -90 mV.</li>
+            <li><strong>Aktif (Activated):</strong> AÇIK. ($m$ açık, $h$ açık). Voltaj -70 mV'u geçince $m$ kapısı şak diye açılır. $Na^+$ içeri dolar.</li>
+            <li><strong>İnaktif (Inactivated):</strong> KİLİTLİ. ($h$ kapısı kapalı). Voltaj pozitifleşince $h$ kapısı yavaşça kapanır. Hücre bu haldeyken asla tekrar uyarılamaz (Refrakter dönem).</li>
+        </ol>
 
-        <div class="page-nav">
-            <a href="index.html" class="nav-btn prev">&larr; Ana Menü</a>
-            <a href="elektro2.html" class="nav-btn next">Bölüm 2: Aksiyon Potansiyeli &rarr;</a>
+        <div class="logic-box">
+            <span class="logic-title">Neden Hiperkalemide Kalp Durur?</span>
+            Kanda potasyum artarsa, hücre dışı ile iç arasındaki fark azalır. Potasyum dışarı çıkamaz. 
+            Bu durum RMP'yi -90'dan -60 mV'a yükseltir (Kısmi depolarizasyon).
+            <br><br>
+            Voltaj -60 olunca ne olur? Sodyum kanallarının <strong>$h$ kapıları (İnaktivasyon)</strong> kapanır ve kilitli kalır.
+            Kanal kilitlenirse yeni aksiyon potansiyeli oluşamaz. Sonuç: <strong>Diyastolik Arrest (Durma).</strong>
+        </div>
+
+        <div class="nav-area">
+            <a href="index.html" class="btn" style="background:#7f8c8d">&larr; Menü</a>
+            <a href="elektro2.html" class="btn">Bölüm 2: Aksiyon Potansiyeli &rarr;</a>
         </div>
 
     </main>
-
 </body>
 </html>
