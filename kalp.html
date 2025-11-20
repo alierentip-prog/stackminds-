@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalp Fizyolojisi | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- GENEL TEMALAR (Hemodinamik ile uyumlu) --- */
+        :root {
+            --primary: #ef4444; /* Kalp için Kırmızı Odak */
+            --secondary: #3b82f6;
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
+            --text-main: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- MENÜ --- */
+        .toc-sidebar {
+            width: 250px;
+            background: #111827;
+            padding: 30px;
+            border-right: 1px solid #334155;
+        }
+        .back-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex; align-items: center; gap: 10px; margin-bottom: 30px;
+        }
+        .back-btn:hover { color: var(--primary); }
+        .toc-list { list-style: none; padding: 0; }
+        .toc-list li { margin-bottom: 10px; }
+        .toc-list a { color: #94a3b8; text-decoration: none; display: block; padding: 5px; transition:0.3s;}
+        .toc-list a:hover { color: var(--primary); padding-left: 10px; }
+
+        /* --- İÇERİK --- */
+        .content-area {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+        }
+
+        h1 span { color: var(--primary); }
+        
+        section {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+            margin-bottom: 40px;
+        }
+
+        /* --- FRANK-STARLING SİMÜLATÖRÜ --- */
+        .graph-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .controls {
+            margin-top: 20px;
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+        }
+
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+
+        .info-badge {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* --- KALP DÖNGÜSÜ TABLOSU --- */
+        .cycle-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .cycle-table th, .cycle-table td {
+            border: 1px solid #334155;
+            padding: 10px;
+            text-align: left;
+        }
+        .cycle-table th { background: #0f172a; color: var(--primary); }
+        .cycle-table tr:hover { background: rgba(255,255,255,0.05); }
+
+        /* Mobil */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .toc-sidebar { width: 100%; height: auto; padding: 15px; }
+            .content-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="toc-sidebar">
+        <a href="menu.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Menüye Dön</a>
+        <h3>Konu Başlıkları</h3>
+        <ul class="toc-list">
+            <li><a href="#starling">1. Frank-Starling Yasası</a></li>
+            <li><a href="#dongu">2. Kalp Döngüsü (Cycle)</a></li>
+            <li><a href="#kapak">3. Kapak Fonksiyonları</a></li>
+        </ul>
+    </nav>
+
+    <main class="content-area">
+        <h1>Bölüm 2: <span>Kalp Fizyolojisi</span></h1>
+
+        <section id="starling">
+            <h2><i class="fa-solid fa-chart-line"></i> Frank-Starling Mekanizması</h2>
+            <p>Guyton der ki: <strong>"Kalbe ne gelirse, kalp onu pompalar."</strong> Kalp kası lifleri diyastolde ne kadar gerilirse (Preload), kasılma gücü o kadar artar.</p>
+
+            <div class="controls">
+                <label style="display:flex; justify-content:space-between;">
+                    <span>Venöz Dönüş (Preload):</span>
+                    <span class="info-badge" id="preloadValue">Normal</span>
+                </label>
+                <input type="range" id="preloadInput" min="0" max="100" value="50" step="1">
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 10px;">
+                    Slider'ı sağa çekerek kalbe gelen kanı artırın. Grafik üzerindeki noktanın nasıl yükseldiğini (Stroke Volume artışı) izleyin.
+                </p>
+            </div>
+
+            <div class="graph-container">
+                <canvas id="starlingChart"></canvas>
+            </div>
+        </section>
+
+        <section id="dongu">
+            <h2><i class="fa-solid fa-heart-pulse"></i> Kalp Döngüsü (Cardiac Cycle)</h2>
+            <p>Bir kalp atımında gerçekleşen olaylar zinciridir. Sistol (Kasılma) ve Diyastol (Gevşeme) olarak ikiye ayrılır.</p>
+
+            <table class="cycle-table">
+                <thead>
+                    <tr>
+                        <th>Evre</th>
+                        <th>Kapak Durumu</th>
+                        <th>Basınç Değişimi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>İzovolumetrik Kasılma</strong></td>
+                        <td>Tüm kapaklar KAPALI</td>
+                        <td>Basınç hızla artar, hacim değişmez.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fırlatma (Ejection)</strong></td>
+                        <td>Aort/Pulmoner AÇIK</td>
+                        <td>Ventrikül kanı damara fırlatır.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>İzovolumetrik Gevşeme</strong></td>
+                        <td>Tüm kapaklar KAPALI</td>
+                        <td>Basınç hızla düşer, hacim değişmez.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dolum (Filling)</strong></td>
+                        <td>Mitral/Triküspit AÇIK</td>
+                        <td>Ventriküller kanla dolar (Preload).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <script>
+        // --- CHART.JS İLE FRANK-STARLING GRAFİĞİ ---
+        const ctx = document.getElementById('starlingChart').getContext('2d');
+        
+        // Grafik Verisi (Logaritmik artış eğrisi)
+        const dataPoints = [];
+        for(let i=0; i<=100; i+=5) {
+            // Guyton eğrisi formülü (Basitleştirilmiş): y = log(x) benzeri
+            let sv = 100 * (1 - Math.exp(-0.05 * i)); 
+            dataPoints.push(sv);
+        }
+
+        const starlingChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 21}, (_, i) => i * 5), // 0, 5, 10...
+                datasets: [{
+                    label: 'Atım Hacmi (Stroke Volume)',
+                    data: dataPoints,
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4 // Eğriyi yumuşatır
+                }, {
+                    // Hareketli Nokta (Simülasyon için)
+                    label: 'Mevcut Durum',
+                    data: [{x: 50, y: 100 * (1 - Math.exp(-0.05 * 50))}],
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#ef4444',
+                    pointRadius: 8,
+                    showLine: false // Sadece nokta göster
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Ventrikül Son Diyastolik Hacim (Preload)', color:'#94a3b8' } },
+                    y: { title: { display: true, text: 'Atım Gücü', color:'#94a3b8' }, min: 0, max: 100 }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- INPUT KONTROLÜ ---
+        const slider = document.getElementById('preloadInput');
+        const label = document.getElementById('preloadValue');
+
+        slider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            
+            // Etiketi Güncelle
+            if(val < 30) { label.innerText = "Düşük (Hipovolemi)"; label.style.color = "#3b82f6"; }
+            else if(val > 80) { label.innerText = "Yüksek (Egzersiz)"; label.style.color = "#ef4444"; }
+            else { label.innerText = "Normal"; label.style.color = "#10b981"; }
+
+            // Grafikteki noktayı güncelle
+            const sv = 100 * (1 - Math.exp(-0.05 * val));
+            
+            // Chart.js veri güncelleme hilesi
+            starlingChart.data.datasets[1].data = [{x: val, y: sv}];
+            starlingChart.update('none'); // Animasyonsuz güncelle (performans için)
+        });
+
+    </script>
+</body>
+</html>
