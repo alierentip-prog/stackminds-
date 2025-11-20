@@ -3,243 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EKG ve Aritmiler | Stackminds</title>
+    <title>EKG Temelleri | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-        /* --- AYDINLIK TEMA --- */
-        :root {
-            --bg-color: #f8fafc;
-            --surface: #ffffff;
-            --primary: #0284c7;
-            --monitor-bg: #000000; /* EKG Monitörü Siyah Olur */
-            --monitor-line: #10b981; /* Fosforlu Yeşil */
-            --text: #334155;
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none; }
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
+        p { text-align: justify; margin-bottom: 20px; }
+
+        /* EKG KAĞIT EFEKTİ (CSS GRID) */
+        .ekg-paper {
+            background-color: #fff0f0;
+            background-image: 
+                linear-gradient(#ffcccc 1px, transparent 1px),
+                linear-gradient(90deg, #ffcccc 1px, transparent 1px),
+                linear-gradient(#ff9999 1px, transparent 1px),
+                linear-gradient(90deg, #ff9999 1px, transparent 1px);
+            background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+            border: 1px solid #ff9999;
+            padding: 20px; margin: 30px 0; border-radius: 4px;
+            position: relative; height: 200px;
+            display: flex; align-items: center; justify-content: center;
         }
+        .ekg-draw { stroke: #111827; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text); }
+        /* KUTULAR */
+        .note-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 20px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
+        .clinical-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+        .formula-box { background: #fdf4ff; border: 1px solid #f0abfc; padding: 15px; text-align: center; font-family: 'Courier New', monospace; margin: 20px 0; font-weight: bold; color: #86198f; }
 
-        /* NAVİGASYON */
-        .navbar {
-            background: white; padding: 15px 30px; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
-        }
-        .back-link { text-decoration: none; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .back-link:hover { color: var(--primary); }
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+        .prev { background: #f3f4f6; color: #374151; }
+        .next { background: var(--blue-ink); color: white; }
 
-        /* İÇERİK */
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-        h1 { font-size: 2.2rem; margin-bottom: 10px; }
-
-        /* --- MONİTÖR ALANI --- */
-        .monitor-box {
-            background: var(--monitor-bg);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 4px solid #334155;
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .monitor-header {
-            display: flex; justify-content: space-between; color: #10b981; font-family: 'Courier New', monospace;
-            margin-bottom: 10px; font-size: 0.9rem;
-        }
-
-        canvas { max-height: 300px; }
-
-        /* PATOLOJİ BUTONLARI */
-        .pathology-controls {
-            display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
-        }
-
-        .btn-patho {
-            background: #1e293b; color: #94a3b8; border: 1px solid #334155;
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600;
-        }
-        .btn-patho:hover { background: #334155; color: white; }
-        .btn-patho.active { background: #ef4444; color: white; border-color: #ef4444; box-shadow: 0 0 15px rgba(239,68,68,0.4); }
-        .btn-patho.normal { background: #10b981; color: black; border-color: #10b981; } /* Normal buton yeşil */
-
-        /* --- EKG DALGALARI EĞİTİM KARTI --- */
-        .education-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .wave-card {
-            background: white; padding: 20px; border-radius: 12px;
-            border: 1px solid #e2e8f0; transition: 0.3s;
-            border-left: 4px solid var(--primary);
-        }
-        .wave-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        
-        .wave-card h3 { margin: 0 0 10px 0; color: #1e293b; }
-        .wave-card p { font-size: 0.9rem; color: #64748b; line-height: 1.6; margin: 0; }
-        .wave-img { height: 60px; opacity: 0.8; margin-bottom: 10px; display:block; }
-
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Menü</a>
-        <span style="color:#cbd5e1;">|</span>
-        <strong>Modül 3: EKG ve Aritmiler</strong>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="ekg.html" class="chapter-link active">1. EKG Temelleri</a>
+        <a href="ekg2.html" class="chapter-link">2. Aritmi Simülatörü</a>
+        <a href="ekg_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
 
-    <div class="container">
-        <h1>Canlı EKG Simülatörü</h1>
-        <p>Aşağıdaki monitörden kalp ritimlerini canlı izleyin. Butonları kullanarak hastanın durumunu değiştirin ve grafiğin nasıl bozulduğunu gözlemleyin.</p>
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
+        <h1>Bölüm 1: Normal Elektrokardiyogram</h1>
 
-        <div class="monitor-box">
-            <div class="monitor-header">
-                <span>HR: <span id="hrValue">72</span> BPM</span>
-                <span>LEAD II</span>
-                <span id="statusText">NORMAL SINUS RHYTHM</span>
-            </div>
-            <canvas id="ekgChart"></canvas>
-            
-            <div class="pathology-controls">
-                <button class="btn-patho normal" onclick="setRhythm('normal')">Normal Sinüs</button>
-                <button class="btn-patho" onclick="setRhythm('tachy')">Taşikardi (>100)</button>
-                <button class="btn-patho" onclick="setRhythm('brady')">Bradikardi (<60)</button>
-                <button class="btn-patho active" onclick="setRhythm('vfIB')" style="background:#b91c1c; color:white;">V-Fib (Kriz)</button>
-            </div>
+        <p>
+            EKG, kalbin ürettiği elektriksel vektörlerin (akımların) vücut yüzeyinden kaydedilmesidir. 
+            Kalp bir "dipol" (iki kutuplu mıknatıs) gibi davranır. Eğer elektrik dalgası elektrota doğru geliyorsa <strong>Pozitif</strong> (yukarı), uzaklaşıyorsa <strong>Negatif</strong> (aşağı) çizim yapılır.
+        </p>
+
+        <h2>1. Dalgalar ve Anlamları</h2>
+        <div class="ekg-paper">
+            <svg width="400" height="150" viewBox="0 0 400 150">
+                <path d="M10,75 L40,75 L50,60 L60,75 L70,75 L75,85 L85,10 L95,95 L100,75 L130,75 L150,50 L180,75 L220,75" class="ekg-draw" />
+                
+                <text x="45" y="50" font-family="sans-serif" font-weight="bold" fill="#111827">P</text>
+                <text x="70" y="110" font-family="sans-serif" font-weight="bold" fill="#111827">Q</text>
+                <text x="80" y="5" font-family="sans-serif" font-weight="bold" fill="#111827">R</text>
+                <text x="100" y="110" font-family="sans-serif" font-weight="bold" fill="#111827">S</text>
+                <text x="155" y="40" font-family="sans-serif" font-weight="bold" fill="#111827">T</text>
+            </svg>
         </div>
 
-        <h2 style="margin-top:50px;">Dalgaların Anlamı</h2>
-        <div class="education-grid">
-            <div class="wave-card">
-                <h3>P Dalgası</h3>
-                <p><strong>Atriyal Depolarizasyon.</strong><br>SA düğümden çıkan uyarının atriyumlara yayılmasıdır. Atriyumların kasılmasını (Sistol) başlatır.</p>
-            </div>
-            <div class="wave-card">
-                <h3>QRS Kompleksi</h3>
-                <p><strong>Ventriküler Depolarizasyon.</strong><br>Elektriğin ventriküllere yayılmasıdır. Ventriküller güçlü bir şekilde kasılır. QRS süresi 0.12 sn'den kısa olmalıdır.</p>
-            </div>
-            <div class="wave-card">
-                <h3>T Dalgası</h3>
-                <p><strong>Ventriküler Repolarizasyon.</strong><br>Ventriküllerin gevşeyip tekrar şarj olduğu (Dinlenme) dönemdir. İskemide T dalgası ters dönebilir.</p>
-            </div>
+        <h3>P Dalgası (Atriyal Depolarizasyon)</h3>
+        <p>
+            SA düğümden çıkan uyarının atriyumlara yayılmasını gösterir. Atriyum kasılmasından hemen önce oluşur.
+            Normalde D2 derivasyonunda pozitiftir.
+        </p>
+
+        <h3>QRS Kompleksi (Ventriküler Depolarizasyon)</h3>
+        <p>
+            Ventriküllerin elektriksel uyarılmasıdır. Kas kitlesi büyük olduğu için voltajı yüksektir.
+        </p>
+        <ul>
+            <li><strong>Q:</strong> İlk negatif dalga (Septum uyarılması).</li>
+            <li><strong>R:</strong> İlk pozitif dalga (Ana ventrikül kitlesi).</li>
+            <li><strong>S:</strong> R'dan sonraki negatif dalga (Taban kısmı).</li>
+        </ul>
+
+        <h3>T Dalgası (Ventriküler Repolarizasyon)</h3>
+        <p>
+            Ventriküllerin "şarj olması" veya gevşemesidir. 
+            İlginç bir şekilde, depolarizasyon ile repolarizasyon ters olaylar olmasına rağmen, T dalgası da R dalgası gibi pozitiftir. 
+            <strong>Nedeni:</strong> Repolarizasyon, depolarizasyonun tersi yönde (epikarddan endokarda) ilerler. (Çift negatif = Pozitif).
+        </p>
+
+        <h2>2. Klinik Aralıklar</h2>
+        
+        <h3>PR Aralığı (0.12 - 0.20 sn)</h3>
+        <p>
+            P başından QRS başına kadar olan süredir. Elektriğin atriyumdan çıkıp AV düğümde beklemesi (AV Delay) ve ventriküle ulaşmasıdır.
+            <br>
+            <strong>Uzarsa:</strong> 1. Derece AV Blok (İletim gecikmesi).
+        </p>
+
+        <h3>QT Aralığı</h3>
+        <p>
+            Ventrikülün elektriksel sistol süresidir (Depolarizasyon + Repolarizasyon). 
+            Kalp hızı arttıkça QT kısalmalıdır. Uzun QT, ölümcül aritmilere (Torsades de Pointes) zemin hazırlar.
+        </p>
+
+        <h3>ST Segmenti</h3>
+        <p>
+            QRS sonu ile T başı arasındaki düz çizgidir. Ventriküllerin tamamen depolarize olduğu andır.
+        </p>
+        <div class="clinical-box">
+            <strong>Klinik: Miyokard Enfarktüsü (STEMI)</strong><br>
+            Eğer ST segmenti taban çizgisinden yukarı kalkarsa (Elevasyon), kalbin o bölgesinde akut hasar (İskemi/Enfarktüs) var demektir.
         </div>
 
-    </div>
-
-    <script>
-        const ctx = document.getElementById('ekgChart').getContext('2d');
-        const hrValue = document.getElementById('hrValue');
-        const statusText = document.getElementById('statusText');
-
-        // Başlangıç Verileri (Boş)
-        const initialData = Array(100).fill(0); 
+        <h2>3. Kağıt Okuma Hesabı</h2>
+        <p>Standart EKG kağıdı <strong>25 mm/sn</strong> hızla akar.</p>
         
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array(100).fill(''),
-                datasets: [{
-                    data: initialData,
-                    borderColor: '#10b981', // Fosforlu Yeşil
-                    borderWidth: 2,
-                    pointRadius: 0, // Nokta yok, sadece çizgi
-                    tension: 0.4, // Hafif yumuşak geçiş
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                animation: false, // Canlı akış için animasyonu kapatıyoruz
-                maintainAspectRatio: false,
-                scales: {
-                    x: { display: false },
-                    y: { min: -2, max: 3, display: false } // Y ekseni gizli
-                },
-                plugins: { legend: { display: false } }
-            }
-        });
+        <div class="formula-box">
+            Küçük Kare (1mm) = 0.04 saniye<br>
+            Büyük Kare (5mm) = 0.20 saniye
+        </div>
 
-        // --- RİTİM OLUŞTURUCU ---
-        let currentRhythm = 'normal';
-        let time = 0;
+        <p>
+            <strong>Hız Hesabı (Düzenli Ritimde):</strong><br>
+            İki R dalgası arasında kaç büyük kare var sayılır. 300 bu sayıya bölünür.<br>
+            <em>Örnek:</em> R-R arası 4 büyük kare ise: $300 / 4 = 75$ atım/dk.
+        </p>
 
-        // EKG Fonksiyonu (Matematiksel Dalga Üretimi)
-        function getNextValue() {
-            time += 1;
-            
-            if (currentRhythm === 'normal') {
-                // Normal P-QRS-T Döngüsü (Her 50 adımda bir atım)
-                let t = time % 50;
-                if(t === 5) return 0.2; // P
-                if(t === 6) return 0.3; // P
-                if(t === 7) return 0; 
-                if(t === 15) return -0.2; // Q
-                if(t === 16) return 2.5; // R (Zirve)
-                if(t === 17) return -0.5; // S
-                if(t === 30) return 0.4; // T
-                if(t === 31) return 0.5; // T
-                if(t === 32) return 0.4; // T
-                return 0; // İzoelektrik hat
-            } 
-            else if (currentRhythm === 'tachy') {
-                // Hızlı (Her 25 adımda bir)
-                let t = time % 25;
-                if(t === 3) return 0.3; // P
-                if(t === 8) return -0.2; // Q
-                if(t === 9) return 2.5; // R
-                if(t === 10) return -0.5; // S
-                if(t === 18) return 0.5; // T
-                return 0;
-            }
-            else if (currentRhythm === 'brady') {
-                // Yavaş (Her 80 adımda bir)
-                let t = time % 80;
-                if(t === 10) return 0.2; // P
-                if(t === 25) return -0.2; // Q
-                if(t === 26) return 2.5; // R
-                if(t === 27) return -0.5; // S
-                if(t === 50) return 0.5; // T
-                return 0;
-            }
-            else if (currentRhythm === 'vfIB') {
-                // Kaotik Rastgele Dalgalar (Kriz)
-                return (Math.random() - 0.5) * 2; 
-            }
-        }
+        <div class="page-nav">
+            <a href="index.html" class="nav-btn prev">&larr; Ana Menü</a>
+            <a href="ekg2.html" class="nav-btn next">Bölüm 2: Aritmi Simülatörü &rarr;</a>
+        </div>
+    </main>
 
-        // Canlı Güncelleme Döngüsü (Loop)
-        setInterval(() => {
-            const val = getNextValue();
-            
-            // Kaydırma Efekti: İlk veriyi sil, sona yenisini ekle
-            const data = chart.data.datasets[0].data;
-            data.shift();
-            data.push(val);
-            chart.update();
-
-        }, 30); // 30ms'de bir güncelle
-
-        // Buton Kontrolleri
-        function setRhythm(type) {
-            currentRhythm = type;
-            
-            // Buton stili güncelle
-            document.querySelectorAll('.btn-patho').forEach(b => b.classList.remove('active')); // Hepsinden sil
-            event.target.classList.add('active'); // Tıklanana ekle
-
-            // Metin Güncelle
-            if(type === 'normal') { hrValue.innerText = "72"; statusText.innerText = "NORMAL SINUS"; }
-            if(type === 'tachy') { hrValue.innerText = "135"; statusText.innerText = "SINUS TACHYCARDIA"; }
-            if(type === 'brady') { hrValue.innerText = "45"; statusText.innerText = "SINUS BRADYCARDIA"; }
-            if(type === 'vfIB') { hrValue.innerText = "---"; statusText.innerText = "!! V-FIB ARREST !!"; }
-        }
-        
-        // Başlangıçta Normale Al (HTML'de buton yanlışlıkla vfIB kalmışsa düzeltir)
-        document.querySelector('.btn-patho.normal').click();
-
-    </script>
 </body>
 </html>
