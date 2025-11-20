@@ -10,102 +10,97 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        /* --- PROFESÖR TEMASI CSS (Elektro ile Uyumlu) --- */
-        :root { --paper: #fffbf0; --ink: #1a1a1a; --blue: #0056b3; --red: #c0392b; --gold: #d35400; --success: #1abc9c; }
-        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
+        /* --- PROFESÖR TEMASI --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
         /* SIDEBAR */
-        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; z-index:10; }
-        .brand { font-size: 1.2rem; font-weight: bold; color: #f1c40f; text-decoration: none; display: block; margin-bottom: 30px; }
-        .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
-        .menu-item.active { background: #34495e; color: white; font-weight: bold; }
+        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: #f1c40f; text-decoration: none;}
+        .chapter-link { display: block; padding: 10px; margin-bottom: 5px; text-decoration: none; color: #bdc3c7; border-bottom: 1px solid #34495e; }
+        .chapter-link.active { background: #34495e; color: white; font-weight: bold; }
 
         /* CONTENT */
         .page-content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
-        h1 { font-size: 2.5rem; color: var(--blue); border-bottom: 3px solid var(--blue); padding-bottom: 10px; }
-        h2 { margin-top: 50px; color: var(--red); font-weight: bold; border-left: 5px solid var(--red); padding-left: 15px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: var(--blue-ink); border-bottom: 3px solid var(--blue-ink); padding-bottom: 10px; }
+        h2 { margin-top: 50px; color: var(--accent); font-weight: bold; border-left: 5px solid var(--accent); padding-left: 15px; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
-        /* KUTULAR */
-        .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
-        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; }
-        .trap-title { color: #c0392b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        /* DÜZEN DÜZELTMESİ VE PARAGRAF AYARI */
+        p, ul, ol, table, .formula-box, .def-box { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
+        
+        /* ÖZEL KUTULAR */
+        .formula-box { background: #eff6ff; border: 2px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
         
-        /* TABLO */
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
-        th, td { border: 1px solid #d1d5db; padding: 10px; text-align: left; }
-        th { background: #f3f4f6; color: #1a1a1a; }
-
         /* SİMÜLATÖR */
         .sim-container { background: white; border: 1px solid #ccc; padding: 20px; border-radius: 10px; margin: 20px 0; }
-        .vessel-visual { background: #f3f4f6; height: 100px; border-radius: 5px; margin-top: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .vessel-inner { background: linear-gradient(to right, #c0392b, #e74c3c); height: 50px; width: 90%; transition: all 0.3s; border-radius: 50px; }
 
         /* NAV */
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
-        .btn { text-decoration: none; background: var(--blue); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
+        .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <a href="index.html" class="brand"><i class="fa-solid fa-book-medical"></i> MEDBASE</a>
-        <a href="dolasim.html" class="menu-item active">1. Akışın Temel Fiziği</a>
-        <a href="dolasim2.html" class="menu-item">2. Mikro Dolaşım ve RAAS</a>
-        <a href="dolasim3.html" class="menu-item">3. Baroreseptörler</a>
-        <a href="dolasim_test.html" class="menu-item" style="color:#f1c40f;">★ Ünite Sınavı</a>
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="dolasim.html" class="chapter-link active">1. Akışın Temel Fiziği</a>
+        <a href="dolasim2.html" class="chapter-link">2. Mikro Dolaşım ve RAAS</a>
+        <a href="dolasim3.html" class="chapter-link">3. Baroreseptörler</a>
+        <a href="dolasim_test.html" class="chapter-link" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 4: Dolaşım Fizyolojisi</div>
-        <h1>Bölüm 1: Akım, Direnç ve Hidrolik Prensipler</h1>
+        <h1>Bölüm 1: Akım, Basınç ve Hidrolik Direnç</h1>
 
         <p>
-            Dolaşım sistemi, kalbin pompaladığı basınç ile damarların gösterdiği direnç arasındaki ilişkiyle açıklanır. Bu, elektrikteki Ohm Yasasının hidroliğe uyarlanmasıdır.
+            Dolaşım sistemi, kalbin sürekli olarak kanı pompalamasıyla oluşan bir kapalı devre sistemidir. Bu sistemde, kanın akışı ($Q$), kalbin yarattığı Basınç Farkı ($\Delta P$) ve damarların buna karşı koyduğu Direnç ($R$) ile yönetilir.
         </p>
-        [attachment_0](attachment)
 
-        <h2>1. Dolaşımın Ohm Yasası ve Temel Kavramlar</h2>
+        <h2>1. Dolaşımın Ohm Yasası ve Direnç Kontrolü</h2>
         <p>
-            Kan akımı ($Q$), tıpkı elektrik akımı gibi, **Basınç Farkı ($\Delta P$)** ile doğru orantılı, **Direnç ($R$)** ile ters orantılıdır.
+            Kan akımı, elektrikteki Ohm Yasası ile aynı matematiksel prensibe uyar. Dolaşımda bu yasa, Kalp Debisi ($CO$) ve Total Periferik Direnç ($TPR$) olarak ifade edilir.
         </p>
         
         <div class="formula-box">
             $$\mathbf{Q} = \frac{\Delta P}{R} \quad \text{veya} \quad CO = \frac{MAP}{TPR}$$
-            <p style="font-size:0.9rem; margin:5px 0;">(Akım/Kalp Debisi = Basınç Farkı / Total Periferik Direnç)</p>
-        </div>
-
-        <div class="logic-box">
-            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mantık: Direnç Neden Önemli?</span>
-            Kalp Debisini ($Q$) artırmak için ya basıncı ($P$) artırmalısın ya da direnci ($R$) düşürmelisin. Vücut genelde $R$ ile oynar. Direnç, esas olarak **Arteriyollerde** oluşur (Musluk görevi).
         </div>
         
-        <h2>2. Poiseuille Yasası: Direncin $r^4$ Kuralı</h2>
+        <div class="logic-box">
+            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mantık: Akım Kontrolü</span>
+            Vücut, kan akımını ($Q$) artırmak istediğinde genellikle kalbi (Basınç) yormak yerine, damarları genişletip Direnci ($R$) düşürmeyi tercih eder. Bu yüzden $R$, dolaşımın en önemli düzenleyicisidir.
+        </div>
+        
+        <h2>2. Poiseuille Yasası: $r^4$ Kuralı</h2>
         <p>
-            Tüm direnç ($R$), damarın **yarıçapının ($r$) dördüncü kuvvetiyle ters orantılıdır**. Bu, akımı kontrol eden en acımasız ve güçlü kuraldır.
+            Tüm direnç ($R$), damarın yarıçapının ($r$) dördüncü kuvvetiyle ters orantılıdır. Bu formül, neden **Arteriyollerin** (küçük arterler) damar sisteminin en önemli direnç noktaları olduğunu açıklar.
         </p>
         
         <div class="formula-box">
-            $$R \propto \frac{L \eta}{r^4}$$
-            <p style="font-size:0.9rem; margin:5px 0;">($\eta$: Viskozite, $L$: Damar Uzunluğu, $r$: Yarıçap)</p>
+            $$\mathbf{R} = \frac{8 \eta L}{\pi r^4} \quad \Rightarrow \quad \mathbf{R} \propto \frac{\text{Viskozite} (\eta) \times \text{Uzunluk} (L)}{\text{Yarıçap}^4 (r^4)}$$
         </div>
+
+        <h3>Yarıçapın Etkisi ($r^4$):</h3>
+        <ul>
+            <li>Yarıçap, direnci dördüncü kuvvetle etkilediği için, damar çapındaki %19'luk bir artış, kan akımını 2 kat artırmaya yeterlidir.</li>
+            <li>**Arteriyoller**, duvarlarında bol düz kas olduğu için bu çapı anlık değiştirebilir ve akımı çok hassas ayarlarlar.</li>
+        </ul>
 
         <div class="trap-box">
-            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: $r^4$</span>
-            Damar yarıçapını %10 artırmak, akımı $1.1^4 \approx 1.46$ kat artırır (Yani %46 daha fazla akım!).<br>
-            **Küçük bir çap değişimi, devasa bir akım değişimi yaratır.**
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: Viskozite</span>
+            Dirence etki eden Viskozite ($\eta$), esas olarak **Hematokrit (Htc)** değeriyle belirlenir. Anemide (Htc düşüklüğü) viskozite düşer, kanın akışı hızlanır (Ama oksijen azdır!). Polisitemide (Htc yüksekliği) ise kan koyulaşır ve $R$ yükselir.
         </div>
-
-        <h3>Viskozite (Kanın Kıvamı) ve Direnç</h3>
-        <p>
-            Viskozite ($\eta$), kanın kalınlığıdır. Esas olarak **Hematokrit** (Hücre/Sıvı oranı) tarafından belirlenir. Polisitemide (Htc artışı) kan kalınlaşır ve kalbin iş yükü ($R$) artar.
-        </p>
 
         <div class="sim-container">
             <h3>İnteraktif Simülatör: $r^4$ Gücü</h3>
-            <p style="text-align:center; font-size:0.9rem;">Yarıçapı değiştirerek akımın nasıl değiştiğini inceleyin.</p>
+            <p style="text-align:center; font-size:0.9rem;">Yarıçapı değiştirerek akımın (Q) nasıl değiştiğini incele.</p>
             <div class="control-group">
                 <label>Damar Yarıçapı ($r$): <span id="valRadius" style="float:right;">5.0 birim</span></label>
                 <input type="range" id="sldRadius" min="2" max="10" value="5" step="0.5" oninput="updateFlow()">
@@ -120,20 +115,18 @@
         
         <h3>Laminer vs. Türbülans</h3>
         <p>
-            Normalde kan, merkezde en hızlı (Parabolik Profil) olacak şekilde pürüzsüz akar (**Laminer Akım**). Akım hızı çok artar, damar daralırsa veya anemi varsa, akım düzensizleşir (**Türbülanslı Akım**).
+            **Laminer Akım:** Kan, merkezde en hızlı akacak şekilde (Parabolik Profil) pürüzsüz ve sessiz akar. Bu, normal durumdur.
+        </p>
+        <p>
+            **Türbülanslı Akım:** Akım düzensizleşir (girdaplar oluşur). Yüksek hızda, damar çapı daralınca veya viskozite düşünce (**Anemi**) görülür.
         </p>
         <div class="logic-box">
-            <span class="logic-title">Neden Önemli?</span>
-            Türbülanslı akım **gürültüye (Üfürüm/Bruit)** neden olur. Anemide viskozite düştüğü için türbülans daha kolay oluşur ve hastada üfürüm duyulabilir.
+            <span class="logic-title">Mantık: Reynolds Sayısı</span>
+            Türbülanslı akım, damar duvarlarına daha çok zarar verir ve **ses (Üfürüm/Bruit)** çıkarır. Anemide (düşük viskozite) $R_e$ yükseldiği için üfürüm duyulabilir.
         </div>
 
-        <h3>Akım Hızı (Velocity)</h3>
-        <p>
-            Kan, toplam kesit alanının **en geniş** olduğu yerde, yani **Kapillerlerde (Kılcal Damar)**, **en yavaş** akar. Bu yavaşlama, besin ve gaz değişimi için kritik zamanı sağlar.
-        </p>
-
-        <div class="nav-area">
-            <a href="index.html" class="btn" style="background:#7f8c8d">&larr; Ana Menü</a>
+        <div class="page-nav">
+            <a href="index.html" class="btn prev" style="background:#7f8c8d">&larr; Ana Menü</a>
             <a href="dolasim2.html" class="btn">Bölüm 2: Mikro Dolaşım ve RAAS &rarr;</a>
         </div>
     </main>
