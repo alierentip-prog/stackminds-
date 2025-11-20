@@ -3,395 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro EKG Simülatörü | Stackminds</title>
+    <title>Patolojiler ve Simülasyon | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-        /* --- KARANLIK HASTANE TEMASI --- */
-        body {
-            margin: 0;
-            background-color: #0f172a; /* Koyu Duvar Rengi */
-            color: #e2e8f0;
-            font-family: 'Segoe UI', 'Roboto', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
-        /* ÜST MENÜ */
-        .navbar {
-            width: 100%; padding: 15px 30px; background: #1e293b; display: flex; align-items: center; gap: 20px;
-            border-bottom: 1px solid #334155; box-sizing: border-box;
-        }
-        .back-link { text-decoration: none; color: #94a3b8; font-weight: bold; display: flex; align-items: center; gap: 8px; }
-        .back-link:hover { color: #fff; }
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none; }
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
 
-        /* MONİTÖR KASASI */
-        .monitor-casing {
-            background: #000;
-            border: 10px solid #334155;
-            border-radius: 20px;
-            width: 95%;
-            max-width: 1100px;
-            height: 500px;
-            margin-top: 20px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            position: relative;
-            display: grid;
-            grid-template-columns: 3fr 1fr; /* Sol: Grafik, Sağ: Rakamlar */
-            overflow: hidden;
-        }
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 40px 80px; max-width: 900px; width: 100%; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; margin-bottom: 10px; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; font-family: 'Segoe UI', sans-serif; }
+        p { text-align: justify; margin-bottom: 20px; }
 
-        /* SOL TARAF: GRAFİK ALANI */
-        .graph-area {
-            position: relative;
-            border-right: 2px solid #1e293b;
-            background: 
-                linear-gradient(rgba(0,255,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,0,0.03) 1px, transparent 1px);
-            background-size: 20px 20px; /* Kareli Kağıt Efekti */
-        }
+        /* MONİTÖR ALANI (Üstte Sabit Gibi) */
+        .sim-section { background: #0f172a; padding: 20px; border-radius: 15px; color: white; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); font-family: 'Segoe UI', sans-serif; }
+        canvas { display: block; width: 100%; height: 200px; border-bottom: 1px solid #334155; }
         
-        canvas { display: block; width: 100%; height: 100%; }
+        .control-panel { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; justify-content: center; }
+        .btn-rhythm { padding: 8px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; background: #334155; color: #cbd5e1; transition:0.2s; }
+        .btn-rhythm:hover { background: #475569; }
+        .btn-rhythm.active { background: #10b981; color: black; }
+        .btn-rhythm.danger.active { background: #ef4444; color: white; }
 
-        .lead-label {
-            position: absolute; top: 10px; left: 10px;
-            color: #10b981; font-family: monospace; font-size: 1.2rem; font-weight: bold;
-        }
+        /* KUTULAR */
+        .clinical-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b; }
+        .warning-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
 
-        /* SAĞ TARAF: RAKAMLAR (VİTALLER) */
-        .vital-sidebar {
-            display: flex; flex-direction: column;
-            padding: 10px;
-            background: #050505;
-        }
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+        .prev { background: #f3f4f6; color: #374151; }
+        .next { background: var(--blue-ink); color: white; }
 
-        .vital-box {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 15px;
-            margin-bottom: 5px; border-radius: 5px; position: relative;
-        }
-
-        .vital-label { font-size: 0.8rem; font-weight: bold; position: absolute; top: 10px; left: 10px; }
-        .vital-value { font-size: 3.5rem; font-weight: bold; text-align: right; line-height: 1; font-family: 'Courier New', monospace; }
-        .vital-unit { font-size: 0.9rem; position: absolute; bottom: 10px; right: 10px; }
-
-        /* RENK KODLARI */
-        .ecg-color { color: #10b981; } /* Yeşil */
-        .spo2-color { color: #3b82f6; } /* Mavi */
-        .bp-color { color: #ef4444; }   /* Kırmızı */
-        .resp-color { color: #f59e0b; } /* Sarı */
-
-        /* KONTROL PANELİ (ALTTAKİ BUTONLAR) */
-        .control-panel {
-            margin-top: 20px;
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
-            width: 95%; max-width: 1100px;
-        }
-
-        .btn-rhythm {
-            background: #1e293b; border: 1px solid #475569; color: #cbd5e1;
-            padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;
-            min-width: 120px; text-align: center;
-        }
-        .btn-rhythm:hover { background: #334155; color: #fff; border-color: #64748b; }
-        
-        .btn-rhythm.active { background: #10b981; color: #000; border-color: #10b981; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-        .btn-rhythm.danger.active { background: #ef4444; border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-
-        /* MOBİL UYUM */
-        @media (max-width: 768px) {
-            .monitor-casing { height: 400px; grid-template-columns: 1fr; grid-template-rows: 2fr 1fr; }
-            .vital-sidebar { flex-direction: row; padding: 5px; }
-            .vital-box { border-right: 1px solid #333; padding: 5px; margin: 0; }
-            .vital-value { font-size: 2rem; }
-            .graph-area { border-right: none; border-bottom: 2px solid #1e293b; }
-        }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Menü</a>
-        <span style="color: #64748b;">|</span>
-        <strong>Pro EKG Simülatörü</strong>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="ekg.html" class="chapter-link">1. EKG Temelleri</a>
+        <a href="ekg2.html" class="chapter-link active">2. Aritmiler ve Patoloji</a>
+        <a href="ekg_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
 
-    <div class="monitor-casing">
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
+        <h1>Bölüm 2: Patolojiler ve Simülasyon</h1>
         
-        <div class="graph-area">
-            <span class="lead-label">II LEAD <span style="font-size:0.8rem; opacity:0.7">x1.0</span></span>
+        <p>
+            Teoriyi öğrendik. Şimdi bu teorinin bozulduğu durumları (Patolojileri) inceleyeceğiz. 
+            Aşağıdaki simülatörde butonlara basarak ritim değişikliğini gözlemleyin, ardından aşağıdan mekanizmasını okuyun.
+        </p>
+
+        <div class="sim-section">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-family:'Courier New', monospace; color:#10b981; font-weight:bold;">
+                <span id="rhythmTitle">NORMAL SINUS RHYTHM</span>
+                <span id="hrValue">HR: 72</span>
+            </div>
             <canvas id="ecgCanvas"></canvas>
-        </div>
-
-        <div class="vital-sidebar">
-            <div class="vital-box ecg-color">
-                <span class="vital-label">HR</span>
-                <span class="vital-value" id="valHR">--</span>
-                <span class="vital-unit">BPM</span>
-                <i class="fa-solid fa-heart-pulse" style="position:absolute; top:10px; right:10px; animation: blink 1s infinite;"></i>
-            </div>
             
-            <div class="vital-box spo2-color">
-                <span class="vital-label">SpO2</span>
-                <span class="vital-value" id="valSpO2">98</span>
-                <span class="vital-unit">%</span>
-            </div>
-
-            <div class="vital-box bp-color">
-                <span class="vital-label">NIBP</span>
-                <span class="vital-value" style="font-size:2rem; padding-top:10px;" id="valBP">120/80</span>
-                <span class="vital-unit">mmHg</span>
-            </div>
-
-            <div class="vital-box resp-color">
-                <span class="vital-label">RESP</span>
-                <span class="vital-value" id="valResp">16</span>
-                <span class="vital-unit">RPM</span>
+            <div class="control-panel">
+                <button class="btn-rhythm active" onclick="setRhythm('nsr')">Normal</button>
+                <button class="btn-rhythm" onclick="setRhythm('tachy')">Taşikardi</button>
+                <button class="btn-rhythm" onclick="setRhythm('afib')">AFib</button>
+                <button class="btn-rhythm" onclick="setRhythm('stemi')">STEMI (Kriz)</button>
+                <button class="btn-rhythm danger" onclick="setRhythm('vfib')">V-Fib (Arrest)</button>
+                <button class="btn-rhythm danger" onclick="setRhythm('asystole')">Asistoli</button>
             </div>
         </div>
-    </div>
 
-    <div class="control-panel">
-        <button class="btn-rhythm active" onclick="changeRhythm('nsr')">Normal Sinüs</button>
-        <button class="btn-rhythm" onclick="changeRhythm('tachy')">Sinüs Taşikardi</button>
-        <button class="btn-rhythm" onclick="changeRhythm('brady')">Sinüs Bradikardi</button>
-        <button class="btn-rhythm" onclick="changeRhythm('afib')">Atriyal Fibrilasyon</button>
-        <button class="btn-rhythm" onclick="changeRhythm('stemi')">Akut MI (STEMI)</button>
-        <button class="btn-rhythm danger" onclick="changeRhythm('vfib')">V-FIB (Kriz)</button>
-        <button class="btn-rhythm danger" onclick="changeRhythm('asystole')">Asistoli (Flat)</button>
-    </div>
+        <h2>1. Hız Problemleri</h2>
+        <h3>Sinüs Taşikardisi (>100/dk)</h3>
+        <p>
+            Sempatik sinir sistemi aktivasyonu (Adrenalin) ile SA düğümün ateşleme hızı artar. 
+            Dalgalar normaldir (P, QRS, T vardır) ancak birbirine çok yakındır. Diyastol süresi kısalmıştır.
+            <br><em>Nedenleri:</em> Ateş, Egzersiz, Hipovolemi (Kan kaybı), Hipertiroidi.
+        </p>
+
+        <h2>2. Atriyal Aritmiler</h2>
+        <h3>Atriyal Fibrilasyon (AFib)</h3>
+        <p>
+            Atriyum içinde tek bir SA düğüm uyarısı yerine, yüzlerce küçük "mikro re-entry" halkası döner. 
+            Atriyumlar kasılmaz, sadece titrer.
+        </p>
+        <div class="clinical-box">
+            <strong>EKG Bulguları:</strong><br>
+            1. <strong>P Dalgası Yoktur:</strong> Yerine düzensiz titreşimler (f dalgaları) vardır.<br>
+            2. <strong>Düzensiz Ritim:</strong> AV düğüm bu yüzlerce uyarıdan rastgele bazılarını geçirir. Bu yüzden QRS'ler tamamen düzensiz aralıklarla gelir ("Irregularly Irregular").<br>
+            <strong>Risk:</strong> Titreyen atriyumda kan pıhtılaşır, beyne atarsa felç (İnme) yapar.
+        </div>
+
+        <h2>3. İskemi ve Enfarktüs (Kalp Krizi)</h2>
+        <h3>STEMI (ST Elevasyonlu Miyokard Enfarktüsü)</h3>
+        <p>
+            Bir koroner damar tam tıkandığında, kalp kası oksijensiz kalır (İskemi). 
+            Hasar gören hücrelerin zarları iyon sızdırmaya başlar. Bu sızıntı "Hasar Akımı" (Current of Injury) yaratır.
+        </p>
+        <div class="warning-box">
+            <strong>Mekanizma:</strong> Normalde repolarizasyon (T dalgası) bittiğinde voltaj sıfır olmalıdır. Ancak hasarlı bölge sürekli pozitif yüklü kaldığı için ST segmenti taban çizgisinden yukarı kalkar (Mezar taşı görüntüsü). Bu, "Hemen anjiyo yap!" demektir.
+        </div>
+
+        <h2>4. Ölümcül Ritimler (Arrest)</h2>
+        <h3>Ventriküler Fibrilasyon (V-Fib)</h3>
+        <p>
+            Kalbin en korkulan ritmidir. Ventrikül içinde elektriksel kaos vardır. 
+            Kalp kası organize bir şekilde kasılamaz, solucan torbası gibi titrer. 
+            Pompalama durur, tansiyon sıfırdır.
+        </p>
+        <p>
+            <strong>EKG:</strong> QRS kompleksi seçilemez. Tamamen düzensiz, kaotik dalgalanmalar görülür.
+            <br><strong>Tedavi:</strong> Defibrilasyon (Elektroşok). Amaç tüm hücreleri aynı anda depolarize edip SA düğümün tekrar yönetimi ele almasını sağlamaktır.
+        </p>
+
+        <h3>Asistoli (Flatline)</h3>
+        <p>
+            Elektriksel sessizlik. Kalpte hiçbir aktivite yoktur. Düz çizgidir.
+            <br><strong>Önemli:</strong> Asistoliye şok verilmez! Çünkü ortada düzeltilecek bir elektrik yoktur. Kalp masajı (CPR) ve Adrenalin yapılır.
+        </p>
+
+        <div class="page-nav">
+            <a href="ekg.html" class="nav-btn prev">&larr; Bölüm 1: EKG Temelleri</a>
+            <a href="ekg_test.html" class="nav-btn next">Ünite Testi (50 Soru) &rarr;</a>
+        </div>
+    </main>
 
     <script>
-        // --- AUDIOCONTEXT İLE BİP SESİ (Profesyonel Yöntem) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playBeep(freq = 800, type = 'sine') {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.value = freq;
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
-            osc.stop(audioCtx.currentTime + 0.15);
-        }
-    </script>
-
-    <script>
+        // --- SİMÜLATÖR KODLARI ---
         const canvas = document.getElementById('ecgCanvas');
         const ctx = canvas.getContext('2d');
-        
-        // Canvas Boyutunu Ayarla
-        function resize() {
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        const title = document.getElementById('rhythmTitle');
+        const hrVal = document.getElementById('hrValue');
 
-        // --- SİMÜLASYON DEĞİŞKENLERİ ---
+        function resize() { canvas.width = canvas.parentElement.offsetWidth; canvas.height = 200; }
+        window.addEventListener('resize', resize); resize();
+
         let x = 0;
-        let lastY = 0;
-        let speed = 3; // Çizim hızı
-        let currentRhythm = 'nsr';
-        let beatCounter = 0;
+        let frame = 0;
+        let activeRhythm = 'nsr';
 
-        // Veri Tamponu (Geçmiş verileri tutar, fade efekti için değil ama mantık için)
-        // Biz burada "Silerek ilerleme" (Sweep bar) tekniğini kullanacağız.
-        // Monitörlerdeki o yeşil dikey çizgi (Bar) ilerledikçe eskiyi silip yeniyi çizer.
-        
-        // Ritim Parametreleri
-        const rhythms = {
-            nsr: { hr: 75, irregularity: 0, p: true, qrs_width: 10, st_elev: 0, chaos: 0 },
-            tachy: { hr: 140, irregularity: 0, p: true, qrs_width: 8, st_elev: 0, chaos: 0 },
-            brady: { hr: 45, irregularity: 0, p: true, qrs_width: 10, st_elev: 0, chaos: 0 },
-            afib: { hr: 110, irregularity: 0.8, p: false, qrs_width: 10, st_elev: 0, chaos: 2 }, // Chaos: taban çizgisi titremesi
-            stemi: { hr: 90, irregularity: 0, p: true, qrs_width: 12, st_elev: 15, chaos: 0 }, // ST Elevasyonu
-            vfib: { hr: 0, irregularity: 1, p: false, qrs_width: 30, st_elev: 0, chaos: 20 }, // Tam kaos
-            asystole: { hr: 0, irregularity: 0, p: false, qrs_width: 0, st_elev: 0, chaos: 0.5 }
-        };
-
-        let activeParams = rhythms['nsr'];
-        let nextBeatTime = 0;
-        let isBeating = false; // Şu an QRS çiziliyor mu?
-        
-        // Vital Elementler
-        const elHR = document.getElementById('valHR');
-        const elSpO2 = document.getElementById('valSpO2');
-        const elBP = document.getElementById('valBP');
-
-        function changeRhythm(type) {
-            currentRhythm = type;
-            activeParams = rhythms[type];
-            
-            // Buton Görseli
-            document.querySelectorAll('.btn-rhythm').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-
-            // Vitalleri Güncelle
-            updateVitals(type);
-        }
-
-        function updateVitals(type) {
-            if(type === 'vfib' || type === 'asystole') {
-                elHR.innerText = "---";
-                elSpO2.innerText = "?";
-                elBP.innerText = "---/---";
-                elHR.style.color = "#ef4444"; // Kırmızı Alarm
-            } else {
-                // Biraz rastgelelik ekle
-                let randHR = activeParams.hr + Math.floor(Math.random()*5 - 2);
-                elHR.innerText = randHR;
-                elSpO2.innerText = 95 + Math.floor(Math.random()*4);
-                
-                if(type === 'tachy') elBP.innerText = "145/90";
-                else if(type === 'brady') elBP.innerText = "105/65";
-                else elBP.innerText = "120/80";
-
-                elHR.style.color = "#10b981";
-            }
-        }
-
-        // --- DALGA OLUŞTURUCU (MATHS) ---
-        // EKG Dalgasını anlık hesaplar
-        // t: 0 ile 100 arası bir ilerleme değeri (bir atım için)
-        function getECGValue(t) {
+        function getY(t, type) {
             let y = 0;
-            
-            if(activeParams.chaos > 5) {
-                // V-Fib Kaosu (Sinüs dalgaları toplamı)
-                return Math.sin(t/5) * 20 + Math.sin(t/2)*10 + (Math.random()-0.5)*10;
+            if(type === 'vfib') return Math.sin(t/5)*20 + Math.random()*10;
+            if(type === 'asystole') return Math.random();
+
+            // Normal Döngü
+            let cycle = type === 'tachy' ? 30 : type === 'brady' ? 90 : 60;
+            let localT = t % cycle;
+
+            // P Dalgası
+            if(type !== 'afib' && type !== 'vfib') {
+                if(localT > 5 && localT < 15) y -= Math.sin((localT-5)/10*Math.PI)*5;
+            } else if(type === 'afib') {
+                y += (Math.random()-0.5)*3; // Titreme
             }
 
-            // Asistoli
-            if(currentRhythm === 'asystole') return (Math.random()-0.5)*1;
-
-            // P Dalgası (0-15)
-            if(activeParams.p && t >= 5 && t < 15) {
-                y -= Math.sin((t-5)/10 * Math.PI) * 5;
-            }
-
-            // QRS (35-45)
-            if(t >= 35 && t < 45) {
-                // Q
-                if(t < 37) y += 5;
-                // R (Zirve)
-                else if(t < 40) { y -= 60; if(t>38) isBeating = true; } 
-                // S
-                else y += 15;
-            } else {
-                if(isBeating) { playBeep(); isBeating = false; } // R bittiğinde bip sesi
-            }
-
-            // ST Segmenti ve T Dalgası (50-80)
-            if(t >= 50 && t < 80) {
-                // STEMI ise ST'yi kaldır
-                let stOffset = activeParams.st_elev;
+            // QRS
+            if(type !== 'vfib') {
+                if(localT > 35 && localT < 37) y += 5; // Q
+                else if(localT >= 37 && localT < 40) y -= 50; // R
+                else if(localT >= 40 && localT < 43) y += 10; // S
                 
-                // T Dalgası
-                let tWave = Math.sin((t-50)/30 * Math.PI) * 8;
-                y -= (tWave + stOffset);
+                // AFib düzensizliği
+                if(type === 'afib' && Math.random() < 0.02) y -= 50; 
             }
 
-            // AFib Titremesi (Baseline noise)
-            if(activeParams.chaos > 0) {
-                y += (Math.random() - 0.5) * 3;
+            // T ve ST
+            if(type !== 'vfib' && type !== 'afib') {
+                let stH = type === 'stemi' ? 15 : 0;
+                if(localT > 45 && localT < 70) {
+                    y -= (Math.sin((localT-45)/25*Math.PI)*8 + stH);
+                }
             }
-
             return y;
         }
 
-        // --- ANA ÇİZİM DÖNGÜSÜ ---
-        let step = 0; // Bir atım içindeki ilerleme (0-100)
-        let waitingForNextBeat = false;
-        let waitCounter = 0;
-        let waitThreshold = 50; 
-
         function animate() {
-            // 1. Temizleme Çubuğu (Sweep Bar)
-            // Önündeki 20 piksellik alanı temizle
-            ctx.fillStyle = "rgba(0, 0, 0, 1)"; // Siyah silgi
-            ctx.fillRect(x, 0, 10 + speed, canvas.height);
-            
-            // 2. Y Değerini Hesapla
-            let yOffset = 0;
-            
-            if(waitingForNextBeat) {
-                // İki atım arası bekleme (İzoelektrik hat)
-                yOffset = (Math.random()-0.5) * (activeParams.chaos > 0 ? 3 : 1); // Hafif gürültü
-                waitCounter++;
-                
-                // AFib ise rastgele bekle, Normal ise düzenli bekle
-                let randomWait = activeParams.irregularity > 0 ? Math.random()*50 : 0;
-                
-                // Hıza göre bekleme süresi (Hızlıysa az bekle)
-                let speedFactor = (60 / activeParams.hr) * 60; // Frame cinsinden kabaca
-                let threshold = speedFactor - 100 + randomWait; // 100 frame dalga sürüyor desek
-                if(threshold < 0) threshold = 0; 
+            // Temizleme çubuğu
+            ctx.fillStyle = "rgba(15, 23, 42, 1)"; // Arka plan rengiyle sil
+            ctx.fillRect(x, 0, 5, canvas.height);
 
-                if(activeParams.hr === 0) threshold = 99999; // Asistoli/Vfib sürekli bekleme modunda (özel çizim)
+            let y = getY(frame, activeRhythm);
+            let mid = canvas.height / 2;
 
-                if(waitCounter > threshold) {
-                    waitingForNextBeat = false;
-                    step = 0;
-                    waitCounter = 0;
-                }
-
-                // V-FIB Özel Durumu: Bekleme yok, sürekli kaos
-                if(currentRhythm === 'vfib') { 
-                    waitingForNextBeat = false; 
-                    step += 1; // Sürekli artır
-                }
-
-            } else {
-                // Dalga çiziliyor
-                yOffset = getECGValue(step);
-                step += 1.5; // Çizim hızı
-                if(step > 100 && currentRhythm !== 'vfib') {
-                    waitingForNextBeat = true;
-                }
-            }
-
-            // 3. Çiz
-            let centerY = canvas.height / 2;
-            
-            // Yeşilin tonu (Fosforlu)
-            ctx.strokeStyle = currentRhythm === 'asystole' || currentRhythm === 'vfib' ? '#ef4444' : '#10b981';
+            ctx.strokeStyle = (activeRhythm === 'vfib' || activeRhythm === 'asystole') ? '#ef4444' : '#10b981';
             ctx.lineWidth = 2;
-            ctx.lineJoin = 'round';
-            
             ctx.beginPath();
-            // Bir önceki noktadan devam et (Kırılma olmasın diye)
-            // Basitlik için: x-speed noktasından x noktasına çizgi çekiyoruz
-            // lastY değişkenini global tutup kullanabilirdik ama burada moveTo yeterli.
-            if(x > 0) ctx.moveTo(x - speed, lastY);
-            else ctx.moveTo(0, centerY); // En baş
-            
-            let currentY = centerY + yOffset;
-            ctx.lineTo(x, currentY);
+            ctx.moveTo(x, mid + y); // Basit çizim (nokta nokta)
+            ctx.lineTo(x+1, mid + y);
             ctx.stroke();
-            
-            lastY = currentY;
-            x += speed;
 
-            // Başa Dönme (Loop)
-            if(x > canvas.width) {
-                x = 0;
-            }
-
-            // Vitalleri ara sıra güncelle (Canlılık hissi)
-            if(Math.random() < 0.01) updateVitals(currentRhythm);
-
+            x += 2;
+            frame++;
+            if(x > canvas.width) x = 0;
             requestAnimationFrame(animate);
         }
 
-        // Başlat
-        animate();
+        function setRhythm(r) {
+            activeRhythm = r;
+            document.querySelectorAll('.btn-rhythm').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
 
+            if(r==='nsr') { title.innerText="NORMAL SINUS"; hrVal.innerText="HR: 72"; }
+            if(r==='tachy') { title.innerText="SINUS TACHYCARDIA"; hrVal.innerText="HR: 130"; }
+            if(r==='afib') { title.innerText="ATRIAL FIBRILLATION"; hrVal.innerText="HR: IRR"; }
+            if(r==='stemi') { title.innerText="ACUTE ANTERIOR MI"; hrVal.innerText="HR: 88"; }
+            if(r==='vfib') { title.innerText="VENTRICULAR FIB"; hrVal.innerText="HR: ---"; }
+            if(r==='asystole') { title.innerText="ASYSTOLE"; hrVal.innerText="HR: 0"; }
+        }
+
+        animate();
     </script>
+
 </body>
 </html>
