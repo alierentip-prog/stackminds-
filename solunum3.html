@@ -33,6 +33,7 @@
         .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
         .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
         .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
+        .clinical-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b; }
 
         /* NAV */
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
@@ -45,6 +46,7 @@
 
     <nav class="sidebar">
         <a href="index.html" class="brand"><i class="fa-solid fa-lungs"></i> SOLUNUM</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
         <a href="solunum.html" class="menu-item">1. Mekanik ve Hacimler</a>
         <a href="solunum2.html" class="menu-item">2. Gaz Değişimi</a>
         <a href="solunum3.html" class="menu-item active">3. Solunum Kontrolü</a>
@@ -56,7 +58,7 @@
         <h1>Bölüm 3: Solunum Merkezleri ve Kimyasal Kontrol</h1>
 
         <p>
-            Solunumun düzenlenmesi, kandaki $O_2$, $CO_2$ ve $H^+$ iyon konsantrasyonlarının hassas bir şekilde kontrol edilmesine dayanır. Bu kontrol, beyin sapındaki sinir merkezleri ve kemoreseptörler aracılığıyla gerçekleşir.
+            Solunumun düzenlenmesi, kandaki gazların ($O_2$, $CO_2$) ve asitliğin ($H^+$) hassas bir şekilde kontrol edilmesine dayanır. Bu kontrol, beyin sapındaki sinir merkezleri ve kemoreseptörler aracılığıyla gerçekleşir.
         </p>
 
         <h2>1. Solunum Merkezleri (Beyin Sapı)</h2>
@@ -69,40 +71,31 @@
         <ul>
             <li><strong>Dorsal Solunum Grubu (DRG):</strong> Medulla'da bulunur. Temel solunum ritmini (**İnspiratuvar Rampa Sinyali**) başlatır. Sadece nefes alma (İnspirasyon) nöronları içerir.</li>
             <li><strong>Ventral Solunum Grubu (VRG):</strong> Normal solunumda pasiftir. **Zorlu Solunum** (derin nefes alma/verme) gerektiğinde devreye girer. Hem inspirasyon hem ekspirasyon nöronları içerir.</li>
-            <li><strong>Pnömotaksik Merkez (Pons):</strong> DRG'ye sinyal göndererek inspirasyonu erkenden keser. Solunum **hızını** ayarlayan ana merkezdir.</li>
+            <li><strong>Pnömotaksik Merkez (Pons):</strong> DRG'ye "Yeter!" sinyali gönderir. İnspirasyonu erkenden keserek solunum **hızını** artırır.</li>
         </ul>
 
-        <div class="logic-box">
-            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mantık: Solunum Ritim Kontrolü</span>
-            Solunum, bir açma/kapama sistemidir. DRG açma sinyalini yollar, Pnömotaksik merkez ise "Yeter" deyip kapatma süresini belirler.
-        </div>
-        
         <h2>2. Kimyasal Kontrol: Patron $CO_2$'dir</h2>
 
-        <h3>A. Merkezi Kemoreseptörler</h3>
+        <h3>A. Merkezi Kemoreseptörler (En Güçlü Kontrol)</h3>
         <p>
             Medulla'da bulunur. Kandaki $CO_2$ seviyesindeki en ufak bir artışa bile şiddetle tepki verirler.
         </p>
         <div class="trap-box">
             <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Sınav Tuzağı: Gerçek Uyarıcı</span>
-            Merkezi kemoreseptörler doğrudan $CO_2$'yi değil, onun oluşturduğu $H^+$ (Asit) iyonunu algılar. $CO_2$ Kan-Beyin Bariyerini kolayca geçer, BOS'ta suya karışır ve asit oluşturur.
+            Merkezi kemoreseptörler doğrudan $CO_2$'yi değil, onun oluşturduğu $H^+$ (Asit) iyonunu algılar. $CO_2$ Kan-Beyin Bariyerini kolayca geçer, BOS'ta suya karışır ve asit oluşturur. Solunumu yöneten **asıl faktör $H^+$'tır.**
         </div>
 
-        <h3>B. Periferik Kemoreseptörler</h3>
+        <h3>B. Periferik Kemoreseptörler (Yedek Kontrol)</h3>
         <p>
-            Karotis (Şah damarı) ve Aort yayında bulunur. **$O_2$ düşüklüğüne** (Hipoksiye) duyarlıdır.
+            Karotis (Şah damarı) ve Aort yayında bulunur. **$O_2$ düşüklüğüne** (Hipoksiye) duyarlıdırlar.
         </p>
         <div class="def-box">
-            **Özet Kural:** Normal bir insanda solunumu yöneten ana faktör $CO_2$'dir. $O_2$ ise ancak $P_{O2}$ 60 mmHg'nin altına düşerse devreye giren **Acil Durum Yedeğidir**.
+            **Özet Kural:** Normal bir insanda solunumu yöneten ana faktör $CO_2$'dir. $O_2$ ancak $P_{O2}$ 60 mmHg'nin altına düştükten sonra güçlü bir uyarıcı haline gelir.
         </div>
         
-        <h2>3. Klinik Korelasyon</h2>
-        
-        <div class="clinical-box" style="border-color:var(--success);">
+        <div class="clinical-box">
             <strong>Klinik: KOAH ve Hipoksik Drive</strong><br>
-            Kronik KOAH hastalarında $CO_2$ sürekli yüksek olduğu için merkezi reseptörler duyarsızlaşır. 
-            Bu hastaların solunumu sürdüren tek güç, periferik reseptörlerin yarattığı **Düşük $O_2$ Uyarısıdır (Hipoksik Drive)**. 
-            Bu hastalara kontrolsüz yüksek doz Oksijen verilirse, solunum durabilir (Apne)!
+            KOAH hastalarında $CO_2$ kronik olarak yüksek olduğu için merkezi reseptörler duyarsızlaşır. Bu durumda solunumu sürdüren tek güç, periferik reseptörlerin yarattığı **Düşük $O_2$ Uyarısıdır (Hipoksik Drive)**. Bu hastalara kontrolsüz yüksek doz Oksijen verilirse, solunum durabilir (Apne)!
         </div>
 
         <div class="nav-area">
