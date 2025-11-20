@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İleti Blokları | Stackminds Kütüphanesi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        .mnemonic-box { background: #fdf4ff; border: 2px dashed #d946ef; padding: 20px; margin: 20px 0; border-radius: 10px; font-family: 'Segoe UI', sans-serif; font-weight: bold; color: #86198f; text-align: center; font-size: 1.2rem; }
+        .ekg-strip { background-color: #fff0f0; border: 1px solid #ff9999; padding: 20px; margin: 20px 0; background-image: linear-gradient(#ffcccc 1px, transparent 1px); background-size: 10px 10px; height: 120px; display: flex; align-items: center; justify-content: center; }
+        .ekg-path { stroke: #111827; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .warning-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px;">Bu Ünite</div>
+        <a href="ekg.html" class="chapter-link">1. EKG Temelleri</a>
+        <a href="ekg2.html" class="chapter-link">2. Aritmi Simülatörü</a>
+        <a href="ekg3.html" class="chapter-link active">3. İleti Blokları</a>
+        <a href="ekg_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
+        <h1>Bölüm 3: İleti Blokları (Dal ve AV)</h1>
+
+        <p>
+            Elektriksel iletinin Purkinje sisteminde veya AV düğümde takılması sonucu QRS kompleksinin genişlemesi veya atımların düşmesi görülür.
+        </p>
+
+        <h2>1. Dal Blokları (Bundle Branch Blocks)</h2>
+        <p>
+            Sağ veya sol dalın elektriği hızlı iletememesi durumudur. Elektrik, hasta tarafa dolanarak (kısa yoldan değil) gittiği için QRS genişler ($\ge 0.12 \text{ sn}$).
+        </p>
+
+        <h3>A. Sağ Dal Bloğu (RBBB)</h3>
+        <p>
+            Sağ ventrikül geç uyarılır. EKG'de V1, V2 derivasyonlarında <strong>"Tavşan Kulağı"</strong> veya <strong>"M"</strong> harfi şekli görülür (rSR').
+        </p>
+        <div class="mnemonic-box" style="background:#fff7ed;">
+             Ezber Kodu: **MaRoW** (V1'de M, V6'da W)
+        </div>
+
+        <h3>B. Sol Dal Bloğu (LBBB)</h3>
+        <p>
+            Sol ventrikül geç uyarılır. Bu daha ciddi kabul edilir. V5, V6 derivasyonlarında üstü çentikli, geniş <strong>"M"</strong> veya <strong>"R"</strong> dalgası görülür.
+        </p>
+        <div class="mnemonic-box" style="background:#f0f9ff;">
+             Ezber Kodu: **WiLLiaM** (V1'de W, V6'da M)
+        </div>
+
+        <h2>2. Atriyoventriküler (AV) Bloklar</h2>
+        <p>
+            AV düğümdeki gecikme veya kesintilerdir.
+        </p>
+
+        <h3>1. Derece AV Blok</h3>
+        <p>
+            PR aralığı $0.20 \text{ sn}$'den uzundur. Tüm atımlar iletilir, ancak geç iletilir. Genellikle tedavi gerektirmez.
+        </p>
+
+        <h3>2. Derece AV Blok (Mobitz Tip 1 / Wenckebach)</h3>
+        <p>
+            PR aralığı giderek uzar, uzar, uzar... ve sonunda bir QRS düşer. Sorun AV düğüm seviyesindedir. Genellikle iyi huyludur.
+        </p>
+
+        <h3>2. Derece AV Blok (Mobitz Tip 2)</h3>
+        <p>
+            **PR aralığı sabittir.** Ancak aniden, haber vermeden bir QRS düşer. Bu, His demeti veya altında ciddi bir sorundur.
+        </p>
+        <div class="warning-box">
+            <strong>Klinik Önemi:</strong> Mobitz Tip 2, Tam Bloğa (3. Derece) hızla dönüşebilir. Bu yüzden **pil takılması** gerekir.
+        </div>
+
+        <h3>3. Derece (Tam) AV Blok</h3>
+        <p>
+            Atriyum ve Ventrikül arasındaki köprü tamamen kopmuştur. P dalgaları ve QRS'ler birbirinden bağımsız, farklı hızlarda atar (AV Disosiasyon). Acil pil takılması gerekir.
+        </p>
+        <div class="warning-box" style="border-color:#0369a1; background:#eff6ff;">
+            <strong>Stokes-Adams Sendromu:</strong> Tam blok oluştuğunda ventriküllerin kendi ritmini bulması birkaç saniye sürer. Bu süreçte beyin kansız kalır ve hasta bayılır.
+        </div>
+
+        <div class="page-nav">
+            <a href="ekg2.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Bölüm 2: Aritmi Simülatörü</a>
+            <a href="ekg_test.html" class="nav-btn next">Ünite Testine Başla (50 Soru) &rarr;</a>
+        </div>
+    </main>
+
+</body>
+</html>
