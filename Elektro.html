@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektrofizyoloji | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- AYDINLIK TEMA --- */
+        :root {
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --primary: #0284c7;
+            --text: #334155;
+        }
+
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text); }
+
+        /* NAVİGASYON */
+        .navbar {
+            background: white; padding: 15px 30px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        .back-link { text-decoration: none; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .back-link:hover { color: var(--primary); }
+
+        /* İÇERİK */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+        h1 { font-size: 2.2rem; color: #1e293b; margin-bottom: 10px; }
+        p { line-height: 1.7; color: #64748b; }
+
+        /* ETKİLEŞİMLİ KART */
+        .interactive-card {
+            background: white; border-radius: 16px; padding: 30px;
+            box-shadow: 0 4px 20px rgba(148, 163, 184, 0.1);
+            border: 1px solid #e2e8f0; margin-bottom: 40px;
+        }
+
+        /* BUTON GRUBU */
+        .phase-buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .phase-btn {
+            padding: 10px 20px; border: 1px solid #e2e8f0; background: white;
+            border-radius: 30px; cursor: pointer; font-weight: 600; color: #64748b; transition: 0.2s;
+        }
+        .phase-btn:hover, .phase-btn.active {
+            background: var(--primary); color: white; border-color: var(--primary);
+        }
+
+        /* GRAFİK ALANI */
+        .chart-wrapper { position: relative; height: 350px; width: 100%; }
+
+        /* İYON BİLGİ KUTUSU */
+        .ion-info {
+            margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 10px;
+            border-left: 4px solid var(--primary); display: none;
+        }
+        .ion-info h4 { margin: 0 0 5px 0; color: #0c4a6e; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Menü</a>
+        <span style="color:#cbd5e1;">|</span>
+        <strong>Modül 1: Kalbin Elektriği</strong>
+    </nav>
+
+    <div class="container">
+        <h1>Aksiyon Potansiyeli</h1>
+        <p>Kalp kası hücresinin (Ventrikül) kasılması için önce elektriksel bir uyarı (Aksiyon Potansiyeli) oluşmalıdır. Bu olay, hücre zarındaki iyon kanallarının (Na+, K+, Ca++) sırayla açılıp kapanmasıyla gerçekleşir.</p>
+
+        <div class="interactive-card">
+            <h3><i class="fa-solid fa-chart-area"></i> Ventriküler Kas Hücresi Grafiği</h3>
+            <p style="font-size:0.9rem;">Aşağıdaki faz butonlarına tıklayarak iyon hareketlerini incele.</p>
+
+            <div class="phase-buttons">
+                <button class="phase-btn" onclick="showPhase(0)">Faz 0: Depolarizasyon</button>
+                <button class="phase-btn" onclick="showPhase(1)">Faz 1: Erken Repol.</button>
+                <button class="phase-btn" onclick="showPhase(2)">Faz 2: Plato</button>
+                <button class="phase-btn" onclick="showPhase(3)">Faz 3: Repolarizasyon</button>
+                <button class="phase-btn" onclick="showPhase(4)">Faz 4: Dinlenme</button>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="apChart"></canvas>
+            </div>
+
+            <div id="infoBox" class="ion-info">
+                <h4 id="infoTitle">Faz Bilgisi</h4>
+                <span id="infoText">Detay burada görünecek.</span>
+            </div>
+        </div>
+
+        <div class="interactive-card">
+            <h3><i class="fa-solid fa-bolt"></i> Önemli Kavramlar</h3>
+            <ul style="color:#64748b; line-height:1.8;">
+                <li><strong>Mutlak Refrakter Dönem:</strong> Hücrenin asla yeni bir uyarı alamadığı dönem (Faz 0, 1, 2). Bu sayede kalp tetani (kramp) olmaz.</li>
+                <li><strong>Plato (Faz 2):</strong> Kalsiyumun hücreye girdiği dönemdir. Kasılma (Sistol) tam bu sırada başlar.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        const ctx = document.getElementById('apChart').getContext('2d');
+        
+        // Aksiyon Potansiyeli Verisi (Elle çizilmiş gibi)
+        const labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const dataValues = [-90, 20, 5, 5, 5, 0, -40, -70, -90, -90, -90]; 
+        // Faz 0: -90 -> +20
+        // Faz 1: +20 -> +5
+        // Faz 2: +5 (Düz)
+        // Faz 3: +5 -> -90
+        // Faz 4: -90
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Membran Potansiyeli (mV)',
+                    data: dataValues,
+                    borderColor: '#0284c7',
+                    backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6,
+                    pointBackgroundColor: 'white',
+                    pointBorderColor: '#0284c7'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: -100, max: 40, title: {display:true, text:'mV'} },
+                    x: { display: false }
+                },
+                plugins: { legend: {display:false} }
+            }
+        });
+
+        function showPhase(phase) {
+            // Buton aktifliği
+            document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Bilgi Kutusu
+            const infoBox = document.getElementById('infoBox');
+            const title = document.getElementById('infoTitle');
+            const text = document.getElementById('infoText');
+            
+            infoBox.style.display = 'block';
+
+            if(phase === 0) {
+                title.innerText = "Faz 0: Hızlı Depolarizasyon";
+                text.innerText = "Hızlı Sodyum (Na+) kanalları açılır. Sodyum hücre içine hücum eder. Voltaj -90mV'dan +20mV'a fırlar.";
+                // Grafikte vurgula (basitçe renk değişimi yapılabilir ama şimdilik metin yeterli)
+            } else if (phase === 1) {
+                title.innerText = "Faz 1: Erken Repolarizasyon";
+                text.innerText = "Na+ kanalları kapanır. Potasyum (K+) kanalları açılır ve K+ dışarı çıkar.";
+            } else if (phase === 2) {
+                title.innerText = "Faz 2: Plato Dönemi (Çok Önemli)";
+                text.innerText = "Kalsiyum (L-tipi Ca++) kanalları açılır ve Ca++ içeri girer. Bu sırada K+ çıkmaya devam eder. Giren (+) ve çıkan (+) dengelendiği için grafik düz kalır.";
+            } else if (phase === 3) {
+                title.innerText = "Faz 3: Hızlı Repolarizasyon";
+                text.innerText = "Ca++ kanalları kapanır. K+ dışarı çıkmaya devam eder ve hücre tekrar negatifleşir.";
+            } else if (phase === 4) {
+                title.innerText = "Faz 4: Dinlenme";
+                text.innerText = "Na/K/ATPaz pompası çalışır. İçeri giren sodyumu dışarı atar, dışarı çıkan potasyumu içeri alır. Denge sağlanır.";
+            }
+        }
+    </script>
+</body>
+</html>
