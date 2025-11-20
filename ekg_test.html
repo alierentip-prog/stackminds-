@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ünite Testi | EKG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --paper: #f8fafc; --ink: #0f172a; --blue-ink: #0369a1; --correct: #059669; --wrong: #dc2626; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 260px; background: #1e293b; color: #e2e8f0; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid #334155; }
+        .brand { font-weight: bold; font-size: 1.2rem; color: white; text-decoration: none; margin-bottom: 40px; }
+        .menu-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background: #334155; color: white; }
+        .menu-item.active { background: var(--blue-ink); color: white; font-weight: bold; }
+        .quiz-area { flex: 1; padding: 20px 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; }
+        .quiz-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .score-badge { background: #e0f2fe; color: var(--blue-ink); padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+        .question-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; animation: fadeIn 0.4s ease; }
+        .q-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
+        .options-grid { display: grid; gap: 12px; }
+        .option-btn { padding: 15px 20px; border: 2px solid #e2e8f0; background: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 1rem; transition: all 0.2s; position: relative; }
+        .option-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+        .option-btn.correct { border-color: var(--correct); background: #ecfdf5; color: var(--correct); font-weight: bold; }
+        .option-btn.wrong { border-color: var(--wrong); background: #fef2f2; color: var(--wrong); opacity: 0.7; }
+        .explanation-box { margin-top: 25px; padding: 20px; background: #f8fafc; border-left: 5px solid var(--blue-ink); border-radius: 4px; display: none; }
+        .btn-nav { background: var(--ink); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result-screen { text-align: center; display: none; padding-top: 50px; }
+        .final-score { font-size: 4rem; font-weight: 900; color: var(--blue-ink); }
+        @media (max-width: 768px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; flex-direction: row; padding: 15px; justify-content: space-between; } .brand { margin: 0; } .menu-item { display: none; } .quiz-area { padding: 20px; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Menü</a>
+        <a href="ekg.html" class="menu-item"><i class="fa-solid fa-book-open"></i> Konu 1</a>
+        <a href="ekg2.html" class="menu-item"><i class="fa-solid fa-chart-area"></i> Konu 2</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+    <main class="quiz-area">
+        <div class="quiz-header" id="quizHeader">
+            <div><h2 style="margin:0;">EKG Okuma Sınavı</h2><small>Bölüm: EKG ve Aritmiler</small></div>
+            <div class="score-badge">Soru: <span id="currentQ">1</span> / <span id="totalQ">50</span></div>
+        </div>
+        <div id="quizContainer">
+            <div class="question-card">
+                <div class="q-text" id="questionText">Yükleniyor...</div>
+                <div class="options-grid" id="optionsArea"></div>
+                <div class="explanation-box" id="expBox"><span style="font-weight:bold; display:block; color:#64748b;">AÇIKLAMA:</span><span id="expText"></span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;"><button class="btn-nav" id="nextBtn" onclick="nextQuestion()" disabled>Sonraki &rarr;</button></div>
+        </div>
+        <div class="result-screen" id="resultScreen">
+            <h1>Sınav Tamamlandı!</h1>
+            <div class="final-score" id="finalScoreDisplay">0</div>
+            <p id="finalMessage" style="font-size:1.2rem; margin-top:20px;"></p>
+            <button class="btn-nav" onclick="location.reload()">Tekrar Dene ↻</button>
+        </div>
+    </main>
+        <script>
+        const questions = [
+            { q: "Normal bir EKG'de PR aralığının üst sınırı kaç saniyedir?", opt: ["0.10 sn", "0.12 sn", "0.20 sn (5 küçük kare)", "0.44 sn"], correct: 2, exp: "PR aralığı 0.12-0.20 sn olmalıdır. 0.20 sn (1 büyük kare) üzerindeyse 1. Derece AV Blok vardır." },
+            { q: "QRS kompleksinin geniş olması (>0.12 sn) neyi gösterir?", opt: ["Atriyal hipertrofi", "Ventriküler iletimde gecikme (Dal bloğu veya ventriküler ritim)", "Hızlı iletim", "Erken repolarizasyon"], correct: 1, exp: "İleti His-Purkinje yerine kas üzerinden yavaşça yayılıyorsa QRS genişler." },
+            { q: "Hiperkalemide (Yüksek Potasyum) görülen en karakteristik ve erken EKG bulgusu nedir?", opt: ["U dalgası", "Sivri ve uzun T dalgası", "ST çökmesi", "Geniş QRS"], correct: 1, exp: "Potasyum repolarizasyonu hızlandırır, T dalgaları 'çadır' gibi sivrileşir." },
+            { q: "Atriyal Fibrilasyonun EKG'deki temel özelliği nedir?", opt: ["Testere dişi dalgalar", "P dalgası yokluğu ve düzensiz R-R aralıkları", "Geniş QRS", "Sabit PR uzaması"], correct: 1, exp: "Atriyumlar titreştiği için P dalgası oluşmaz, yerine düzensiz 'f' dalgaları ve düzensiz bir ritim görülür." },
+            { q: "ST segment elevasyonu (STEMI) neyin göstergesidir?", opt: ["Eski enfarktüs", "Akut transmural miyokard iskemisi/hasarı", "Atriyal genişleme", "Hipokalemi"], correct: 1, exp: "Hasar gören hücrelerin zarı sızdırdığı için 'hasar akımı' oluşur ve taban çizgisi kayar." },
+            { q: "Atriyal Flutter'da görülen karakteristik dalgalara ne ad verilir?", opt: ["Delta dalgası", "Testere dişi (F) dalgaları", "U dalgası", "Osborn dalgası"], correct: 1, exp: "Atriyum içinde dönen makro re-entry halkası, 250-350 hızında düzenli testere dişi görünümü yapar." },
+            { q: "QRS kompleksinden bağımsız, kendi kafasına göre atan P dalgaları (AV Disosiasyon) hangi blokta görülür?", opt: ["1. Derece AV Blok", "Mobitz Tip 1", "Mobitz Tip 2", "3. Derece (Tam) AV Blok"], correct: 3, exp: "Atriyum ve ventrikül arasındaki bağlantı tamamen kopmuştur. İkisi birbirinden habersiz atar." },
+            { q: "Patolojik Q dalgası (Derin ve geniş) neyi ifade eder?", opt: ["Akut iskemi", "Geçirilmiş (Eski) transmural enfarktüs", "Ventriküler hipertrofi", "Sol dal bloğu"], correct: 1, exp: "O bölgedeki kas dokusu öldüğü için elektrik üretemez, karşı duvarın elektriğini görürüz (elektriksel pencere)." },
+            { q: "Uzun QT sendromu hangi ölümcül aritmiye zemin hazırlar?", opt: ["AFib", "Torsades de Pointes", "AV Blok", "SVT"], correct: 1, exp: "Repolarizasyon uzarsa, R dalgası T dalgasının üzerine düşebilir (R-on-T fenomeni) ve Torsades başlar." },
+            { q: "Standart EKG kağıdında 1 küçük kare (yatay) kaç saniyedir?", opt: ["0.02", "0.04", "0.10", "0.20"], correct: 1, exp: "25 mm/sn hızında 1 mm = 0.04 saniyedir." },
+            { q: "Sol Ventrikül Hipertrofisinde (LVH) EKG'de ne beklenir?", opt: ["V1'de yüksek R", "V5-V6'da çok yüksek R dalgası ve V1'de derin S dalgası", "Geniş P dalgası", "Sağ aks sapması"], correct: 1, exp: "Sol ventrikül kas kitlesi arttığı için ürettiği voltaj artar (Sokolow-Lyon kriterleri)." },
+            { q: "V1-V2 derivasyonlarında 'tavşan kulağı' (rSR') görünümü hangi durumu düşündürür?", opt: ["Sol Dal Bloğu (LBBB)", "Sağ Dal Bloğu (RBBB)", "Sol ön fasikül bloğu", "Arka duvar MI"], correct: 1, exp: "Sağ ventrikül geç uyarıldığı için V1'de ikinci bir pozitif dalga (R') oluşur." },
+            { q: "Sadece PR aralığının sabit olarak uzun olması (>0.20 sn) hangi bloğu tanımlar?", opt: ["1. Derece AV Blok", "Wenckebach", "Mobitz 2", "Tam Blok"], correct: 0, exp: "Her P dalgası QRS'i takip eder ama geçiş süresi uzamıştır." },
+            { q: "Hipokalemide (Düşük Potasyum) EKG'de ne görülür?", opt: ["Sivri T", "U dalgası belirginleşmesi ve T düzleşmesi", "Kısa QT", "Geniş QRS"], correct: 1, exp: "Repolarizasyon bozulur, T küçülür ve normalde görülmeyen U dalgası ortaya çıkar." },
+            { q: "Akut Perikarditte (Kalp zarı iltihabı) EKG bulgusu nasıldır?", opt: ["Sadece V1'de ST elevasyonu", "Yaygın ST elevasyonu (konkav) ve PR çökmesi", "ST depresyonu", "Patolojik Q"], correct: 1, exp: "Tüm kalbi saran bir iltihap olduğu için yaygın derivasyonlarda etkilenme görülür." },
+            { q: "D2, D3 ve aVF derivasyonlarında ST elevasyonu hangi duvarın enfarktüsünü gösterir?", opt: ["Anterior (Ön)", "İnferior (Alt)", "Lateral (Yan)", "Septal"], correct: 1, exp: "Bu derivasyonlar kalbi alttan görür (Sağ koroner arter tıkanıklığı)." },
+            { q: "P dalgasının 'testere dişi' değil de 'kaotik/titrek' olması neyi gösterir?", opt: ["Atriyal Flutter", "Atriyal Fibrilasyon", "SVT", "Sinüs Aritmisi"], correct: 1, exp: "Flutter düzenlidir (testere), Fibrilasyon düzensizdir (solucan gibi)." },
+            { q: "Wolf-Parkinson-White (WPW) sendromunun üçlüsü nedir?", opt: ["Uzun PR, Dar QRS, T negatifliği", "Kısa PR, Delta dalgası, Geniş QRS", "Kısa PR, Normal QRS, U dalgası", "Uzun QT, Delta dalgası"], correct: 1, exp: "Aksesuar yol (hızlı) kullanıldığı için PR kısalır ve ventrikül erken uyarılmaya başlar (Delta)." },
+            { q: "Elektriksel Alternans (QRS boyunun bir uzun bir kısa olması) neyin belirtisidir?", opt: ["Kalp Tamponadı", "Hipertrofi", "İskemi", "Digoksin"], correct: 0, exp: "Kalp, sıvı dolu kese içinde bir o yana bir bu yana sallandığı için voltaj değişir." },
+            { q: "V1'den V4'e kadar ST elevasyonu hangi damar tıkanıklığını düşündürür?", opt: ["RCA (Sağ Koroner)", "LAD (Sol Ön İnen)", "Circumflex", "Ana Koroner"], correct: 1, exp: "LAD, kalbin ön yüzünü (Anterior) besler. En tehlikeli MI türüdür." },
+            { q: "R-on-T fenomeni (T dalgasının tepesine vuran erken atım) neden tehlikelidir?", opt: ["AV bloğa neden olur", "Ventriküler Fibrilasyonu tetikleyebilir", "Atriyumu durdurur", "Zararsızdır"], correct: 1, exp: "T dalgasının tepesi 'Vulnerabl (Hassas) Dönem'dir. Buraya gelen uyarı elektriksel kaos yaratır." },
+            { q: "Brugada Sendromu EKG'si nasıldır?", opt: ["V1-V2'de sağ dal bloğu benzeri görünüm ve ST elevasyonu", "Uzun QT", "Derin Q dalgaları", "Yaygın ST depresyonu"], correct: 0, exp: "Genetik bir sodyum kanalı hastalığıdır. Ani ölüm riski taşır." },
+            { q: "Digoksin etkisi (zehirlenme değil, kullanım) EKG'de nasıl görünür?", opt: ["ST elevasyonu", "Kaşık/Çanak şeklinde ST depresyonu", "Geniş QRS", "Sivri P"], correct: 1, exp: "Ters dönmüş bıyık veya kaşık manzarası tipiktir." },
+            { q: "PR aralığının giderek uzayıp sonunda bir QRS'in düştüğü (oluşmadığı) blok tipi?", opt: ["Mobitz Tip 1 (Wenckebach)", "Mobitz Tip 2", "1. Derece", "3. Derece"], correct: 0, exp: "AV düğüm her atımda biraz daha yorulur, sonunda birini iletemez ve dinlenir." },
+            { q: "Hangi derivasyon 'aVR' normalde nasıldır?", opt: ["Pozitif P ve T", "Tamamen Negatif (P, QRS, T)", "Değişken", "İzoelektrik"], correct: 1, exp: "aVR sağ omuza bakar. Kalbin elektriği sağ omuzdan uzaklaştığı için her şey negatiftir." },
+            { q: "Pulmoner Emboli'de görülen klasik (ama nadir) EKG bulgusu?", opt: ["S1Q3T3", "Yaygın ST elevasyonu", "Sol dal bloğu", "Kısa PR"], correct: 0, exp: "D1'de derin S, D3'te Q ve negatif T. Sağ kalp zorlanmasını gösterir." },
+            { q: "Sol Dal Bloğunda (LBBB) V6'da ne görülür?", opt: ["Derin S", "M şeklinde (Çentikli) geniş R dalgası", "Q dalgası", "Sivri T"], correct: 1, exp: "Sol ventrikül geç uyarıldığı için V6'da (sol derivasyon) geniş ve çentikli bir pozitif dalga oluşur." },
+            { q: "Sinüs Taşikardisi ile SVT (Supraventriküler Taşikardi) arasındaki fark?", opt: ["Hız", "P dalgasının görünürlüğü", "QRS genişliği", "ST segmenti"], correct: 1, exp: "Sinüs taşikardisinde P dalgaları normaldir ve görülür. SVT'de P dalgaları genellikle QRS'in içine saklanır veya görülmez." },
+            { q: "Hiperkalsemi (Yüksek Kalsiyum) EKG'yi nasıl etkiler?", opt: ["Uzun QT", "Kısa QT", "Geniş QRS", "Sivri T"], correct: 1, exp: "Plato fazı kısalır, repolarizasyon hızlanır. QT kısalır." },
+            { q: "V-Fib (Ventriküler Fibrilasyon) EKG görüntüsü nasıldır?", opt: ["Düzenli testere dişi", "Düz çizgi", "Tamamen kaotik, düzensiz dalgalanmalar", "Geniş düzenli QRS"], correct: 2, exp: "Organize bir ritim yoktur. Kalp titrer. Acil şok gerekir." },
+            { q: "P Mitrale (Geniş, M harfi şeklinde P dalgası) neyi gösterir?", opt: ["Sağ atriyal büyüme", "Sol atriyal büyüme", "Biatriyal büyüme", "Normal"], correct: 1, exp: "Sol atriyumun depolarizasyonu gecikir, P dalgası genişler ve çentiklenir." },
+            { q: "P Pulmonale (Sivri ve yüksek P dalgası) neyi gösterir?", opt: ["Sağ atriyal büyüme", "Sol atriyal büyüme", "Ventrikül hipertrofisi", "KOAH"], correct: 0, exp: "Sağ atriyum büyüdüğünde (örn. Akciğer hastalığına bağlı) P dalgası yükselir (>2.5mm)." },
+            { q: "Osborn (J) dalgası hangi durumda görülür?", opt: ["Hipokalemi", "Hipotermi (Donma)", "Hiperkalsemi", "MI"], correct: 1, exp: "Vücut sıcaklığı düştüğünde QRS ile ST'nin birleştiği yerde tümsek şeklinde bir dalga çıkar." },
+            { q: "Torsades de Pointes tedavisinde ilk tercih edilen iyon?", opt: ["Kalsiyum", "Magnezyum", "Sodyum", "Potasyum"], correct: 1, exp: "Magnezyum sülfat, bu özel VT türünü durdurmak için verilir." },
+            { q: "Einthoven üçgenine göre D2 derivasyonu hangi kol-bacak arasındadır?", opt: ["Sağ Kol - Sol Kol", "Sağ Kol - Sol Bacak", "Sol Kol - Sol Bacak", "Sağ Bacak - Sol Bacak"], correct: 1, exp: "Kalbin ana elektriksel eksenine en paralel olan derivasyondur." },
+            { q: "QRS ekseninin -30 ile -90 derece arasında olması ne demektir?", opt: ["Normal eksen", "Sağ aks sapması", "Sol aks sapması", "Aşırı sağ aks"], correct: 2, exp: "Sol ventrikül hipertrofisi veya sol ön fasikül bloğunda görülür." },
+            { q: "Asistoli (Düz çizgi) durumunda ilk yapılması gereken?", opt: ["Defibrilasyon (Şok)", "CPR (Kalp masajı) ve Adrenalin", "Amiodaron", "Kardiyoversiyon"], correct: 1, exp: "Asistoliye şok verilmez! Çünkü elektrik yoktur. Masajla kan pompalanmalıdır." },
+            { q: "Ventriküler Taşikardi (VT) ile SVT'yi ayırmada en önemli kriter?", opt: ["Hız", "QRS genişliği", "Ritim düzeni", "P dalgası"], correct: 1, exp: "VT'de QRS geniştir (>0.12). SVT'de (ileti sistemi kullanıldığı için) QRS genellikle dardır." },
+            { q: "İskemide (Enfarktüs değil) T dalgası nasıl değişir?", opt: ["Sivrileşir", "Negatifleşir (İnversiyon)", "Kaybolur", "Çift hörgüçlü olur"], correct: 1, exp: "Simetrik T negatifliği iskemiyi gösterir." },
+            { q: "Düşük voltaj (QRS'lerin minik olması) neden olur?", opt: ["Hipertrofi", "Obezite, KOAH veya Perikardiyal sıvı", "Zayıflık", "Çocukluk çağı"], correct: 1, exp: "Kalp ile elektrot arasına yalıtkan maddeler (yağ, hava, sıvı) girerse voltaj düşer." },
+            { q: "Sağ dal bloğunda (RBBB) QRS nasıldır?", opt: ["Dar", "Geniş (>0.12) ve V1'de M şeklinde", "Geniş ve V6'da M şeklinde", "Görünmez"], correct: 1, exp: "Sağ taraf geç uyarılır." },
+            { q: "Wenckebach (Mobitz 1) bloğu genellikle nerede olur?", opt: ["AV Düğüm", "His demeti", "Purkinje", "SA düğüm"], correct: 0, exp: "AV düğümün yorulmasıdır. Genellikle iyi huyludur." },
+            { q: "Mobitz Tip 2 blok neden daha tehlikelidir?", opt: ["His demeti veya altında olduğu için Tam Bloğa dönüşebilir", "AV düğümde olduğu için", "Hız çok arttığı için", "Ağrı yaptığı için"], correct: 0, exp: "PR uzamadan aniden atım düşer. Kalıcı pil gerekebilir." },
+            { q: "Yapay kalp pili (Pacemaker) EKG'de nasıl görünür?", opt: ["P dalgası büyüktür", "QRS öncesi ince dikey bir çizgi (Spike) vardır", "T dalgası yoktur", "Sürekli fibrilasyon"], correct: 1, exp: "Cihazın verdiği elektrik uyarısı keskin bir çizgi (spike) olarak görülür." },
+            { q: "Hangi elektrolit bozukluğu QT'yi uzatır?", opt: ["Hiperkalsemi", "Hipokalsemi", "Hipernatremi", "Hiperkalemi"], correct: 1, exp: "Kalsiyum düşükse plato fazı çok uzar, repolarizasyon gecikir." },
+            { q: "Trigemine ventriküler ekstrasistol (VES) ne demektir?", opt: ["3 normal, 1 erken atım", "2 normal, 1 erken atım", "3 erken atım peş peşe", "3 farklı odaktan atım"], correct: 1, exp: "Her iki normal atımdan sonra bir VES gelmesi." },
+            { q: "Ashman fenomeni nedir?", opt: ["Uzun bir R-R aralığından sonra gelen kısa atımda dal bloğu oluşması", "P dalgası kaybı", "T negatifliği", "ST elevasyonu"], correct: 0, exp: "Kalp yavaşlayıp aniden hızlanırsa iletim sistemi adapte olamaz ve sapma (aberrasyon) olur." },
+            { q: "V arka (Posterior) MI tanısı nasıl konur?", opt: ["V1-V2'de ST çökmesi ve yüksek R dalgası (Ayna görüntüsü)", "V7-V8-V9 çekerek", "İkisi de", "Sadece V6'ya bakarak"], correct: 2, exp: "Standart EKG arkayı görmez. Ön tarafın (V1-V2) tam tersi (ayna) görüntüsü veya sırttan çekim gerekir." },
+            { q: "En sık görülen düzensiz ritim?", opt: ["AFib", "SVT", "VT", "Sinüs Aritmisi"], correct: 0, exp: "Yaşlılarda çok yaygındır. Pıhtı atma riski vardır." },
+            { q: "Sinüs aritmisi (Solunumla değişen hız) patolojik midir?", opt: ["Evet", "Hayır, fizyolojiktir", "Sadece yaşlıda normaldir", "İlaç gerektirir"], correct: 1, exp: "Nefes alınca kalp hızlanır, verince yavaşlar. Gençlerde ve sporcularda çok belirgindir. Normaldir." }
+        ];
+        </script>
+            <script>
+        let qIdx = 0; let score = 0;
+        const qArea = document.getElementById('optionsArea');
+        const qTxt = document.getElementById('questionText');
+        const expBox = document.getElementById('expBox');
+
+        function loadQ() {
+            const q = questions[qIdx];
+            qTxt.innerHTML = (qIdx+1) + ". " + q.q;
+            qArea.innerHTML = '';
+            expBox.style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('currentQ').innerText = qIdx+1;
+
+            q.opt.forEach((o, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = o;
+                btn.onclick = () => check(i, btn, q);
+                qArea.appendChild(btn);
+            });
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function check(i, btn, q) {
+            const btns = qArea.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            if(i === q.correct) { btn.classList.add('correct'); score++; }
+            else { btn.classList.add('wrong'); btns[q.correct].classList.add('correct'); }
+            
+            document.getElementById('expText').innerHTML = q.exp;
+            expBox.style.display = 'block';
+            document.getElementById('nextBtn').disabled = false;
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function nextQuestion() {
+            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
+            else {
+                document.getElementById('quizContainer').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                document.getElementById('finalScoreDisplay').innerText = score + " / 50";
+                let msg = score >= 40 ? "Tebrikler Doktor!" : score >= 25 ? "İdare eder." : "Kaldın. Tekrar çalış.";
+                document.getElementById('finalMessage').innerText = msg;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>
