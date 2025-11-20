@@ -6,251 +6,136 @@
     <title>Elektrofizyoloji 3 | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>
-    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
-    </script>
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         /* --- GUYTON AKADEMİK TEMA --- */
-        :root {
-            --paper: #fdfbf7;
-            --ink: #111827;
-            --blue-ink: #0369a1;
-            --highlight: #fff7ed;
-            --border: #e5e7eb;
-            --accent: #b91c1c;
-            --success: #047857;
-        }
-
-        body {
-            margin: 0;
-            background-color: var(--paper);
-            color: var(--ink);
-            font-family: 'Georgia', 'Times New Roman', serif;
-            line-height: 1.8;
-            display: flex;
-        }
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
         /* SIDEBAR */
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: #f3f4f6;
-            border-right: 1px solid #d1d5db;
-            position: fixed;
-            padding: 25px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            font-family: 'Segoe UI', sans-serif;
-            z-index: 10;
-        }
-
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index: 10; }
         .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        .chapter-list { list-style: none; padding: 0; }
-        .chapter-list li { margin-bottom: 10px; }
-        .chapter-link {
-            text-decoration: none; color: #4b5563; display: block; padding: 8px;
-            border-radius: 6px; font-size: 0.9rem; transition: 0.2s;
-        }
+        .chapter-link { display: block; padding: 8px; border-radius: 6px; color: #4b5563; text-decoration: none; transition:0.2s; margin-bottom: 5px; }
         .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
         .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
 
         /* CONTENT */
-        .page-content {
-            margin-left: 260px;
-            padding: 60px 100px;
-            max-width: 800px;
-        }
-
-        h1 { font-size: 2.5rem; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        h3 { margin-top: 30px; font-size: 1.2rem; font-weight: bold; color: #374151; }
-        p { margin-bottom: 20px; text-align: justify; font-size: 1.1rem; }
-
-        /* DİYAGRAMLAR */
-        .pathway-container {
-            display: flex; flex-direction: column; align-items: center; margin: 40px 0; gap: 15px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .node-box {
-            background: white; border: 2px solid var(--blue-ink); padding: 15px 30px; border-radius: 30px;
-            font-weight: bold; color: var(--blue-ink); position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            width: 300px; text-align: center;
-        }
-        .node-box.fast { border-color: var(--success); color: var(--success); background: #f0fdf4; }
-        .node-box.slow { border-color: var(--accent); color: var(--accent); background: #fef2f2; }
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; color: #0f172a; font-family: 'Segoe UI', sans-serif; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { margin-top: 30px; font-weight: bold; color: #374151; }
         
-        .arrow-down { font-size: 1.5rem; color: #9ca3af; }
-        .speed-badge {
-            font-size: 0.8rem; background: rgba(0,0,0,0.05); padding: 3px 10px; border-radius: 10px;
-            margin-left: 10px; color: #374151; font-weight: normal; display: inline-block;
-        }
+        /* Diyagramlar */
+        .pathway-container { display: flex; flex-direction: column; align-items: center; margin: 40px 0; gap: 10px; font-family: 'Segoe UI', sans-serif; }
+        .node-box { border: 2px solid var(--blue-ink); padding: 10px 20px; border-radius: 20px; width: 300px; text-align: center; background: white; font-weight: bold; }
+        .node-box.slow { border-color: var(--accent); color: var(--accent); background: #fef2f2; }
+        .node-box.fast { border-color: var(--success); color: var(--success); background: #f0fdf4; }
 
-        /* TABLO */
+        /* Kutu Tasarımları */
+        .clinical-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b; }
+        .warning-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; color: #7f1d1d; }
+
+        /* Tablo */
         table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        th, td { border: 1px solid #d1d5db; padding: 12px; text-align: left; }
-        th { background: #e5e7eb; }
+        th, td { border: 1px solid #d1d5db; padding: 12px; }
+        th { background: #e5e7eb; text-align: left; }
 
-        /* KLİNİK KUTU */
-        .clinical-box {
-            background: #f0fdf4; border-left: 4px solid var(--success);
-            padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b;
-        }
-
-        /* NAVİGASYON */
-        .page-nav {
-            display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .nav-btn {
-            text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s;
-        }
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
         .prev { background: #f3f4f6; color: #374151; }
-        .next { background: var(--accent); color: white; } /* Test için kırmızı buton */
-        .next:hover { background: #991b1b; }
+        .next { background: var(--accent); color: white; }
 
-        @media (max-width: 1024px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; padding: 15px; }
-            .page-content { margin: 0; padding: 20px; }
-        }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
-        
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
-        <ul class="chapter-list">
-            <li><a href="elektro.html" class="chapter-link">1. Membran Fiziği</a></li>
-            <li><a href="elektro2.html" class="chapter-link">2. Aksiyon Potansiyeli</a></li>
-            <li><a href="elektro3.html" class="chapter-link active">3. İleti ve Eşleşme</a></li>
-            <li><a href="elektro_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a></li>
-        </ul>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px;">Bu Ünite</div>
+        <a href="elektro.html" class="chapter-link">1. Membran Fiziği</a>
+        <a href="elektro2.html" class="chapter-link">2. Aksiyon Potansiyeli</a>
+        <a href="elektro3.html" class="chapter-link active">3. İleti ve Regülasyon</a>
+        <a href="elektro_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 1: Kardiyak Elektrofizyoloji</div>
-        <h1>Bölüm 3: İleti Sistemi ve Uyarılma-Kasılma</h1>
+        <h1>Bölüm 3: İleti, Kasılma ve Regülasyon</h1>
 
         <p>
-            Kalbin düzenli çalışması için elektriksel uyarının doğru yerden (SA Düğüm) çıkması, doğru hızda iletilmesi ve nihayetinde kas liflerini (Miyosit) kasmayı başarması gerekir. 
-            Bu bölümde elektriğin nasıl mekanik güce dönüştüğünü (E-C Coupling) inceleyeceğiz.
+            Kalbin düzenli çalışması sadece elektriğin üretilmesiyle değil, bu elektriğin doğru hızda iletilmesi, kasa dönüştürülmesi ve otonom sinir sistemi tarafından yönetilmesiyle mümkündür.
         </p>
 
         <h2>1. Pacemaker (Doğal Pil) Mekanizması</h2>
         <p>
-            Ventrikül hücresinin aksine, <strong>Sinoatriyal (SA) Düğüm</strong> hücrelerinin sabit bir dinlenme potansiyeli yoktur. 
-            Bu hücreler asla "dinlenmez". Faz 4'te sürekli yukarı doğru sızan (pozitifleşen) bir voltajları vardır. 
-            Buna <strong>"Pacemaker Potansiyeli"</strong> denir. Eşik değere (-40 mV) ulaştıklarında kendiliğinden ateşlerler.
+            SA Düğüm hücreleri asla "dinlenmez". Faz 4'te sürekli yukarı doğru sızan bir voltajları vardır. Buna <strong>"Pacemaker Potansiyeli"</strong> denir. Eşik değere (-40 mV) ulaştıklarında kendiliğinden ateşlerler.
         </p>
-
-        <h3>Funny Current ($I_f$) - Komik Akım</h3>
+        <h3>Funny Current ($I_f$)</h3>
         <p>
-            SA düğüm hücrelerinde Faz 4'te açılan özel kanallardır (HCN kanalları). 
-            Bu kanallar hem $Na^+$ hem $K^+$ geçirir ancak net etki <strong>Sodyum girişidir</strong>. 
-            Bu yavaş sızıntı, hücreyi yavaş yavaş eşik değere taşır ve kalbin otomatik olarak atmasını sağlar (Otomatiklik).
+            SA düğümde bulunan ve hiperpolarizasyonla açılan özel kanallardır. Sodyumun yavaşça içeri sızmasına izin verirler. Bu sızıntı kalbin otomatik olarak atmasını sağlar.
         </p>
-        
-        <div class="clinical-box" style="background:#eff6ff; border-color:#3b82f6; color:#1e3a8a;">
-            <strong>Klinik İpucu: İvabradin</strong><br>
-            İvabradin isimli ilaç, doğrudan bu "Funny" kanalları ($I_f$) bloke eder. Böylece Faz 4'ün eğimi azalır ve kalp hızı yavaşlar. 
-            Diğer mekanizmaları etkilemediği için kasılma gücünü düşürmez.
-        </div>
 
         <h2>2. İleti Yolu ve Hızları</h2>
-        <p>
-            Elektrik SA düğümden çıkar ve belirli bir hiyerarşi ile yayılır. Hızlar her dokuda farklıdır ve bu hayati öneme sahiptir.
-        </p>
-
         <div class="pathway-container">
-            <div class="node-box">SA Düğüm <span class="speed-badge">0.05 m/sn</span></div>
-            <i class="fa-solid fa-arrow-down arrow-down"></i>
-            
-            <div class="node-box">Atriyal Yollar <span class="speed-badge">1 m/sn</span></div>
-            <i class="fa-solid fa-arrow-down arrow-down"></i>
-            
-            <div class="node-box slow">AV Düğüm <br><span class="speed-badge">0.05 m/sn (EN YAVAŞ)</span></div>
-            <i class="fa-solid fa-arrow-down arrow-down"></i>
-            
-            <div class="node-box fast">His - Purkinje Sistemi <br><span class="speed-badge">4 m/sn (EN HIZLI)</span></div>
-            <i class="fa-solid fa-arrow-down arrow-down"></i>
-            
-            <div class="node-box">Ventrikül Kası <span class="speed-badge">1 m/sn</span></div>
+            <div class="node-box">SA Düğüm (0.05 m/sn)</div>
+            <i class="fa-solid fa-arrow-down" style="color:#9ca3af"></i>
+            <div class="node-box slow">AV Düğüm (0.05 m/sn)<br><small>Gecikme (Delay) Bölgesi</small></div>
+            <i class="fa-solid fa-arrow-down" style="color:#9ca3af"></i>
+            <div class="node-box fast">His-Purkinje (4.0 m/sn)<br><small>En Hızlı İletim</small></div>
         </div>
-
-        <h3>Neden AV Düğüm Çok Yavaş? (AV Delay)</h3>
         <p>
-            Elektrik AV düğüme geldiğinde 0.09 saniye kadar bekler. Bunun sebebi AV düğüm hücrelerinde hücreler arası geçişi sağlayan <strong>Gap Junction (Oluklu Bağlantı)</strong> sayısının çok az olmasıdır.
-            <br><br>
-            <strong>Fizyolojik Önemi:</strong> Bu gecikme, atriyumların ventriküllerden önce kasılmasını sağlar. 
-            Böylece ventriküller kanla dolmak için zaman kazanır. Eğer bu gecikme olmasaydı, kalp verimli pompalama yapamazdı.
-        </p>
-
-        <h3>Neden Purkinje Çok Hızlı?</h3>
-        <p>
-            Purkinje lifleri 4 m/sn gibi devasa bir hızla iletir. Sebebi çok fazla Gap Junction içermeleri ve çaplarının geniş olmasıdır. 
-            Bu hız, her iki ventrikülün aynı anda kasılmasını (Senkronizasyon) sağlar.
+            <strong>AV Delay (Gecikme):</strong> Elektrik AV düğümde 0.09 saniye bekler. Nedeni Gap Junction azlığıdır. Bu sayede atriyumlar kasılıp kanı ventriküle boşaltmak için zaman kazanır.
         </p>
 
         <h2>3. Uyarılma - Kasılma Eşleşmesi (E-C Coupling)</h2>
-        <p>
-            Elektriksel uyarının (Aksiyon Potansiyeli) kasılmaya (Sistol) dönüşme sürecidir. 
-            Bu sürecin başrol oyuncusu <strong>Kalsiyumdur ($Ca^{++}$)</strong>. Guyton buna "Kalsiyumun Tetiklediği Kalsiyum Salınımı" (CICR) der.
-        </p>
-
+        <p>Elektriğin mekanik güce dönüşmesidir. Başrol oyuncusu <strong>Kalsiyumdur ($Ca^{++}$)</strong>.</p>
         <div class="clinical-box">
-            <strong>Adım Adım CICR Mekanizması:</strong><br><br>
-            <ol style="margin:0; padding-left:20px;">
-                <li>Aksiyon potansiyeli hücre zarından <strong>T-tübüller</strong> boyunca hücrenin derinliklerine iner.</li>
-                <li>T-tübül üzerindeki voltaj sensörleri (L-Tipi kanallar), hücre dışından az miktarda $Ca^{++}$ girişine izin verir (Tetikleyici Kalsiyum).</li>
-                <li>Bu giren kalsiyum, Sarkoplazmik Retikulum (SR) üzerindeki <strong>Ryanodine Reseptörlerini (RyR)</strong> uyarır.</li>
-                <li>SR deposundan sitoplazmaya devasa miktarda $Ca^{++}$ boşalır (Çığ etkisi).</li>
-                <li>Kalsiyum, <strong>Troponin-C</strong>'ye bağlanır, tropomiyozin çekilir, aktin ve miyozin etkileşime girer ve KASILMA gerçekleşir.</li>
-            </ol>
+            <strong>Kalsiyumun Tetiklediği Kalsiyum Salınımı (CICR):</strong><br>
+            Hücre dışından giren az miktarda $Ca^{++}$ (Tetikleyici), Sarkoplazmik Retikulum (SR) üzerindeki <strong>Ryanodine</strong> kapılarını açar ve içeriden devasa miktarda $Ca^{++}$ boşalır. Bu kalsiyum Troponin-C'ye bağlanır ve kasılma başlar.
         </div>
 
-        <h3>Gevşeme Nasıl Olur? (SERCA Pompası)</h3>
+        <h2>4. Otonom Sinir Sistemi Kontrolü</h2>
+        <p>Kalp kendi kendine atar ama hızı beyin tarafından (Sempatik/Parasempatik) ayarlanır.</p>
+
+        <h3>A. Sempatik Etki (Hızlanma)</h3>
         <p>
-            Kasılma bitince kalsiyumun ortamdan uzaklaştırılması gerekir. 
-            <strong>SERCA (Sarcoplasmic Endoplasmic Reticulum Calcium ATPase)</strong> pompası, kalsiyumu tekrar SR deposuna geri pompalar. 
-            Bu olay ATP harcar. Yani kalbin gevşemesi (Lusitropi) de enerji gerektiren aktif bir süreçtir.
+            <strong>Norepinefrin</strong> $\beta_1$ reseptörüne bağlanır. Hücre içi <strong>cAMP</strong> artar.
+            Bu durum "Funny" ($I_f$) ve $Ca^{++}$ kanallarını açar.
+            <br>
+            <strong>Sonuç:</strong> Faz 4 eğimi dikleşir, eşik değere daha çabuk ulaşılır, kalp hızlanır (Taşikardi). Ayrıca kasılma gücü artar.
         </p>
 
-        <h2>Özet Tablo: Kalp Kası vs İskelet Kası</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Özellik</th>
-                    <th>Kalp Kası</th>
-                    <th>İskelet Kası</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Kalsiyum Kaynağı</strong></td>
-                    <td>Hücre Dışı + SR (CICR)</td>
-                    <td>Sadece SR (Mekanik bağ)</td>
-                </tr>
-                <tr>
-                    <td><strong>Sinsityum</strong></td>
-                    <td>Var (Gap Junction ile)</td>
-                    <td>Yok (İzole motor üniteler)</td>
-                </tr>
-                <tr>
-                    <td><strong>Tetani</strong></td>
-                    <td>Olamaz (Uzun refrakter dönem)</td>
-                    <td>Olabilir</td>
-                </tr>
-                <tr>
-                    <td><strong>T-Tübüller</strong></td>
-                    <td>Z çizgisinde, geniş çaplı</td>
-                    <td>A-I bandı birleşiminde, ince</td>
-                </tr>
-            </tbody>
-        </table>
+        <h3>B. Parasempatik Etki (Yavaşlama)</h3>
+        <p>
+            Vagus sinirinden salınan <strong>Asetilkolin (ACh)</strong>, muskarinik ($M_2$) reseptörlere bağlanır.
+            Bu reseptörler özel $K_{ACh}$ kanallarını açar. Potasyum dışarı kaçar ve hücre içi aşırı negatifleşir (<strong>Hiperpolarizasyon</strong>).
+            <br>
+            <strong>Sonuç:</strong> Eşik değerden uzaklaşılır, kalp yavaşlar (Bradikardi).
+        </p>
+
+        <h2>5. Elektrolit Bozuklukları (Klinik Hayat)</h2>
+        <div class="warning-box">
+            <h3>⚠️ Hiperkalemi (Yüksek Potasyum)</h3>
+            <p>
+                Kanda $K^+$ artarsa, hücre içindeki potasyum dışarı çıkmak istemez (Gradyan azalır). Hücre içi pozitifleşir (RMP -90'dan -70'e çıkar).
+                <br>
+                Bu başta uyarılabilirliği artırsa da, voltaj kapılı $Na^+$ kanalları "inaktif" hale geçer ve kilitlenir.
+                <br>
+                <strong>Sonuç:</strong> İletim yavaşlar, kalp geniş QRS ile durur (Diyastolik Arrest). <strong>Ölümcüldür.</strong>
+            </p>
+        </div>
+
+        <div class="warning-box" style="background:#fff7ed; border-color:#f97316; color:#9a3412;">
+            <h3>⚠️ Hiperkalsemi (Yüksek Kalsiyum)</h3>
+            <p>
+                Hücre dışı $Ca^{++}$ artarsa, hücre içine giren kalsiyum artar. Kas lifleri gevşeyemez.
+                <br>
+                <strong>Sonuç:</strong> Kalp kasılı halde durur (Kalsiyum Rijiditesi / Taş Kalp).
+            </p>
+        </div>
 
         <div class="page-nav">
             <a href="elektro2.html" class="nav-btn prev">&larr; Bölüm 2: Aksiyon Potansiyeli</a>
