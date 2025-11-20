@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elektrofizyoloji 1 | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         /* --- GUYTON AKADEMİK TEMA --- */
         :root {
@@ -19,12 +29,12 @@
             margin: 0;
             background-color: var(--paper);
             color: var(--ink);
-            font-family: 'Georgia', 'Times New Roman', serif; /* Kitap okuma fontu */
+            font-family: 'Georgia', 'Times New Roman', serif; 
             line-height: 1.8;
             display: flex;
         }
 
-        /* --- SOL MENÜ (NAVİGASYON) --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -35,10 +45,10 @@
             box-sizing: border-box;
             overflow-y: auto;
             font-family: 'Segoe UI', sans-serif;
+            z-index: 10;
         }
 
         .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        
         .chapter-list { list-style: none; padding: 0; }
         .chapter-list li { margin-bottom: 10px; }
         .chapter-link {
@@ -48,26 +58,23 @@
         .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
         .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
 
-        /* --- ANA SAYFA (KAĞIT) --- */
+        /* --- CONTENT --- */
         .page-content {
             margin-left: 260px;
             padding: 60px 100px;
-            max-width: 800px; /* Okuma genişliği */
+            max-width: 800px;
         }
 
-        /* Tipografi */
         h1 { font-size: 2.5rem; margin-bottom: 10px; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
         h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
         h3 { margin-top: 30px; font-size: 1.2rem; font-weight: bold; color: #374151; }
         p { margin-bottom: 20px; text-align: justify; font-size: 1.1rem; }
         
-        /* Tablo Tasarımı */
         table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
         th, td { border: 1px solid #d1d5db; padding: 12px; text-align: left; }
         th { background: #e5e7eb; color: #111827; }
         tr:nth-child(even) { background: #f9fafb; }
 
-        /* Vurgu Kutuları */
         .guyton-box {
             background: var(--highlight); border-left: 4px solid var(--accent);
             padding: 20px; margin: 30px 0; font-style: italic; color: #4b5563;
@@ -75,10 +82,9 @@
         .formula-box {
             background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px;
             text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink);
-            margin: 20px 0; border-radius: 8px;
+            margin: 20px 0; border-radius: 8px; font-size: 1.1rem;
         }
 
-        /* Alt Navigasyon Butonları */
         .page-nav {
             display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;
             font-family: 'Segoe UI', sans-serif;
@@ -90,7 +96,6 @@
         .next { background: var(--blue-ink); color: white; }
         .next:hover { background: #075985; }
 
-        /* Mobil */
         @media (max-width: 1024px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; height: auto; position: relative; padding: 15px; }
@@ -122,7 +127,7 @@
 
         <p>
             Kardiyak elektrofizyolojiyi anlamak için, önce hücrenin "pil" gibi nasıl çalıştığını anlamalıyız. 
-            Hücre zarı (sarkolemma), yüklü iyonların (Na+, K+, Ca++) geçişini kontrol eden bir bariyerdir. 
+            Hücre zarı (sarkolemma), yüklü iyonların ($Na^+$, $K^+$, $Ca^{++}$) geçişini kontrol eden bir bariyerdir. 
             Dinlenme halindeki bir ventrikül hücresi, içi dışına göre negatiftir. Buna <strong>Dinlenme Membran Potansiyeli (RMP)</strong> denir.
         </p>
 
@@ -174,7 +179,7 @@
         </p>
         
         <div class="formula-box">
-            EMF (mV) = -61 × log (Konsantrasyon İç / Konsantrasyon Dış)
+            $$EMF (mV) = -61 \times \log \left(\frac{Konsantrasyon_{iç}}{Konsantrasyon_{dış}}\right)$$
         </div>
 
         <p>
@@ -184,11 +189,11 @@
 
         <h2>3. Goldman-Hodgkin-Katz Denklemi</h2>
         <p>
-            Gerçek hayatta membran birden fazla iyona geçirgendir. Goldman denklemi, Na+, K+ ve Cl- iyonlarının tamamını ve bunların geçirgenlik katsayılarını (P) hesaba katar.
+            Gerçek hayatta membran birden fazla iyona geçirgendir. Goldman denklemi, $Na^+$, $K^+$ ve $Cl^-$ iyonlarının tamamını ve bunların geçirgenlik katsayılarını ($P$) hesaba katar.
         </p>
         <p>
             Dinlenme halinde geçirgenlik sıralaması şöyledir: <br>
-            <strong>$P_K$ > $P_{Na}$ > $P_{Ca}$</strong>
+            <strong>$$P_K > P_{Na} > P_{Ca}$$</strong>
         </p>
 
         <h2>4. Dinlenme Potansiyelini Oluşturan 3 Mekanizma</h2>
