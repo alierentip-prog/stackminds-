@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikrodolaşım | Stackminds Kütüphanesi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
+        
+        /* KUTULAR */
+        .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
+        .warning-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+
+        /* RAAS AKIŞ ŞEMASI (CSS Based) */
+        .raas-flow {
+            display: flex; flex-direction: column; align-items: center; margin: 30px 0; gap: 15px; font-family: 'Segoe UI', sans-serif;
+        }
+        .raas-step {
+            background: #fff; border: 2px solid var(--blue-ink); padding: 10px 20px; border-radius: 25px; font-weight: bold;
+            color: var(--blue-ink); box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 80%; text-align: center;
+        }
+        .raas-step.final { border-color: var(--accent); color: var(--accent); }
+        .arrow { font-size: 1.5rem; color: #9ca3af; }
+
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; background: var(--accent); color: white; }
+
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="dolasim.html" class="chapter-link">1. Akışın Temel Fiziği</a>
+        <a href="dolasim2.html" class="chapter-link active">2. Mikro Dolaşım ve RAAS</a>
+        <a href="dolasim_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 4: Dolaşım Fizyolojisi</div>
+        <h1>Bölüm 2: Mikro Dolaşım ve Uzun Süreli Regülasyon</h1>
+
+        <p>
+            Kanın damar sistemindeki yolculuğunun son durağı, sıvıların damar dışına çıkıp dokulara girdiği ve tansiyonun uzun süreli olarak ayarlandığı mikro dolaşım ve böbrek sistemleridir.
+        </p>
+
+        <h2>1. Starling Güçleri: Kılcal Düzeyde Sıvı Değişimi</h2>
+        <p>
+            Besin, oksijen ve sıvıların kılcal damar (kapiller) ile doku aralığı (interstisyum) arasındaki değişimi, <strong>4 temel basınç</strong> tarafından kontrol edilir. Bu dengeye Starling Güçleri denir.
+        </p>
+        
+        <div class="def-box">
+            <strong>FİLTRASYON (Sıvı Çıkışı) Güçleri:</strong>
+            <ul>
+                <li>$P_c$: Kapiller Hidrostatik Basınç (Kan basıncının itme gücü)</li>
+                <li>$\pi_i$: İnterstisyel Sıvı Onkotik Basınç (Dışarıdaki proteinin suyu çekme gücü)</li>
+            </ul>
+            <strong>ABSORPSİYON (Sıvı Girişi) Güçleri:</strong>
+            <ul>
+                <li>$\pi_p$: Plazma Onkotik Basıncı (Albuminin suyu tutma gücü)</li>
+                <li>$P_i$: İnterstisyel Sıvı Hidrostatik Basınç (Dokunun dışarıdan gelen sıvıyı itme gücü)</li>
+            </ul>
+        </div>
+
+        <p>
+            Net Etkili Filtrasyon Basıncı, bu güçlerin dengesidir. Kapillerin arter tarafında net filtrasyon (çıktı), ven tarafında ise net absorpsiyon (geri alım) eğilimi vardır.
+        </p>
+        
+        <h2>2. Ödem Fizyolojisi</h2>
+        <p>
+            Doku aralığına giren sıvı, lenfatik sistem tarafından temizlenemeyecek kadar artarsa <strong>Ödem (Edema)</strong> oluşur.
+            Ödemin en sık nedenleri, Starling dengesinin bozulmasıdır:
+        </p>
+        <div class="warning-box">
+            <strong>Ödemin Başlıca Nedenleri:</strong>
+            <ol>
+                <li><strong>Artmış $P_c$:</strong> (Örn: Kalp Yetmezliği, toplardamar tıkanıklığı) Fazla sıvı dışarı itilir.</li>
+                <li><strong>Azalmış $\pi_p$:</strong> (Örn: Karaciğer yetmezliği, Malnütrisyon) Albumin yetmezliği nedeniyle kan suyu tutamaz.</li>
+                <li><strong>Lenfatik Tıkanıklık:</strong> (Örn: Enfeksiyon, Kanser) Dokudan sızan sıvı toplanamaz.</li>
+            </ol>
+        </div>
+
+        <h2>3. RAAS: Uzun Süreli Tansiyon Regülasyonu</h2>
+        <p>
+            Sinir sistemi (Baroreseptörler) anlık (saniyeler içinde) tansiyonu ayarlar. 
+            Ancak vücudun kan hacmini ve tansiyonu günler, haftalar boyunca sabit tutan asıl mekanizma **Böbrekler** ve **Renin-Angiotensin-Aldosteron Sistemi (RAAS)**'dır.
+        </p>
+        
+        <div class="raas-flow">
+            <div class="raas-step">1. Düşük Kan Basıncı (Hipovolemi)</div>
+            <i class="fa-solid fa-arrow-down arrow"></i>
+            <div class="raas-step">2. Böbrek: Renin Salgılar</div>
+            <i class="fa-solid fa-arrow-down arrow"></i>
+            <div class="raas-step">3. Anjiyotensinojen &rarr; Anjiyotensin I</div>
+            <i class="fa-solid fa-arrow-down arrow"></i>
+            <div class="raas-step">4. Akciğer (ACE): Anjiyotensin I &rarr; Anjiyotensin II</div>
+            <i class="fa-solid fa-arrow-down arrow"></i>
+            <div class="raas-step final">5. ETKİ: Damar Büzer (Vazokonstriksiyon) + Aldosteron Salgılatır (Tuz/Su tutulumu)</div>
+        </div>
+
+        <div class="def-box">
+            <strong>Klinik: Antihipertansifler</strong><br>
+            Tansiyon ilaçlarının çoğu bu sistemi bloke eder: ACE inhibitörleri (Ramipril) 4. adımı engellerken, ARB'ler (Losartan) Anjiyotensin II'nin etkisini bloke eder.
+        </div>
+
+        <div class="page-nav">
+            <a href="dolasim.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Bölüm 1: Akışın Fiziği</a>
+            <a href="dolasim_test.html" class="nav-btn next">Ünite Testi (50 Soru) &rarr;</a>
+        </div>
+    </main>
+
+</body>
+</html>
