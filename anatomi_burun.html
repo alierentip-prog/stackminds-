@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burun ve Sinüsler | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #18181b; --text: #e4e4e7; --accent: #f43f5e; --panel: #27272a; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; }
+        .sidebar { width: 250px; background: #000; padding: 20px; border-right: 1px solid #333; height: 100vh; position: fixed; overflow-y: auto; }
+        .content { margin-left: 250px; padding: 40px; max-width: 800px; }
+        .menu-link { display: block; color: #a1a1aa; text-decoration: none; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+        .menu-link:hover, .menu-link.active { background: #333; color: white; font-weight: bold; }
+        h1 { color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .table-box { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .table-box th, .table-box td { border: 1px solid #3f3f46; padding: 10px; text-align: left; }
+        .table-box th { background: #3f3f46; color: #fbbf24; }
+        .nav-btn { float: right; background: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 30px; }
+        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="anatomi.html" style="color:white; font-weight:bold; text-decoration:none; font-size:1.2rem;">&larr; Atlas Menü</a>
+        <hr style="border-color:#333; margin:20px 0;">
+        <a href="anatomi_toraks.html" class="menu-link">1. Toraks Duvarı</a>
+        <a href="anatomi_diyafram.html" class="menu-link">2. Diyafram & Mediastinum</a>
+        <a href="anatomi_kalp.html" class="menu-link">3. Kalp (Cor)</a>
+        <a href="anatomi_damar.html" class="menu-link">4. Damarlar</a>
+        <a href="anatomi_burun.html" class="menu-link active">5. Burun & Sinüs</a>
+        <a href="anatomi_lenf.html" class="menu-link">6. Lenfatik Sistem</a>
+    </nav>
+
+    <div class="content">
+        <h1>Burun ve Paranasal Sinüsler</h1>
+        
+        <h3>1. Burun Meatusları (Drenaj Yerleri)</h3>
+        <p>Burun yan duvarındaki konkaların (Concha) altındaki boşluklara "Meatus" denir. Sinüsler buralara açılır.</p>
+        
+        <table class="table-box">
+            <thead><tr><th>Meatus</th><th>Açılan Yapılar (EZBER!)</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Superior</strong></td><td>Sinus Sphenoidalis, Ethmoidalis Posterior</td></tr>
+                <tr><td><strong>Medius</strong></td><td>Sinus Frontalis, Sinus Maxillaris, Ethmoidalis Anterior/Media (En kalabalık yer)</td></tr>
+                <tr><td><strong>Inferior</strong></td><td>Ductus Nasolacrimalis (Gözyaşı kanalı)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>2. Sinüsler</h3>
+        <ul>
+            <li><strong>Maxiller Sinüs:</strong> En büyük sinüstür. Diş kökleri ile komşudur (Diş ağrısı yapabilir). Dreni (Hiatus semilunaris) yukarıda olduğu için boşalması zordur.</li>
+            <li><strong>Sfenoid Sinüs:</strong> Hipofiz bezinin hemen altındadır. Hipofiz ameliyatları burundan girilerek yapılır.</li>
+        </ul>
+
+        <h3>3. Locus Kiesselbachi (Little Alanı)</h3>
+        <p>Septumun ön-alt kısmıdır. Burun kanamalarının (Epistaksis) %90'ı buradan olur.</p>
+
+        <a href="anatomi_lenf.html" class="nav-btn">İleri: Lenfatik Sistem &rarr;</a>
+    </div>
+</body>
+</html>
