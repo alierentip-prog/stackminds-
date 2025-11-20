@@ -62,71 +62,75 @@
         <h1>Bölüm 1: Akım, Basınç ve Hidrolik Direnç</h1>
 
         <p>
-            Dolaşım sistemi, kalbin yarattığı potansiyel enerjiyi, dokulara **kan akımı ($Q$)** olarak çeviren kapalı bir hidrolik sistemdir. Bu süreç elektrikteki **Ohm Yasası** ile açıklanır.
+            Dolaşım sistemi, kalbin pompaladığı basınç ile damarların gösterdiği direnç arasındaki ilişkiyle açıklanır.
+            [attachment_0](attachment)
         </p>
 
-        <h2>1. Dolaşımın Ohm Yasası</h2>
+        <h2>1. Dolaşımın Ohm Yasası ve Temel Kavramlar</h2>
         <p>
-            Akım ($Q$), kalbin pompaladığı kanın damarlar boyunca akışıdır. Bu, Basınç Farkı ($\Delta P$) ve Total Periferik Direnç ($R$) tarafından belirlenir.
+            Kan akımı ($Q$), tıpkı elektrik akımı gibi, Basınç Farkı ($\Delta P$) ile doğru orantılı, Direnç ($R$) ile ters orantılıdır.
         </p>
         
         <div class="formula-box">
             $$Q = \frac{\Delta P}{R} \quad \text{veya} \quad \text{Kalp Debisi} (CO) = \frac{\text{Ort. Arter Basıncı} (MAP)}{\text{Total Periferik Direnç} (TPR)}$$
         </div>
 
-        <h3>Kritik Tanımlar:</h3>
+        <h3>Kritik Kavramlar:</h3>
         <ul>
             <li>**$Q$ (Akım/Debi):** Dolaşım sisteminde **Kalp Debisi** ($CO$) olarak adlandırılır. ($CO = Stroke \text{ } Volume \times \text{ } Heart \text{ } Rate$).</li>
-            <li>**$\Delta P$ (Basınç Farkı):** Sistemin başlangıcı (Aort) ile sonu (Sağ Atriyum, $\approx 0 \text{ mmHg}$) arasındaki farktır. Pratik olarak MAP kullanılır.</li>
-            <li>**$R$ (Direnç / TPR):** Kanın akmaya karşı karşılaştığı sürtünmedir. Esas olarak **Arteriyollerde** oluşur.</li>
+            <li>**$\Delta P$ (Basınç Farkı):** Pratik olarak **MAP** (Ortalama Arter Basıncı) kullanılır.</li>
+            <li>**$R$ (Direnç / TPR):** Kanın akmaya karşı karşılaştığı sürtünmedir. Esas olarak **Arteriyollerde** oluşur (Musluk görevi).</li>
         </ul>
         
-        <h2>2. Poiseuille Yasası: Direncin Detaylı Analizi</h2>
+        <div class="def-box">
+            <strong>⚠️ Sınav Tuzağı: Paralel Devre</strong><br>
+            Vücuttaki organların çoğu (Akciğer hariç) birbirine paralel bağlanmıştır. Paralel bir devrede, toplam direnç her zaman tek bir organdan daha düşüktür. Bu, her organa bağımsız akım kontrolü sağlar.
+        </div>
+
+        <h2>2. Poiseuille Yasası: Damar Çapının Gücü</h2>
         <p>
-            Tüm direnç ($R$), tek bir silindirik damarda (kılcal boru) kanın akmaya karşı gösterdiği sürtünmeyle hesaplanır. Bu yasa, bir damarın direncini belirleyen anatomik ve fiziksel faktörleri ortaya koyar.
+            Direnci ($R$) belirleyen en kritik faktör, damarın yarıçapıdır ($r$). Bu ilişki dördüncü kuvvet ($r^4$) ile açıklanır.
         </p>
         
         <div class="formula-box">
-            $$R = \frac{8 \eta L}{\pi r^4}$$
-            <p style="font-size:0.9rem; margin:5px 0;">(8/$\pi$ sabittir. $\eta$: Viskozite, $L$: Damar Uzunluğu, $r$: Yarıçap)</p>
+            $$R = \frac{8 \eta L}{\pi r^4} \quad \text{Direnç} \propto \frac{\eta L}{r^4}$$
+            <p style="font-size:0.9rem; margin:5px 0;">($\eta$: Viskozite, $L$: Damar Uzunluğu, $r$: Yarıçap)</p>
         </div>
 
         <h3>Faktörlerin Direnç Üzerindeki Etkisi:</h3>
         <ol>
-            <li>**Yarıçap ($r$):** Direnç, yarıçapın dördüncü kuvveti ($r^4$) ile ters orantılıdır. Bu demektir ki, kan akımını **kontrol eden ana faktör** damar çapıdır. Otokontrol için vazokonstriksiyon/vazodilatasyon bu yüzden çok etkilidir.</li>
-            <li>**Viskozite ($\eta$):** Kanın kalınlığıdır. Esas olarak **Hematokrit** (Htc: Kanın hücre/sıvı oranı) tarafından belirlenir. Htc artarsa Viskozite ve $R$ artar. (Örn: Polisitemi, Dehidratasyon).</li>
-            <li>**Uzunluk ($L$):** Damarın uzunluğu uzadıkça direnç artar. Bu durum genellikle obezitede, yeni damar yatakları oluştuğu için önemlidir.</li>
+            <li>**Yarıçap ($r$):** **Akımı kontrol eden ana faktördür.** Yarıçapı iki katına çıkarmak, akımı on altı kat ($\mathbf{2^4 = 16}$) artırır.</li>
+            <li>**Viskozite ($\eta$):** Kanın kalınlığıdır. **Hematokrit** arttıkça viskozite ve $R$ artar.</li>
+            <li>**Uzunluk ($L$):** Uzunluk arttıkça direnç artar (Obezite gibi durumlarda yeni damar yatakları oluşur).</li>
         </ol>
 
-        <h3>İnteraktif Simülatör: $r^4$ Gücü</h3>
-        <p>Aşağıdaki simülatörde damar yarıçapını değiştirerek Akımın nasıl dramatik şekilde değiştiğini inceleyin. Akım (Q) yarıçapın 4. kuvveti ile orantılıdır.</p>
-        
         <div class="sim-container">
+            <h3>İnteraktif Simülatör: $r^4$ Gücü</h3>
+            <p style="text-align:center; font-size:0.9rem;">Yarıçapı değiştirerek akımın nasıl değiştiğini incele.</p>
             <div class="control-group">
                 <label>Damar Yarıçapı ($r$): <span id="valRadius" style="float:right;">5.0 birim</span></label>
                 <input type="range" id="sldRadius" min="2" max="10" value="5" step="0.5" oninput="updateFlow()">
             </div>
-
             <div class="readout">
                 Akım (Q) $\propto r^4$: <span id="valFlow">625</span> ünite
             </div>
-            
             <div class="vessel-visual"><div class="vessel-inner" id="vessel"></div></div>
         </div>
 
         <h2>3. Akış Tipleri ve Hız</h2>
         
-        <h3>Laminer ve Türbülanslı Akım</h3>
+        <h3>Laminer vs. Türbülans</h3>
         <p>
-            Normalde kan, damar merkezinde en hızlı, duvara yakın en yavaş olacak şekilde pürüzsüz katmanlar halinde akar (**Laminer Akım**). Akım hızı çok artarsa (örn. Aort darlığı, Anemi) veya damarda keskin virajlar varsa, akım düzensizleşir (**Türbülanslı Akım**).
+            Normalde kan, merkezde en hızlı (Parabolik Profil) olacak şekilde pürüzsüz akar (**Laminer**). Hız çok artarsa, damar daralırsa veya anemi varsa, akım düzensizleşir (**Türbülanslı**).
         </p>
-        <div class="def-box">
-            <strong>Reynolds Sayısı ($Re$):</strong> Akımın türbülanslı olup olmadığını belirler. Yüksek $Re$ (özellikle $ > 2000$) **gürültüye (üfürüm/bruit)** neden olur. Anemide (Düşük Viskozite) $Re$ yükselir ve üfürüm duyulabilir.
+        <div class="success-box">
+            <strong>Mekanizma: Reynolds Sayısı ($\text{Re}$):</strong><br>
+            $\text{Re} > 2000$ olduğunda akım türbülanslıdır. Türbülans, damar duvarlarına daha çok zarar verir ve **ses (Üfürüm/Bruit)** çıkarır. Anemide viskozite düştüğü için $Re$ artar.
         </div>
 
         <h3>Akım Hızı (Velocity)</h3>
         <p>
-            Akım hızı ($v$), toplam kan akımının ($Q$) damar yatağının toplam kesit alanına ($A$) bölünmesiyle bulunur ($v = Q/A$). Kan, **en yavaş** toplam kesit alanının en geniş olduğu yerde, yani **Kapillerlerde** akar. Bu yavaşlama, besin ve oksijen değişimine zaman tanır.
+            Kan, toplam kesit alanının en geniş olduğu yerde, yani **Kapillerlerde (Kılcal Damar)** akar. Bu yavaşlama, besin ve gaz değişimi için kritik zamanı sağlar.
         </p>
 
         <div class="page-nav">
@@ -145,11 +149,9 @@
             const r = parseFloat(sldRadius.value);
             valRadius.innerText = r.toFixed(1) + " birim";
             
-            // Akım (Q) yarıçapın 4. kuvveti ile orantılıdır.
             const flow = Math.pow(r, 4);
             valFlow.innerText = Math.round(flow) + " ünite";
 
-            // Görselleştirme: Yarıçapa göre yüksekliği ayarla
             const newHeight = 10 + r * 6;
             vessel.style.height = newHeight + 'px';
         }
