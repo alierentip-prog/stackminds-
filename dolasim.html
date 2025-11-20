@@ -3,215 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemodinamik | Stackminds</title>
+    <title>Dolaşım Fiziği | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
-        /* --- AYDINLIK TEMA --- */
-        :root {
-            --bg-color: #f8fafc;
-            --surface: #ffffff;
-            --primary: #0284c7;
-            --danger: #ef4444;
-            --success: #10b981;
-            --text: #334155;
-        }
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
 
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-color); color: var(--text); }
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
 
-        /* NAVİGASYON */
-        .navbar {
-            background: white; padding: 15px 30px; display: flex; align-items: center; gap: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
-        }
-        .back-link { text-decoration: none; color: var(--text); font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .back-link:hover { color: var(--primary); }
-
-        /* İÇERİK */
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        h1 { font-size: 2.2rem; margin-bottom: 10px; }
-        p { line-height: 1.7; color: #64748b; }
-
-        /* KARTLAR */
-        .card {
-            background: white; border-radius: 16px; padding: 30px;
-            box-shadow: 0 4px 20px rgba(148, 163, 184, 0.1); border: 1px solid #e2e8f0;
-            margin-bottom: 40px;
-        }
-
-        /* --- BÖLÜM 1: DAMAR SİMÜLATÖRÜ --- */
-        .vessel-container {
-            background: #e2e8f0; height: 120px; border-radius: 10px; margin: 20px 0;
-            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
-        }
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
-        .blood-vessel {
-            background: radial-gradient(circle at 30% 30%, #ef4444, #b91c1c);
-            height: 80px; /* Başlangıç kalınlığı */
-            width: 100%;
-            transition: height 0.3s ease, background-color 0.3s;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: bold; letter-spacing: 1px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
-        }
+        /* ÖZEL KUTULAR */
+        .formula-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
+        .def-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
 
-        .flow-arrow {
-            position: absolute; font-size: 2rem; color: rgba(255,255,255,0.8);
-            animation: flowAnim 1s infinite linear;
-        }
+        /* SİMÜLATÖR */
+        .sim-container { background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .control-group { margin-bottom: 15px; }
+        input[type=range] { width: 100%; accent-color: var(--blue-ink); }
+        .readout { text-align: center; font-size: 1.5rem; font-weight: bold; padding: 10px; background: #f0f9ff; border-radius: 5px; margin-top: 15px; color: var(--blue-ink); }
+        .vessel-visual { background: #f3f4f6; height: 100px; border-radius: 5px; margin-top: 15px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .vessel-inner { background: linear-gradient(to right, #b91c1c, #ef4444); height: 50px; width: 90%; transition: all 0.3s; border-radius: 50px; }
 
-        @keyframes flowAnim { from { transform: translateX(-200px); } to { transform: translateX(200px); } }
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; background: var(--blue-ink); color: white; }
 
-        .controls { display: flex; gap: 20px; align-items: center; background: #f1f5f9; padding: 20px; border-radius: 10px; }
-        input[type=range] { flex: 1; accent-color: var(--primary); }
-
-        /* --- BÖLÜM 2: TANSİYON OYUNU --- */
-        .game-panel {
-            text-align: center; padding: 20px; border: 2px dashed #cbd5e1; border-radius: 12px;
-        }
-        .bp-display {
-            font-size: 3rem; font-weight: 800; color: var(--text); margin: 20px 0;
-            font-family: 'Courier New', monospace;
-        }
-        .status-badge {
-            display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;
-        }
-        .btn-action {
-            background: var(--primary); color: white; border: none; padding: 12px 25px;
-            border-radius: 8px; font-size: 1rem; cursor: pointer; transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
-        }
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(2, 132, 199, 0.4); }
-        .btn-action:disabled { background: #cbd5e1; cursor: not-allowed; transform: none; box-shadow: none; }
-
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Ana Menü</a>
-        <span style="color:#cbd5e1;">|</span>
-        <strong>Modül 4: Hemodinamik</strong>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="dolasim.html" class="chapter-link active">1. Akışın Temel Fiziği</a>
+        <a href="dolasim2.html" class="chapter-link">2. Mikro Dolaşım ve RAAS</a>
+        <a href="dolasim_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
 
-    <div class="container">
-        <h1>Dolaşım Fizyolojisi</h1>
-        <p>Kanın damar içinde akabilmesi için basınç farkı ($\Delta P$) gerekir. Ancak akımı belirleyen asıl patron <strong>Dirençtir (R)</strong>. Damar çapındaki ufak bir değişiklik, akımı devasa oranda değiştirir (Poiseuille Yasası).</p>
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 4: Dolaşım Fizyolojisi</div>
+        <h1>Bölüm 1: Akım, Basınç ve Direnç</h1>
 
-        <div class="card">
-            <h3><i class="fa-solid fa-faucet-drip"></i> Damar Direnci ve Akım</h3>
-            <p>Aşağıdaki slider ile damarı daralt (Vazokonstriksiyon). Akımın nasıl azaldığını izle.</p>
+        <p>
+            Dolaşım sisteminin temel amacı, dokuların metabolik ihtiyacına uygun miktarda kan akımını sağlamaktır. 
+            Bu akım, kalbin pompaladığı basınç ile damarların gösterdiği direnç arasındaki ilişkiyle açıklanır.
+        </p>
 
-            <div class="vessel-container">
-                <div class="blood-vessel" id="vessel">
-                    <i class="fa-solid fa-angles-right flow-arrow" id="arrow"></i>
-                </div>
-            </div>
-
-            <div class="controls">
-                <i class="fa-solid fa-arrows-left-right-to-line"></i>
-                <input type="range" id="radiusSlider" min="10" max="100" value="80">
-                <span style="font-weight:bold; width: 120px; text-align:right;">Akım: <span id="flowVal">100</span>%</span>
-            </div>
-            <p style="font-size:0.85rem; color:#64748b; margin-top:10px;">
-                *Not: Damar çapı yarıya inerse, akım 16 kat azalır ($r^4$ kuralı)!
-            </p>
+        <h2>1. Ohm Yasası: Dolaşım Sisteminin Temel Prensibi</h2>
+        <p>
+            Kan akımı ($Q$), tıpkı elektrik akımı gibi, potansiyel farkına (Basınç farkı $\Delta P$) doğru orantılı, direnç ($R$) ile ters orantılıdır.
+        </p>
+        
+        <div class="formula-box">
+            $$Q = \frac{\Delta P}{R}$$
+            <p style="font-size:0.9rem; margin:5px 0;">(Akım = Basınç Farkı / Direnç)</p>
+        </div>
+        
+        <div class="def-box">
+            <strong>Klinik Not:</strong> Vücut, damarları büzerek veya genişleterek ($R$'yi değiştirerek) kan akımını ($Q$) kontrol eder. Kalp nadiren akımı artırmak için basıncı ($P$) kullanır.
+        </div>
+        
+        <h2>2. Poiseuille Yasası: Damar Çapının Gücü</h2>
+        <p>
+            Direnci ($R$) belirleyen en kritik faktör, damarın yarıçapıdır ($r$). Bu ilişki dördüncü kuvvet (kuvvet $r^4$) ile açıklanır.
+        </p>
+        <p>
+            Bu yasaya göre, damar yarıçapı ($r$) iki katına çıkarsa, akım ($Q$) on altı kat ($\mathbf{2^4 = 16}$) artar!
+        </p>
+        <div class="formula-box">
+            $$R \propto \frac{L \eta}{r^4}$$
+            <p style="font-size:0.9rem; margin:5px 0;">(Direnç, Yarıçapın 4. kuvveti ile ters orantılıdır)</p>
         </div>
 
-        <div class="card">
-            <h3><i class="fa-solid fa-brain"></i> Baroreseptör Refleks (Oyun)</h3>
-            <p>Kan basıncını (Tansiyon) sabit tutmak beynin görevidir. Tansiyon düştüğünde müdahale etmelisin.</p>
-
-            <div class="game-panel">
-                <span id="gameStatus" class="status-badge" style="background:#d1fae5; color:#065f46;">DURUM: STABİL</span>
-                
-                <div class="bp-display">BP: <span id="bpVal">120/80</span></div>
-                
-                <div style="display:flex; gap:10px; justify-content:center;">
-                    <button class="btn-action" onclick="triggerEvent()" style="background:#64748b;">Hasta Ayağa Kalksın</button>
-                    <button class="btn-action" id="sympatheticBtn" onclick="fixBP()" disabled>⚡ Sempatik Sistemi Ateşle</button>
-                </div>
-                
-                <p id="feedbackMsg" style="min-height:20px; color:#ef4444; font-weight:bold; margin-top:15px;"></p>
+        <h3>İnteraktif Simülatör: Direnç ve Akım</h3>
+        <p>Aşağıdaki simülatörde damar yarıçapını değiştirerek Akımın nasıl dramatik şekilde değiştiğini inceleyin.</p>
+        
+        <div class="sim-container">
+            <div class="control-group">
+                <label>Damar Yarıçapı ($r$): <span id="valRadius" style="float:right;">5 mm</span></label>
+                <input type="range" id="sldRadius" min="2" max="10" value="5" oninput="updateFlow()">
             </div>
+
+            <div class="readout">
+                Kan Akımı (Q): <span id="valFlow">625</span> ünite
+            </div>
+            
+            <div class="vessel-visual"><div class="vessel-inner" id="vessel"></div></div>
         </div>
 
-    </div>
+        <h2>3. Nabız ve Ortalama Basınç</h2>
+        <ul>
+            <li><strong>Nabız Basıncı:</strong> Sistolik basınç - Diyastolik basınçtır ($120 - 80 = 40 \text{ mmHg}$). Nabız basıncını belirleyen temel faktörler Atım Hacmi (SV) ve Arteriyel Uyumdur (Compliance).</li>
+            <li><strong>Ortalama Arter Basıncı (MAP):</strong> Kanı dokulara ulaştıran ortalama basınçtır. Diyastol süresi daha uzun olduğu için, ortalama basınç diyastolik basınca daha yakındır.</li>
+        </ul>
+        <div class="formula-box">
+            $$MAP \approx \text{Diyastolik} + \frac{1}{3} \times \text{Nabız Basıncı}$$
+        </div>
+
+        <div class="page-nav">
+            <a href="index.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Ana Menü</a>
+            <a href="dolasim2.html" class="nav-btn next">Bölüm 2: Mikro Dolaşım &rarr;</a>
+        </div>
+    </main>
 
     <script>
-        // --- 1. DAMAR SİMÜLATÖRÜ ---
-        const slider = document.getElementById('radiusSlider');
+        const sldRadius = document.getElementById('sldRadius');
+        const valRadius = document.getElementById('valRadius');
+        const valFlow = document.getElementById('valFlow');
         const vessel = document.getElementById('vessel');
-        const flowVal = document.getElementById('flowVal');
-        const arrow = document.getElementById('arrow');
-
-        slider.addEventListener('input', (e) => {
-            const r = parseInt(e.target.value); // Yarıçap (0-100 arası)
+        
+        // Simülatör Logiği
+        function updateFlow() {
+            const r = parseFloat(sldRadius.value);
+            valRadius.innerText = r.toFixed(1) + " mm";
             
-            // 1. Görseli Güncelle (Yükseklik değişir)
-            vessel.style.height = r + 'px';
+            // Poiseuille Yasası: Akım (Q) yarıçapın 4. kuvveti ile orantılıdır.
+            // Q = r^4 (Basınç ve Viskozite sabit kabul edildi)
+            const flow = Math.pow(r, 4);
 
-            // 2. Poiseuille Yasası Hesabı (Akım = r^4)
-            // Slider 100 iken akım %100 olsun.
-            // r=50 (yarı) iken akım 100 * (0.5)^4 = 6.25% olur.
-            const normalizedR = r / 100;
-            const flow = Math.round(100 * Math.pow(normalizedR, 4));
-            
-            flowVal.innerText = flow;
+            // Akımı göster (daha anlamlı hale getirmek için normalize edilebilir, ama r^4'ü görmek yeterli)
+            valFlow.innerText = Math.round(flow) + " ünite";
 
-            // 3. Ok Hızı ve Rengi
-            if(flow < 10) {
-                arrow.style.animationDuration = '0s'; // Durdu
-                vessel.style.backgroundColor = '#7f1d1d'; // Koyu tıkanık renk
-            } else {
-                // Akım azaldıkça ok yavaşlasın (Süre artsın)
-                const speed = 2 - (normalizedR * 1.5); 
-                arrow.style.animationDuration = speed + 's';
-                vessel.style.backgroundColor = `radial-gradient(circle at 30% 30%, #ef4444, #b91c1c)`;
-            }
-        });
-
-        // --- 2. TANSİYON OYUNU ---
-        const bpDisplay = document.getElementById('bpVal');
-        const statusBadge = document.getElementById('gameStatus');
-        const sympBtn = document.getElementById('sympatheticBtn');
-        const feedback = document.getElementById('feedbackMsg');
-        let timer;
-
-        function triggerEvent() {
-            // Tansiyonu Düşür (Ortostatik Hipotansiyon)
-            clearInterval(timer);
-            statusBadge.innerText = "DURUM: KRİTİK DÜŞÜŞ!";
-            statusBadge.style.background = "#fee2e2";
-            statusBadge.style.color = "#991b1b";
-            
-            bpDisplay.style.color = "#ef4444";
-            bpDisplay.innerText = "85/50";
-            
-            feedback.innerText = "UYARI: Beyne giden kan azaldı! Hasta bayılmak üzere!";
-            sympBtn.disabled = false; // Kurtarma butonunu aç
-            sympBtn.style.background = "#0284c7";
+            // Görselleştirme: Damar çapı küçülünce akım azalır
+            const newHeight = 10 + r * 6; // Yarıçapa göre yüksekliği ayarla (10mm max yükseklik)
+            vessel.style.height = newHeight + 'px';
         }
 
-        function fixBP() {
-            sympBtn.disabled = true;
-            sympBtn.innerText = "Müdahale Ediliyor...";
-            
-            setTimeout(() => {
-                // Başarılı Müdahale
-                statusBadge.innerText = "DURUM: KOMPANSE EDİLDİ";
-                statusBadge.style.background = "#d1fae5";
-                statusBadge.style.color = "#065f46";
-                
-                bpDisplay.style.color = "#10b981";
-                bpDisplay.innerText = "118/78";
-                
-                feedback.innerText = "Harika! Kalp hızı artırıldı ve damarlar büzüldü. Tansiyon normale döndü.";
-                feedback.style.color = "#10b981";
-                
-                sympBtn.innerText = "⚡ Sempatik Sistemi Ateşle";
-                sympBtn.style.background = "#0284c7";
-            }, 1500);
-        }
+        // Başlangıçta çalıştır
+        updateFlow();
     </script>
 </body>
 </html>
