@@ -3,223 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solunum Mekaniği | Stackminds</title>
+    <title>Solunum Mekaniği | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        /* --- AKADEMİK TEMA --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
-        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
-
-        /* SIDEBAR */
-        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
-        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
-        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
-
-        /* CONTENT */
-        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; width: 100%; }
-        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        h3 { font-weight: bold; color: #374151; margin-top: 30px; }
-        p { text-align: justify; margin-bottom: 20px; }
-
-        /* KUTULAR */
-        .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        .clinical-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
-        
-        /* SİMÜLATÖR */
-        .spiro-container {
-            background: white; border: 1px solid #ccc; padding: 20px; border-radius: 15px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 30px; position: relative;
-        }
-        .control-panel { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
-        .btn-spiro { padding: 10px 20px; border: none; border-radius: 50px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: bold; color: white; transition:0.2s; }
-        .btn-normal { background: var(--blue-ink); }
-        .btn-deep { background: var(--success); }
-        .btn-force { background: var(--accent); }
-        .btn-spiro:hover { opacity: 0.9; transform: scale(1.05); }
-
-        /* NAV */
-        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
-        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; background: var(--blue-ink); color: white; }
-
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+        :root { --paper: #fffbf0; --ink: #111827; --blue: #0056b3; --red: #c0392b; --success: #1abc9c; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
+        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; z-index:10; font-family: sans-serif; }
+        .brand { font-weight: bold; color: #f1c40f; text-decoration: none; display: block; margin-bottom: 30px; }
+        .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
+        .menu-item.active { background: #34495e; color: white; font-weight: bold; }
+        .content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        h1 { font-size: 2.5rem; color: var(--blue); border-bottom: 3px solid var(--blue); padding-bottom: 10px; font-family: sans-serif; }
+        h2 { margin-top: 50px; color: var(--red); font-weight: bold; border-left: 5px solid var(--red); padding-left: 15px; font-family: sans-serif; }
+        p, ul, ol, div { overflow-wrap: break-word; text-align: justify; }
+        .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
+        .clinical-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #c0392b; }
+        .sim-container { background: white; border: 1px solid #ccc; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .btn-spiro { padding: 10px 20px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; color: white; margin-right: 10px; transition:0.2s; }
+        .btn-normal { background: var(--blue); } .btn-deep { background: var(--success); } .btn-force { background: var(--red); }
+        .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
+        .btn { text-decoration: none; background: var(--blue); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
-        <a href="solunum.html" class="chapter-link active">1. Mekanik ve Hacimler</a>
-        <a href="solunum2.html" class="chapter-link">2. Gaz Değişimi</a>
-        <a href="solunum3.html" class="chapter-link">3. Kontrol</a>
-        <a href="solunum_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+        <a href="index.html" class="brand"><i class="fa-solid fa-lungs"></i> SOLUNUM</a>
+        <a href="solunum.html" class="menu-item active">1. Mekanik ve Hacimler</a>
+        <a href="solunum2.html" class="menu-item">2. Gaz Değişimi</a>
+        <a href="solunum3.html" class="menu-item">3. Kontrol</a>
+        <a href="solunum_test.html" class="menu-item" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
     <main class="page-content">
-        <div style="color:#6b7280; font-size:0.9rem;">Ünite 5: Solunum Fizyolojisi</div>
         <h1>Bölüm 1: Solunum Mekaniği ve Spirometri</h1>
 
         <p>
-            Solunumun temel amacı, atmosferden akciğer alveollerine hava taşımak (Ventilasyon) ve gaz değişimini sağlamaktır. 
-            Akciğerler kas içermez; göğüs kafesi ve diyaframın yarattığı <strong>basınç farkları</strong> sayesinde hava içeri girer veya dışarı çıkar.
+            Akciğerler bir pompa değil, körüktür. Nefes alıp verme, göğüs duvarının ve diyaframın hacim değiştirerek yarattığı **basınç farklarına** dayanır (Boyle Yasası).
         </p>
 
-        <h2>1. Basınç Prensipleri (Boyle Yasası)</h2>
+        <h2>1. Solunumun Temel Fiziği</h2>
         <p>
-            Boyle yasasına göre, kapalı bir kapta hacim artarsa basınç azalır ($P \times V = K$).
+            Diyafram kasıldığında göğüs hacmi artar. Bu durum, intraplevra basıncını daha da negatif yapar ($-5 \rightarrow -7.5 \text{ cmH}_2\text{O}$). Alveol içindeki basınç atmosferin altına düşer, bu fark hava akımını sağlar.
         </p>
-        <ul>
-            <li><strong>İnspirasyon (Nefes Alma):</strong> Diyafram kasılır ve aşağı iner. Göğüs hacmi artar. İntraplevra basınç daha negatif olur ($-5 \rightarrow -7.5 \text{ cmH}_2\text{O}$). Alveol basıncı atmosferin altına düşer ve hava içeri dolar.</li>
-            <li><strong>Ekspirasyon (Nefes Verme):</strong> Normalde pasiftir. Kaslar gevşer, akciğerin elastik geri çekilme kuvveti (Recoil) ile hacim azalır, basınç artar ve hava dışarı çıkar.</li>
-        </ul>
 
-        <h2>2. Akciğer Hacim ve Kapasiteleri (Spirometri)</h2>
+        <h3>Uyum (Compliance)</h3>
         <p>
-            Akciğerin performansını ölçmek için spirometre kullanılır. 4 temel hacim ve bunların toplamından oluşan kapasiteler vardır.
+            Akciğerin birim basınç başına ne kadar genişleyebildiğidir ($\Delta V / \Delta P$). Akciğerlerin uyumunu belirleyen iki ana güç vardır: 1) Elastik lifler, 2) Yüzey gerilimi (Sürfaktan).
+        </p>
+        <div class="logic-box">
+            <span class="logic-title">Mantık: Elastik Geri Çekilme (Recoil)</span>
+            Ekspirasyon (nefes verme) normalde pasif bir süreçtir. Akciğerler, gerilmiş elastik lifler ve yüzey gerilimi sayesinde bir lastik gibi büzüşmek ister (Recoil).
+        </div>
+
+        <h2>2. Sürfaktan ve Laplace Yasası</h2>
+        <p>
+            Alveoller içten su molekülleri ile kaplıdır. Bu su molekülleri birbirini çekerek alveolün sönmesine (kollaps) neden olur (**Yüzey Gerilimi**).
         </p>
 
-        <div class="spiro-container">
+        <div class="formula-box">
+            $$\mathbf{P} = \frac{2 \times T}{r}$$
+            <p style="font-size:0.9rem; margin:5px 0;">($P$: Alveol içindeki basınç, $T$: Yüzey Gerilimi, $r$: Alveol Yarıçapı)</p>
+        </div>
+
+        <p>
+            **Sürfaktan** (Fosfolipoprotein), Tip II Pnimositler tarafından üretilir ve araya girerek yüzey gerilimini düşürür. Bu, özellikle küçük alveollerin daha kolay şişmesini (Laplace Yasası'na karşı koymasını) sağlar.
+        </p>
+        
+        <div class="clinical-box">
+            <strong>Klinik Tuzak: Yenidoğan RDS</strong><br>
+            Prematüre bebeklerde sürfaktan yetersizdir. Yüzey gerilimi çok yükseldiği için alveoller söner (Ateletazi). Bebek, her nefeste akciğeri şişirmek için aşırı enerji harcar (Solunum Sıkıntısı Sendromu).
+        </div>
+
+        <h2>3. Akciğer Hacimleri ve Kapasiteleri (Spirometri)</h2>
+
+        <div class="sim-container">
             <h3 style="text-align:center; margin-top:0;">🫁 İnteraktif Spirometre</h3>
-            <p style="font-size:0.9rem; color:#666; text-align:center;">Butonlara basarak grafiği çizin.</p>
-            
             <canvas id="spiroChart" height="250"></canvas>
-
-            <div class="control-panel">
+            <div style="text-align:center; font-family:sans-serif; margin-top:15px; font-weight:bold;">TLC: 5800 ml | RV: 1200 ml</div>
+            
+            <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
                 <button class="btn-spiro btn-normal" onclick="breathe('normal')">Normal Nefes (TV)</button>
                 <button class="btn-spiro btn-deep" onclick="breathe('deep')">Derin İnspirasyon (IRV)</button>
                 <button class="btn-spiro btn-force" onclick="breathe('force')">Zorlu Ekspirasyon (ERV)</button>
             </div>
-            <div id="readout" style="text-align:center; margin-top:15px; font-weight:bold; color:#0369a1; min-height:25px;"></div>
         </div>
 
-        <h3>Hacimlerin Tanımı:</h3>
+        <h3>Kritik Hacimler ve Kapasiteler:</h3>
         <ul>
-            <li><strong>Tidal Hacim (TV):</strong> Her normal nefeste girip çıkan hava ($~500 \text{ ml}$).</li>
-            <li><strong>İnspiratuvar Yedek Hacim (IRV):</strong> Normal nefesin üzerine alınabilen ekstra hava ($~3000 \text{ ml}$).</li>
-            <li><strong>Ekspiratuvar Yedek Hacim (ERV):</strong> Normal nefes verdikten sonra zorla çıkarılabilen hava ($~1100 \text{ ml}$).</li>
-            <li><strong>Rezidüel Hacim (RV):</strong> Ne kadar zorlarsanız zorlayın akciğerden çıkarılamayan, içeride kalan hava ($~1200 \text{ ml}$). *Spirometre ile ölçülemez!*</li>
+            <li>**Tidal Hacim (TV):** Sakin solunum ($~500 \text{ ml}$).</li>
+            <li>**Rezidüel Hacim (RV):** Çıkarılamayan hava ($\sim 1200 \text{ ml}$). **Spirometre ile ölçülemez!**</li>
+            <li>**Vital Kapasite (VC):** $TV + IRV + ERV$. Maksimum üflenebilen hava.</li>
+            <li>**Total Akciğer Kapasitesi (TLC):** $VC + RV$. Akciğerin alabileceği toplam hava.</li>
         </ul>
 
-        <div class="def-box">
-            <strong>Vital Kapasite (VC):</strong> Derin bir nefes alıp, zorla verebildiğimiz toplam hava miktarıdır.<br>
-            $$VC = IRV + TV + ERV \approx 4600 \text{ ml}$$
-        </div>
-
-        <h2>3. Uyum (Compliance) ve Sürfaktan</h2>
-        <p>
-            Akciğerlerin genişleyebilme yeteneğine "Compliance" denir. Bunu belirleyen iki güç vardır: 
-            1) Elastik lifler, 2) Alveol içindeki yüzey gerilimi.
-        </p>
-
-        <h3>Sürfaktan ve Laplace Yasası</h3>
-        <p>
-            Alveollerin iç yüzeyi ince bir sıvı tabakasıyla kaplıdır. Su molekülleri birbirini çeker (Yüzey gerilimi) ve alveolü büzüştürmeye (kollaps) çalışır.
-            <strong>Tip II Pnimositler</strong> tarafından salgılanan <strong>Sürfaktan</strong>, araya girerek bu gerilimi azaltır.
-        </p>
-        <div class="clinical-box">
-            <strong>Klinik: Yenidoğan Solunum Sıkıntısı (RDS)</strong><br>
-            Prematüre bebeklerde sürfaktan henüz üretilmemiştir. Yüzey gerilimi çok yüksek olduğu için alveoller söner (Ateletazi). Bebek her nefeste akciğeri şişirmek için muazzam çaba harcar.
-        </div>
-
-        <div class="page-nav">
-            <a href="index.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Ana Menü</a>
-            <a href="solunum2.html" class="nav-btn next">Bölüm 2: Gaz Değişimi &rarr;</a>
+        <div class="nav-area">
+            <a href="index.html" class="btn prev" style="background:#7f8c8d">&larr; Ana Menü</a>
+            <a href="solunum2.html" class="btn">Bölüm 2: Gaz Değişimi &rarr;</a>
         </div>
     </main>
 
     <script>
+        // JS Spirometre Kodu
         const ctx = document.getElementById('spiroChart').getContext('2d');
-        const readout = document.getElementById('readout');
-
-        // Başlangıç Verileri (Zaman ekseni)
-        const labels = Array.from({length: 50}, (_, i) => i);
-        const dataPoints = Array(50).fill(2500); // FRC seviyesinden başla (ERV + RV = 2300 civarı)
-
+        const dataPoints = Array(50).fill(2500); 
         const chart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Akciğer Hacmi (ml)',
-                    data: dataPoints,
-                    borderColor: '#0369a1',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    fill: true,
-                    backgroundColor: 'rgba(3, 105, 161, 0.1)'
-                }]
-            },
-            options: {
-                responsive: true,
-                animation: false,
-                scales: {
-                    y: { min: 0, max: 6000, title: {display:true, text:'Hacim (ml)'} },
-                    x: { display: false }
-                },
-                plugins: { legend: {display:false} }
-            }
+            data: { labels: Array.from({length: 50}, (_, i) => i), datasets: [{ data: dataPoints, borderColor: '#0056b3', borderWidth: 2, tension: 0.4, pointRadius: 0, backgroundColor: 'rgba(0, 86, 179, 0.1)' }] },
+            options: { responsive: true, animation: false, scales: { y: { min: 0, max: 6000, title: {display:true, text:'Hacim (ml)'} }, x: { display: false } }, plugins: { legend: {display:false} } }
         });
 
-        let tick = 0;
-        let actionQueue = []; // Animasyon sırası
+        let actionQueue = []; let tick = 0;
 
         function animate() {
-            // Veriyi kaydır
             chart.data.datasets[0].data.shift();
-            
-            let newVal = 2500; // Bazal seviye (FRC)
-
+            let newVal = 2500;
             if (actionQueue.length > 0) {
                 newVal = actionQueue.shift();
             } else {
-                // Dinlenme (Hafif dalgalanma - Tidal Volüm 500ml)
-                // Sinüs dalgası: 2500 ile 3000 arası gidip gelsin
                 newVal = 2500 + (Math.sin(tick * 0.2) + 1) * 250; 
             }
-
             chart.data.datasets[0].data.push(newVal);
-            chart.update('none'); // Animasyonsuz güncelle (akışkanlık için)
+            chart.update('none');
             tick++;
             requestAnimationFrame(animate);
         }
 
         function breathe(type) {
-            // Mevcut kuyruğu temizle, yeni hareketi ekle
             actionQueue = [];
-            
-            if(type === 'normal') {
-                readout.innerText = "Tidal Hacim (TV): ~500 ml";
-                // Zaten loop yapıyor
-            } 
+            if (type === 'normal') {/* Zaten loop yapıyor */ } 
             else if (type === 'deep') {
-                readout.innerText = "İnspiratuvar Yedek Hacim (IRV): Maksimum Şişme!";
-                // Hızlıca 5800'e çık (TLC), sonra in
                 for(let i=0; i<20; i++) actionQueue.push(2500 + (i/20)*3300); // Çıkış
-                for(let i=0; i<20; i++) actionQueue.push(5800); // Bekle
+                for(let i=0; i<30; i++) actionQueue.push(5800); // Bekle
                 for(let i=0; i<20; i++) actionQueue.push(5800 - (i/20)*3300); // İniş
             }
             else if (type === 'force') {
-                readout.innerText = "Ekspiratuvar Yedek Hacim (ERV): Zorlu Nefes Verme!";
-                // Önce biraz al, sonra dibe vur (RV = 1200'e kadar in)
                 for(let i=0; i<10; i++) actionQueue.push(2500 + i*50); // Hafif al
-                for(let i=0; i<30; i++) actionQueue.push(3000 - (i/30)*1800); // Dibe in (1200)
-                for(let i=0; i<20; i++) actionQueue.push(1200); // RV'de bekle
+                for(let i=0; i<30; i++) actionQueue.push(3000 - (i/30)*1800); // Dibe in (1200 RV'ye yakın)
                 for(let i=0; i<30; i++) actionQueue.push(1200 + (i/30)*1300); // Geri dön
             }
         }
-
         animate();
-
     </script>
 </body>
-              </html>
-  
+</html>
