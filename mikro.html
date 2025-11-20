@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikrobiyoloji Kartları | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- DARK LAB THEME --- */
+        :root { --bg: #18181b; --card-bg: #27272a; --text: #e4e4e7; --accent: #8b5cf6; --green: #10b981; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* HEADER */
+        .header { padding: 20px; background: #000; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { color: #a1a1aa; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .back-btn:hover { color: white; }
+
+        /* FILTER TABS */
+        .tabs { display: flex; justify-content: center; gap: 10px; padding: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            background: #3f3f46; color: #a1a1aa; border: none; padding: 10px 20px; border-radius: 20px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .tab-btn:hover { background: #52525b; color: white; }
+        .tab-btn.active { background: var(--accent); color: white; box-shadow: 0 0 15px rgba(139, 92, 246, 0.4); }
+
+        /* CARD GRID */
+        .grid-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;
+            max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box;
+        }
+
+        /* FLIP CARD YAPISI */
+        .flip-card { background-color: transparent; width: 100%; height: 300px; perspective: 1000px; cursor: pointer; }
+        
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s;
+            transform-style: preserve-3d; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            border-radius: 15px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; box-sizing: border-box; border: 1px solid #3f3f46;
+        }
+
+        /* ÖN YÜZ */
+        .flip-card-front { background-color: var(--card-bg); color: white; }
+        .icon-box { font-size: 3rem; margin-bottom: 20px; color: var(--accent); }
+        .bact-name { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+        .bact-family { font-size: 0.9rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 1px; }
+        .click-hint { font-size: 0.8rem; color: #52525b; margin-top: 20px; }
+
+        /* ARKA YÜZ */
+        .flip-card-back { background-color: var(--accent); color: white; transform: rotateY(180deg); text-align: left; align-items: flex-start; overflow-y: auto; }
+        .back-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); width: 100%; padding-bottom: 5px; }
+        .feature-list { list-style: none; padding: 0; margin: 0; width: 100%; }
+        .feature-list li { margin-bottom: 8px; font-size: 0.95rem; display: flex; gap: 10px; }
+        .feature-list li i { margin-top: 4px; color: #000; }
+
+        /* ÖZEL RENKLER */
+        .nonferm .flip-card-back { background-color: #0ea5e9; } /* Mavi */
+        .myco .flip-card-back { background-color: #f59e0b; color: black; } /* Sarı */
+        .myco .feature-list li i { color: #b45309; }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Ana Menü</a>
+        <div style="font-weight:bold; color:var(--accent);">MİKROBİYOLOJİ (10 Soru)</div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="filterSelection('all')">Tümü</button>
+        <button class="tab-btn" onclick="filterSelection('entero')">Enterobacteriaceae</button>
+        <button class="tab-btn" onclick="filterSelection('nonferm')">Non-Fermenter</button>
+        <button class="tab-btn" onclick="filterSelection('myco')">Mikobakteriler</button>
+    </div>
+
+    <div class="grid-container">
+
+        <div class="flip-card filter-item entero" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-bacterium icon-box"></i>
+                    <div class="bact-name">Escherichia coli</div>
+                    <div class="bact-family">Enterobacteriaceae</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Laktoz Pozitif:</b> EMB besiyerinde metalik yeşil refle verir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>IMViC:</b> (++--) İndol ve Metil kırmızısı pozitiftir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Klinik:</b> En sık İdrar Yolu Enfeksiyonu (İYE) etkenidir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>EHEC (O157:H7):</b> Hemolitik Üremik Sendrom (HÜS) yapar.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card filter-item entero" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-capsules icon-box"></i>
+                    <div class="bact-name">Klebsiella pneumoniae</div>
+                    <div class="bact-family">Enterobacteriaceae</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Kapsüllü:</b> Besiyerinde "Mukoid" koloniler oluşturur.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Hareketsizdir.</b> (Şigella ile birlikte hareketsiz olan nadirlerdendir).</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Klinik:</b> Alkoliklerde pnömoni yapar. Balgamı "Frenk Üzümü Jölesi" gibidir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card filter-item nonferm" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-droplet icon-box" style="color:#0ea5e9;"></i>
+                    <div class="bact-name">Pseudomonas aeruginosa</div>
+                    <div class="bact-family">Non-Fermenter</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Oksidaz Pozitif:</b> Enterobacteriaceae'den ayıran en önemli fark.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Pigment:</b> Piyosiyanin (Mavi-Yeşil) üretir. Yaradan yeşil irin akar.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Koku:</b> Meyvemsi (Üzüm) kokusu vardır.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Klinik:</b> Yanık hastaları ve Kistik Fibrozisli hastalarda 1 numaradır.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card filter-item entero" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-water icon-box"></i>
+                    <div class="bact-name">Proteus mirabilis</div>
+                    <div class="bact-family">Enterobacteriaceae</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Swarming (Yayılma):</b> Besiyerinde dalga dalga yayılır. Çok hareketlidir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Üreaz Pozitif:</b> İdrarı alkali yapar, Magnezyum-Amonyum-Fosfat taşlarına neden olur.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Koku:</b> Yanık çikolata veya balık kokusu.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card filter-item myco" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-lungs-virus icon-box" style="color:#f59e0b;"></i>
+                    <div class="bact-name">M. tuberculosis</div>
+                    <div class="bact-family">Mikobakteriler</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>ARB (+):</b> Asite Dirençli Bakteridir. Hücre duvarında yüksek lipid (Mikolik asit) vardır.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Boyama:</b> Ehrlich-Ziehl-Neelsen (EZN) ile kırmızı boyanır.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Üreme:</b> Çok yavaştır (Lowenstein-Jensen besiyerinde 2-4 hafta).</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Faktör:</b> Cord Faktör (Virülans).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card filter-item entero" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-palette icon-box" style="color:#ef4444;"></i>
+                    <div class="bact-name">Serratia marcescens</div>
+                    <div class="bact-family">Enterobacteriaceae</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Pigment:</b> Oda ısısında "Prodigiosin" adı verilen KIRMIZI pigment üretir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Direnç:</b> Çoğu antibiyotiğe doğuştan dirençlidir. Hastane enfeksiyonu yapar.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Enzim:</b> DNAse, Lipaz ve Jelatinaz pozitiftir.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card filter-item entero" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-code-compare icon-box"></i>
+                    <div class="bact-name">Salmonella vs Shigella</div>
+                    <div class="bact-family">Karşılaştırma (Sınav Sorusu!)</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Farklar</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Hareket:</b> Salmonella Hareketli (+), Shigella Hareketsiz (-).</li>
+                        <li><i class="fa-solid fa-check"></i> <b>H2S:</b> Salmonella H2S üretir (Siyah koloni), Shigella üretmez.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Doz:</b> Salmonella için çok bakteri gerekir, Shigella için 10-100 bakteri yeterlidir (Çok bulaşıcı).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+         <div class="flip-card filter-item nonferm" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-hospital icon-box" style="color:#0ea5e9;"></i>
+                    <div class="bact-name">Acinetobacter baumannii</div>
+                    <div class="bact-family">Non-Fermenter</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Tanım:</b> Gram negatif kokobasil. Hareketsizdir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Oksidaz Negatif:</b> Pseudomonas'tan farkı budur (Pseudomonas pozitiftir).</li>
+                        <li><i class="fa-solid fa-check"></i> <b>MDR:</b> Çoklu ilaç direnci ile meşhurdur. Yoğun bakımın baş belasıdır.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+         <div class="flip-card filter-item entero" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <i class="fa-solid fa-temperature-arrow-down icon-box"></i>
+                    <div class="bact-name">Yersinia enterocolitica</div>
+                    <div class="bact-family">Enterobacteriaceae</div>
+                    <div class="click-hint"><i class="fa-solid fa-rotate"></i> Çevir</div>
+                </div>
+                <div class="flip-card-back">
+                    <div class="back-title">Önemli Özellikler</div>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Soğuk Sever:</b> +4 derecede (buzdolabı) üreyebilir (Zenginleştirme yöntemi).</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Hareket:</b> 25°C'de hareketli, 37°C'de hareketsizdir.</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Taklit:</b> Apandisit taklidi yapar (Mezenterik lenfadenit).</li>
+                        <li><i class="fa-solid fa-check"></i> <b>Boyama:</b> Çengelli iğne (Bipolar) görünümü vardır.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function filterSelection(c) {
+            var x, i;
+            x = document.getElementsByClassName("filter-item");
+            if (c == "all") c = "";
+            
+            // Hepsini gizle
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            
+            // Seçileni göster
+            for (i = 0; i < x.length; i++) {
+                if (x[i].className.indexOf(c) > -1) {
+                    x[i].style.display = "block";
+                }
+            }
+
+            // Buton aktifliği
+            var btns = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < btns.length; i++) {
+                btns[i].classList.remove("active");
+            }
+            event.currentTarget.classList.add("active");
+        }
+        
+        // Varsayılan: Hepsi açık
+        filterSelection("all");
+    </script>
+
+</body>
+                                                                                                                                         </html>
+  
