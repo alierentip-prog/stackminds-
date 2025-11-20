@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hemodinamik | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
+        /* --- TEMEL TASARIM --- */
+        :root {
+            --primary: #3b82f6;
+            --accent: #ef4444;
+            --bg-dark: #0f172a;
+            --panel-bg: #1e293b;
+            --text-main: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SOL NAVİGASYON (İÇİNDEKİLER) --- */
+        .toc-sidebar {
+            width: 250px;
+            background: #111827;
+            padding: 30px;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-btn {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: var(--primary); transform: translateX(-5px); }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc-list li { margin-bottom: 15px; }
+
+        .toc-list a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: block;
+            padding: 8px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .toc-list a:hover, .toc-list a.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            padding-left: 15px;
+        }
+
+        /* --- ANA İÇERİK (SCROLL ALANI) --- */
+        .content-area {
+            flex: 1;
+            padding: 40px 60px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            border-bottom: 2px solid #334155;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        .hero-title span { color: var(--primary); }
+
+        /* --- KONU KARTLARI --- */
+        section {
+            margin-bottom: 60px;
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+        }
+
+        h2 { color: var(--primary); border-left: 4px solid var(--primary); padding-left: 15px; }
+        p { line-height: 1.7; color: #cbd5e1; }
+
+        /* --- SİMÜLATÖR KUTUSU (OHM YASASI) --- */
+        .simulator-box {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #3b82f6;
+            margin-top: 20px;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+
+        .result-display {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 15px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            color: var(--primary);
+        }
+
+        /* --- ANİMASYONLU DAMAR (Flow Visualizer) --- */
+        .vessel-container {
+            height: 100px;
+            background: #3f0808;
+            border-top: 4px solid #ef4444;
+            border-bottom: 4px solid #ef4444;
+            position: relative;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .blood-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: flow linear infinite;
+        }
+
+        /* Laminar Akım: Ortadakiler hızlı, kenardakiler yavaş */
+        .laminar .blood-particle:nth-child(1) { top: 10%; animation-duration: 3s; }
+        .laminar .blood-particle:nth-child(2) { top: 20%; animation-duration: 2.5s; }
+        .laminar .blood-particle:nth-child(3) { top: 45%; animation-duration: 1.5s; width: 10px; height: 10px; background: #ffcccc; } /* Merkez */
+        .laminar .blood-particle:nth-child(4) { top: 70%; animation-duration: 2.5s; }
+        .laminar .blood-particle:nth-child(5) { top: 85%; animation-duration: 3s; }
+
+        @keyframes flow {
+            from { left: -20px; }
+            to { left: 100%; }
+        }
+
+        /* --- KLİNİK NOT KUTUSU --- */
+        .clinical-note {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .clinical-note strong { color: var(--accent); display: block; margin-bottom: 5px; }
+
+        /* Mobil Uyum */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .toc-sidebar { width: 100%; height: auto; padding: 15px; border-right: none; border-bottom: 1px solid #334155; }
+            .content-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="toc-sidebar">
+        <a href="menu.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Menüye Dön</a>
+        
+        <h3>İçindekiler</h3>
+        <ul class="toc-list">
+            <li><a href="#giris" class="active">1. Dolaşıma Genel Bakış</a></li>
+            <li><a href="#ohm">2. Ohm Yasası (Simülatör)</a></li>
+            <li><a href="#akim">3. Laminar ve Türbülanslı Akım</a></li>
+            <li><a href="#direnc">4. Direnç ve Poiseuille</a></li>
+        </ul>
+    </nav>
+
+    <main class="content-area">
+        
+        <h1 class="hero-title">Bölüm 1: <span>Hemodinamik Prensipler</span></h1>
+
+        <section id="giris">
+            <h2><i class="fa-solid fa-heart-circle-bolt"></i> Dolaşımın Temel Amacı</h2>
+            <p>
+                Dolaşım sisteminin temel amacı, kanı dokulara ulaştırmaktır. Ancak kan rastgele akmaz; 
+                belirli fiziksel kurallara (Hemodinamik) uyar. Guyton fizyolojisinde bu kuralların temeli şudur:
+                <strong>Kalp debisi (kan akışı), temel olarak dokuların ihtiyacına göre düzenlenir.</strong>
+            </p>
+        </section>
+
+        <section id="ohm">
+            <h2><i class="fa-solid fa-calculator"></i> Ohm Yasası: Akım, Basınç, Direnç</h2>
+            <p>Kan akımı (Q), iki nokta arasındaki basınç farkı (ΔP) ile doğru, direnç (R) ile ters orantılıdır.</p>
+            
+            <div class="clinical-note">
+                <strong>Formül: Q = ΔP / R</strong>
+                <br>Bu formül aslında elektrikteki Ohm yasasının (I = V / R) tıbba uyarlanmış halidir.
+            </div>
+
+            <div class="simulator-box">
+                <h3 style="margin-top:0; color:#fff;">⚡ Canlı Hemodinamik Hesaplayıcı</h3>
+                
+                <div class="sim-controls">
+                    <div class="control-group">
+                        <label>Basınç Farkı (ΔP): <span id="valP">100</span> mmHg</label>
+                        <input type="range" id="rangeP" min="0" max="200" value="100">
+                    </div>
+                    <div class="control-group">
+                        <label>Direnç (R): <span id="valR">20</span> PRU</label>
+                        <input type="range" id="rangeR" min="1" max="50" value="20">
+                    </div>
+                </div>
+
+                <div class="result-display">
+                    Kan Akımı (Q) = <span id="resultQ">5.0</span> L/dk
+                </div>
+                <p style="font-size:0.8rem; text-align:center; margin-top:10px; color:#64748b;">
+                    *Direnç arttıkça akımın nasıl düştüğünü gözlemleyin.
+                </p>
+            </div>
+        </section>
+
+        <section id="akim">
+            <h2><i class="fa-solid fa-water"></i> Akım Tipleri: Laminar vs. Türbülans</h2>
+            
+            <h3>1. Laminar Akım (Sessiz)</h3>
+            <p>Normal damarlarda kan katmanlar halinde akar. Ortadaki kan en hızlı, duvara sürtünen kan en yavaştır. Buna <strong>"Parabolik Hız Profili"</strong> denir.</p>
+            
+            <div class="vessel-container laminar">
+                </div>
+
+            <h3>2. Türbülanslı Akım (Gürültülü)</h3>
+            <p>Akış çok hızlanırsa, damar daralırsa veya kanın viskozitesi azalırsa (anemi) akım bozulur. Girdaplar oluşur.</p>
+            
+            <div class="clinical-note">
+                <strong>🩺 Klinik İpucu:</strong>
+                Türbülanslı akım ses çıkarır. Stetoskopla duyduğumuz <strong>"Üfürümler" (Murmurs)</strong> genellikle bu türbülansın sesidir. Ayrıca tansiyon ölçerken duyulan <strong>Korotkoff sesleri</strong> de türbülanstır.
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- OHM YASASI HESAPLAYICI ---
+        const rangeP = document.getElementById('rangeP');
+        const rangeR = document.getElementById('rangeR');
+        const valP = document.getElementById('valP');
+        const valR = document.getElementById('valR');
+        const resultQ = document.getElementById('resultQ');
+
+        function calculateOhm() {
+            const P = parseFloat(rangeP.value);
+            const R = parseFloat(rangeR.value);
+            
+            // Ekrana değerleri yaz
+            valP.innerText = P;
+            valR.innerText = R;
+
+            // Formül: Q = P / R
+            const Q = (P / R).toFixed(1);
+            resultQ.innerText = Q;
+
+            // Görsel Efekt: Akım düşükse kırmızı, yüksekse yeşil yap
+            if(Q < 3) resultQ.style.color = "#ef4444";
+            else if(Q > 8) resultQ.style.color = "#10b981";
+            else resultQ.style.color = "#3b82f6";
+        }
+
+        rangeP.addEventListener('input', calculateOhm);
+        rangeR.addEventListener('input', calculateOhm);
+
+        // --- ANİMASYON İÇİN PARTİKÜL ÜRETİCİ ---
+        const vessel = document.querySelector('.vessel-container');
+        
+        for(let i=0; i<15; i++) {
+            let p = document.createElement('div');
+            p.classList.add('blood-particle');
+            
+            // Rastgele Gecikme ver ki hepsi aynı anda başlamasın
+            p.style.animationDelay = Math.random() * 2 + 's';
+            
+            // Laminar akım için manuel konumlandırma (CSS'te nth-child ile yapıldı ama burdan da destekliyoruz)
+            // Bu basit döngü sadece divleri oluşturur.
+            vessel.appendChild(p);
+        }
+
+    </script>
+</body>
+          </html>
+          
