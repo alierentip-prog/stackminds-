@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aritmi Simülatörü | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- AKADEMİK TEMA --- */
+        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index:10; }
+        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none; }
+        .chapter-link { display: block; padding: 8px; margin-bottom: 5px; text-decoration: none; color: #4b5563; border-radius: 6px; transition: 0.2s; }
+        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
+        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* CONTENT */
+        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; width: 100%; }
+        h1 { font-size: 2.5rem; font-family: 'Segoe UI', sans-serif; color: #0f172a; }
+        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
+        
+        /* MONİTÖR */
+        .monitor-frame {
+            background: #000; border: 4px solid #374151; border-radius: 10px; padding: 20px;
+            margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative;
+        }
+        .monitor-header {
+            display: flex; justify-content: space-between; color: #10b981; font-family: 'Courier New', monospace;
+            font-weight: bold; margin-bottom: 10px; font-size: 1.1rem;
+        }
+        .canvas-container { height: 250px; width: 100%; overflow: hidden; position: relative; }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* KONTROLLER */
+        .rhythm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
+        .r-btn {
+            padding: 10px; background: white; border: 1px solid #d1d5db; border-radius: 8px;
+            cursor: pointer; font-family: 'Segoe UI', sans-serif; font-weight: 600; color: #374151; transition: 0.2s;
+        }
+        .r-btn:hover { background: #f3f4f6; border-color: var(--blue-ink); }
+        .r-btn.active { background: var(--blue-ink); color: white; border-color: var(--blue-ink); }
+        .r-btn.danger.active { background: var(--accent); border-color: var(--accent); } /* Kriz butonu kırmızı olsun */
+
+        /* BİLGİ KUTUSU */
+        .info-display {
+            margin-top: 20px; padding: 15px; background: #eff6ff; border-left: 4px solid var(--blue-ink);
+            font-family: 'Segoe UI', sans-serif; font-size: 0.9rem; display: none;
+        }
+
+        /* NAV */
+        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
+        .nav-btn { text-decoration: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; transition: 0.2s; }
+        .prev { background: #f3f4f6; color: #374151; }
+        .next { background: var(--accent); color: white; }
+
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
+        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
+        <a href="ekg.html" class="chapter-link">1. EKG Temelleri</a>
+        <a href="ekg2.html" class="chapter-link active">2. Aritmi Simülatörü</a>
+        <a href="ekg_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+
+    <main class="page-content">
+        <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
+        <h1>Bölüm 2: Patolojiler ve Aritmi Simülasyonu</h1>
+
+        <p>
+            EKG kağıdındaki sapmalar, kalbin elektriksel iletisindeki sorunları (Aritmi) veya kas hasarını (İskemi) gösterir. 
+            Aşağıdaki monitörü kullanarak farklı patolojilerin nasıl göründüğünü inceleyin.
+        </p>
+
+        <div class="monitor-frame">
+            <div class="monitor-header">
+                <span id="hrDisplay">HR: 72 BPM</span>
+                <span id="rhythmName">NORMAL SINUS</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="ekgCanvas"></canvas>
+            </div>
+        </div>
+
+        <div class="rhythm-grid">
+            <button class="r-btn active" onclick="setRhythm('nsr')">Normal Sinüs</button>
+            <button class="r-btn" onclick="setRhythm('tachy')">Sinüs Taşikardisi</button>
+            <button class="r-btn" onclick="setRhythm('brady')">Sinüs Bradikardisi</button>
+            <button class="r-btn" onclick="setRhythm('afib')">Atriyal Fibrilasyon (AF)</button>
+            <button class="r-btn" onclick="setRhythm('stemi')">Akut MI (STEMI)</button>
+            <button class="r-btn danger" onclick="setRhythm('vfib')">Ventriküler Fibrilasyon (V-FIB)</button>
+            <button class="r-btn danger" onclick="setRhythm('asystole')">Asistoli (Flatline)</button>
+        </div>
+
+        <div class="info-display" id="infoBox"></div>
+
+        <h2>Klinik İpuçları</h2>
+        <ul>
+            <li><strong>Atriyal Fibrilasyon (AF):</strong> En sık görülen aritmidir. P dalgası kaybolur, yerine titrek "f dalgaları" gelir. QRS'ler düzensizdir (Düzensiz düzensizlik).</li>
+            <li><strong>STEMI (Kalp Krizi):</strong> ST segmenti taban çizgisinden yukarı kalkar (Elevasyon). "Mezar taşı" görüntüsü verir. Acil müdahale gerekir.</li>
+            <li><strong>V-Fib:</strong> Ölümcül ritimdir. Kalp kasılmaz, sadece titrer. EKG tamamen kaotiktir. Tedavisi Defibrilasyondur (Şok).</li>
+        </ul>
+
+        <div class="page-nav">
+            <a href="ekg.html" class="nav-btn prev">&larr; Bölüm 1: EKG Temelleri</a>
+            <a href="ekg_test.html" class="nav-btn next">Ünite Testi (50 Soru) &rarr;</a>
+        </div>
+
+    </main>
+
+    <script>
+        const canvas = document.getElementById('ekgCanvas');
+        const ctx = canvas.getContext('2d');
+        const hrDisplay = document.getElementById('hrDisplay');
+        const rhythmName = document.getElementById('rhythmName');
+        const infoBox = document.getElementById('infoBox');
+
+        // Canvas Boyutlandırma
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // EKG Veri Dizisi (Sürekli akan)
+        let data = [];
+        let x = 0;
+        let speed = 2;
+        let currentRhythm = 'nsr';
+        let frameCount = 0;
+
+        // Ritim Şablonları (Matematiksel Fonksiyonlar)
+        function getNextPoint() {
+            frameCount++;
+            let y = 0;
+
+            if(currentRhythm === 'nsr') {
+                // Normal: Her 60 frame'de bir atım (Basit döngü)
+                let t = frameCount % 60;
+                if(t==5) y=-5; // Q
+                else if(t==6 || t==7) y=50; // R
+                else if(t==8) y=-10; // S
+                else if(t>15 && t<25) y=5; // T
+                else if(t>50 && t<55) y=3; // P
+            }
+            else if(currentRhythm === 'tachy') {
+                // Hızlı: Her 30 frame'de bir atım
+                let t = frameCount % 30;
+                if(t==5) y=-5; else if(t==6) y=50; else if(t==7) y=-10; 
+                else if(t>12 && t<18) y=5; 
+            }
+            else if(currentRhythm === 'brady') {
+                // Yavaş: Her 90 frame'de bir atım
+                let t = frameCount % 90;
+                if(t==5) y=-5; else if(t==6) y=50; else if(t==7) y=-10; 
+                else if(t>20 && t<35) y=5; else if(t>75 && t<85) y=3;
+            }
+            else if(currentRhythm === 'afib') {
+                // Düzensiz Baseline + Düzensiz QRS
+                y = (Math.random() - 0.5) * 3; // Titreme (f dalgası)
+                // Rastgele QRS atımı (Olasılık hesabı)
+                if(Math.random() < 0.03) { y = 50; } 
+            }
+            else if(currentRhythm === 'stemi') {
+                // ST Elevasyonu
+                let t = frameCount % 60;
+                if(t==6) y=50; // R
+                else if(t>6 && t<20) y=15; // ST Segmenti Yüksek!
+                else if(t>50 && t<55) y=3; // P
+            }
+            else if(currentRhythm === 'vfib') {
+                // Kaos
+                y = Math.sin(frameCount * 0.1) * 20 + (Math.random() - 0.5) * 10;
+            }
+            else if(currentRhythm === 'asystole') {
+                y = 0; // Düz çizgi
+            }
+
+            return y;
+        }
+
+        // Çizim Döngüsü
+        function draw() {
+            let nextY = getNextPoint();
+            
+            // Çizgiyi kaydır
+            // Canvas mantığı: Ekranı temizle, eski veriyi çiz
+            // Basitlik için: Sürekli sağa çizip başa dönebiliriz ama "Monitor" efekti için silerek gidelim.
+            
+            // Yarı yükseklik (Merkez)
+            let h = canvas.height / 2;
+            
+            // Çizim
+            ctx.beginPath();
+            ctx.strokeStyle = (currentRhythm === 'asystole' || currentRhythm === 'vfib') ? '#ef4444' : '#10b981'; // Krizse kırmızı
+            ctx.lineWidth = 2;
+            
+            if (x >= canvas.width) {
+                x = 0; // Başa dön
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Temizle
+            }
+
+            // Eski nokta (x-speed) ile yeni nokta (x, h - nextY) arasını çiz
+            // Basitlik için nokta nokta çiziyoruz
+            ctx.moveTo(x, h); // Önceki (kabaca)
+            ctx.lineTo(x + speed, h - nextY);
+            ctx.stroke();
+
+            x += speed;
+            requestAnimationFrame(draw);
+        }
+
+        function setRhythm(type) {
+            currentRhythm = type;
+            
+            // Buton stili
+            document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Bilgi ve Başlık
+            let info = "";
+            if(type === 'nsr') { rhythmName.innerText = "NORMAL SINUS"; hrDisplay.innerText = "HR: 72"; info = "Normal P-QRS-T dalgaları. Ritim düzenli."; }
+            if(type === 'tachy') { rhythmName.innerText = "SINUS TACHYCARDIA"; hrDisplay.innerText = "HR: 140"; info = "Normal dalga yapısı ama çok hızlı (>100/dk). Egzersiz veya ateş durumunda görülür."; }
+            if(type === 'brady') { rhythmName.innerText = "SINUS BRADYCARDIA"; hrDisplay.innerText = "HR: 45"; info = "Yavaş hız (<60/dk). Sporcularda veya uykuda normal olabilir."; }
+            if(type === 'afib') { rhythmName.innerText = "ATRIAL FIBRILLATION"; hrDisplay.innerText = "HR: 110 (IRR)"; info = "P dalgası yok, zemin titriyor. QRS'ler tamamen düzensiz geliyor."; }
+            if(type === 'stemi') { rhythmName.innerText = "ACUTE MI (STEMI)"; hrDisplay.innerText = "HR: 85"; info = "ST segmenti (S dalgası bitimi) havada. Kalp krizi geçiriyor!"; }
+            if(type === 'vfib') { rhythmName.innerText = "VENTRICULAR FIB"; hrDisplay.innerText = "---"; info = "Ölümcül ritim! Kalp kan pompalamıyor. Nabız alınamaz. Acil Defibrilasyon (Şok) şart!"; }
+            if(type === 'asystole') { rhythmName.innerText = "ASYSTOLE"; hrDisplay.innerText = "0"; info = "Elektriksel aktivite yok. Düz çizgi. CPR (Kalp masajı) ve Adrenalin gerekir. Şok verilmez!"; }
+
+            infoBox.innerHTML = `<strong>${rhythmName.innerText}:</strong> ${info}`;
+            infoBox.style.display = 'block';
+        }
+
+        // Başlat
+        draw();
+        // İlk info
+        setRhythm('nsr');
+
+    </script>
+
+</body>
+</html>
