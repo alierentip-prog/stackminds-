@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikrodolaşım ve RAAS | Stackminds Kütüphanesi</title>
+    <title>Mikro Dolaşım ve RAAS | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
@@ -26,17 +26,10 @@
         h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); padding-bottom: 10px; color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
         h3 { font-weight: bold; color: #374151; margin-top: 30px; }
         
-        /* KUTULAR */
-        .def-box { background: #eff6ff; border-left: 4px solid var(--blue-ink); padding: 15px; margin: 20px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        .warning-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
-        .formula-box { background: #f0fdf4; border: 1px solid var(--success); padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--success); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
-
-        /* RAAS AKIŞ ŞEMASI (CSS Based) */
-        .raas-flow { display: flex; flex-direction: column; align-items: center; margin: 30px 0; gap: 15px; font-family: 'Segoe UI', sans-serif; }
-        .raas-step { background: #fff; border: 2px solid var(--blue-ink); padding: 10px 20px; border-radius: 25px; font-weight: bold; color: var(--blue-ink); box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; text-align: center; }
-        .raas-step.enzyme { border-color: #059669; color: #059669; }
-        .raas-step.final { border-color: var(--accent); color: var(--accent); }
-        .arrow { font-size: 1.5rem; color: #9ca3af; }
+        /* ÖZEL KUTULAR */
+        .formula-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
+        .def-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+        .success-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #065f46; }
 
         /* NAV */
         .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
@@ -50,7 +43,7 @@
     <nav class="sidebar">
         <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
         <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
-        <a href="dolasim.html" class="chapter-link">1. Akışın Temel Fiziği</a>
+        <a href="dolasim.html" class="chapter-link">&larr; 1. Akışın Temel Fiziği</a>
         <a href="dolasim2.html" class="chapter-link active">2. Mikro Dolaşım ve RAAS</a>
         <a href="dolasim3.html" class="chapter-link">3. Baroreseptörler</a>
         <a href="dolasim_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
@@ -58,74 +51,93 @@
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 4: Dolaşım Fizyolojisi</div>
-        <h1>Bölüm 2: Starling Güçleri ve RAAS Detayları</h1>
+        <h1>Bölüm 2: Mikro Dolaşım, Starling Kuvvetleri ve RAAS</h1>
 
         <p>
-            Mikro dolaşım, kanın doku ile etkileşime girdiği ve sıvıların damar içi ve dışı arasında dengede tutulduğu hayati bir alandır.
+            Mikro dolaşım, kan ile hücreler arasındaki asıl alışverişin yapıldığı, kılcal damarlardan, venüllere ve arteriyollere kadar uzanan hayati bölümdür.
         </p>
 
-        <h2>1. Starling Güçleri ve Kapiller Denge</h2>
+        <h2>1. Kapiller Alışverişi: Starling Kuvvetleri</h2>
         <p>
-            Sıvıların kapillerden (kılcal damar) doku aralığına hareketini belirleyen net basınç, dört temel kuvvetin dengesi ile hesaplanır.
+            Kapillerlerdeki sıvı hareketini (filtrasyon ve reabsorpsiyon) dört temel kuvvet yönetir. Bu kuvvetler, **Net Filtrasyon Basıncı (NFP)** ile özetlenir.
         </p>
+        [attachment_0](attachment)
 
         <div class="formula-box">
-            $$\text{Net Filtrasyon} \propto \underbrace{(P_c - P_i)}_{\text{Hidrostatik Fark}} - \sigma \underbrace{(\pi_p - \pi_i)}_{\text{Onkotik Fark}}$$
-            <p style="font-size:0.8rem;">($\sigma$: Yansıma Katsayısı, $P$: Hidrostatik Basınç, $\pi$: Onkotik Basınç)</p>
+            $$\text{NFP} = (\text{Pc} - \text{Pi}) - (\pi\text{c} - \pi\text{i})$$
+            <p style="font-size:0.9rem; margin:5px 0;">(Hidrostatik Kuvvetler) - (Onkotik Kuvvetler)</p>
         </div>
 
-        <h3>Starling Kuvvetlerinin Analizi:</h3>
-        <p>İki kuvvet sıvıyı dışarı **İTER** (Filtrasyon), iki kuvvet ise içeri **ÇEKER** (Absorpsiyon).</p>
+        <h3>Dört Temel Starling Kuvveti:</h3>
         <ul>
-            <li>**$P_c$ (Kapiller Hidrostatik Basınç):** Kan basıncının itme gücüdür. Kapillerin arter tarafında yüksektir ($\approx 35 \text{ mmHg}$), ven tarafında düşüktür ($\approx 15 \text{ mmHg}$). **Başlıca itici kuvvettir.**</li>
-            <li>**$\pi_p$ (Plazma Onkotik Basıncı):** Albumin ve diğer plazma proteinlerinin suyu kendine çekme gücüdür ($\approx 28 \text{ mmHg}$). **Başlıca çekici kuvvettir.**</li>
-            <li>**Yansıma Katsayısı ($\sigma$):** Kapillerin proteinlere karşı ne kadar geçirgen olduğunu gösterir ($\sigma=1$: Tamamen geçirimsiz). Kapiller hasarında (örn. sepsis, iltihap) $\sigma$ sıfıra yaklaşır ve proteinler kolayca dışarı sızar.</li>
+            <li><i class="fa-solid fa-arrow-up" style="color:var(--accent);"></i> **Pc (Kapiller Hidrostatik Basınç):** Kılcal damar içindeki kanın basıncıdır. **Filtrasyonun ana itici gücüdür.** (Sıvıyı dışarı iter).</li>
+            <li><i class="fa-solid fa-arrow-down" style="color:var(--accent);"></i> **Pi (İnterstisyel Hidrostatik Basınç):** Hücreler arası sıvı basıncıdır. Normalde negatif veya çok düşüktür. (Sıvıyı içeri itmeye çalışır).</li>
+            <li><i class="fa-solid fa-arrow-down" style="color:var(--success);"></i> **$\pi$c (Kapiller Onkotik Basınç):** Plazmadaki **Albumin**'in (Protein) yaptığı ozmotik basınçtır. **Reabsorpsiyonun ana gücüdür.** (Sıvıyı içeri çeker).</li>
+            <li><i class="fa-solid fa-arrow-up" style="color:var(--success);"></i> **$\pi$i (İnterstisyel Onkotik Basınç):** Doku sıvısındaki proteinlerin yaptığı basınçtır. Normalde sıfıra yakındır. (Sıvıyı dışarı çekmeye çalışır).</li>
         </ul>
 
-        <h2>2. Ödem Mekanizmaları</h2>
+        <h3>Ödem (Edema) Mekanizmaları</h3>
         <p>
-            Net filtrasyonun lenfatik drenajı aştığı her durumda ödem oluşur.
+            NFP'nin pozitife kayması, yani net filtrasyonun artması ödeme yol açar. Ödemin temel nedenleri bu kuvvetlerin değişmesidir:
         </p>
         
-        <div class="warning-box">
-            <i class="fa-solid fa-triangle-exclamation"></i> <strong>Klinik Ödem Nedenleri:</strong>
+        <div class="def-box">
+            <strong>Ödemin Dört Ana Nedeni:</strong>
             <ol>
-                <li>**Artmış $P_c$ (Yüksek İtme):** Kalp yetmezliği (venöz tıkanıklık), aşırı sıvı yüklenmesi.</li>
-                <li>**Azalmış $\pi_p$ (Düşük Çekme):** Karaciğer yetmezliği (Albumin sentezinde azalma), Malnütrisyon, Nefrotik Sendrom (Böbrekten Albumin kaybı).</li>
-                <li>**Artmış $\sigma$ (Kaçak):** Şiddetli inflamasyon (Sepsis, alerjik reaksiyonlar) nedeniyle kapiller geçirgenliği artar ve proteinler dışarı sızar ($\pi_i$ artar).</li>
+                <li><strong>Pc Artışı:</strong> Kalp yetmezliği (venöz dönüşün bozulması) veya ven tıkanıklığı.</li>
+                <li><strong>$\pi$c Düşüşü:</strong> Albumin eksikliği (Karaciğer yetmezliği veya nefrotik sendrom).</li>
+                <li><strong>Kapiller Geçirgenliği Artışı:</strong> Enflamasyon (Histamin salınımı $\pi$i'yi artırır).</li>
+                <li><strong>Lenfatik Tıkanıklık:</strong> Doku sıvısının drenajının engellenmesi (Filaryazis veya cerrahi sonrası).</li>
             </ol>
         </div>
 
-        <h2>3. RAAS (Renin-Angiotensin-Aldosteron Sistemi) Detayları</h2>
+        <h2>2. Hacim ve Basınç Düzenlemesi: RAAS Sistemi</h2>
         <p>
-            RAAS, esas olarak **kan basıncını ve hacmini** uzun vadede ayarlayan, böbrek merkezli hormonal bir kaskaddır.
+            Renin-Anjiyotensin-Aldosteron Sistemi (RAAS), vücudun uzun vadeli kan basıncı ve hacmini ayarlayan en kritik endokrin mekanizmadır.
         </p>
-        
-        <div class="raas-flow">
-            <div class="raas-step">1. TETİKLEYİCİ: Düşük Renal Perfüzyon (Tansiyon Düşüklüğü)</div>
-            <i class="fa-solid fa-arrow-down arrow"></i>
-            <div class="raas-step">2. BÖBREK (JGA): Renin Salgılar</div>
-            <i class="fa-solid fa-arrow-down arrow"></i>
-            <div class="raas-step enzyme" style="background: #f0fdf4;">3. Renin: Anjiyotensinojen $\rightarrow$ Angiotensin I (inaktif)</div>
-            <i class="fa-solid fa-arrow-down arrow"></i>
-            <div class="raas-step enzyme" style="background: #f0fdf4;">4. Akciğer Endoteli (ACE): Angiotensin I $\rightarrow$ **Angiotensin II (AKTİF)**</div>
-            <i class="fa-solid fa-arrow-down arrow"></i>
-            <div class="raas-step final">5. ETKİ: Damar Büzer (Vazokonstriksiyon, HIZLI)</div>
-            <div class="raas-step final">6. ETKİ: Adrenal Bez $\rightarrow$ **Aldosteron** Salgılar (Tuz ve Su Tutulumu, YAVAŞ)</div>
-            <div class="raas-step final">7. EK ETKİ: ADH Salınımı ve Susuzluk Hissi Artışı</div>
+
+        <h3>Renin Salınımı: Tetikleyiciler</h3>
+        <p>
+            Renin, böbrekteki **Jukstaglomerüler (JG) hücrelerden** salınır. Salınımın ana tetikleyicileri (yani vücudun 'düşük basınç' algılaması):
+        </p>
+        <ol>
+            <li>**Böbrek Perfüzyonunun Düşmesi:** Böbreğe gelen kan akımının (Basıncın) düşmesi.</li>
+            <li>**Makula Densa Azalması:** Distal tübüle ulaşan **NaCl miktarının azalması**.</li>
+            <li>**Sempatik Uyarı:** Beta-1 reseptörlerinin uyarılması (Stres/Şok durumunda).</li>
+        </ol>
+
+        <div class="success-box">
+            <strong>RAAS'ın Kısa Özeti (Angiotensin II'nin Rolü):</strong><br>
+            Angiotensin II, vücudun en güçlü vazokonstriktörüdür (damar daraltıcı). Aynı zamanda adrenal korteksi uyararak **Aldosteron** salgılatır.
         </div>
 
+        <h3>Aldosteron ve ADH'nın (Vazopressin) Görevleri</h3>
+        
+        <h4>Aldosteron (Tuz Koruyucu Hormon)</h4>
+        <ul>
+            <li>**Yer:** Adrenal korteks (Zona glomeruloza).</li>
+            <li>**Etki:** Böbreklerin toplayıcı tübüllerinde **Na+ reabsorpsiyonunu** artırır ve karşılığında **K+ ve H+ atılımını** artırır.</li>
+            <li>**Sonuç:** Sodyumu tutar, suyu pasif olarak takip ettirir. Kan hacmi ve basıncı **artar**, Potasyum düşer (Hipokalemi).</li>
+        </ul>
+
+        <h4>ADH (Antidiüretik Hormon / Vazopressin)</h4>
+        <ul>
+            <li>**Yer:** Hipotalamus üretir, Hipofiz (Arka) depolar.</li>
+            <li>**Tetikleyiciler:** Plazma **Ozmolalitesinin artması** (en güçlü) ve Kan Hacminin düşmesi.</li>
+            <li>**Etki:** Böbreklerin toplayıcı tübüllerine **Aquaporin-2** kanallarını yerleştirerek suyun geri emilimini artırır.</li>
+            <li>**Sonuç:** Sadece su tutulur, ozmolalite düşer. Yüksek dozda damar büzücü etki gösterir (Vazopressin adı buradan gelir).</li>
+        </ul>
+
         <div class="def-box">
-            <i class="fa-solid fa-vial"></i> <strong>Klinik Farmakoloji:</strong><br>
-            **ACE İnhibitörleri** (Örn: Enalapril): 4. adımı bloke eder, Anjiyotensin II oluşumunu engeller.<br>
-            **ARB'ler** (Örn: Losartan): Anjiyotensin II reseptörünü bloke eder, aktif hormonun etkisini gösterememesini sağlar.
+            <strong>⚠️ Sınav Tuzağı: ANP (Atriyal Natriüretik Peptit)</strong><br>
+            Yüksek kan hacmine (Özellikle Atriyumların aşırı gerilmesine) karşı salınır. RAAS'ın tam tersini yapar: Vazodilatasyon yapar ve böbrekten **Na+ ve su atılımını** artırır. Yani hacmi düşürür.
         </div>
 
         <div class="page-nav">
-            <a href="dolasim.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Bölüm 1: Akışın Fiziği</a>
-            <a href="dolasim3.html" class="nav-btn next">Bölüm 3: Baroreseptörler &rarr;</a>
+            <a href="dolasim.html" class="nav-btn prev">&larr; Bölüm 1: Akışın Temel Fiziği</a>
+            <a href="dolasim3.html" class="nav-btn next">Bölüm 3: Baroreseptörler ve Kardiyak Döngü &rarr;</a>
         </div>
     </main>
 
-</body>
+    </body>
 </html>
