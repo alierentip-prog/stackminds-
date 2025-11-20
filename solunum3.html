@@ -39,7 +39,7 @@
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
         .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
@@ -74,6 +74,11 @@
             <li><strong>Pnömotaksik Merkez (Pons):</strong> DRG'ye "Yeter!" sinyali gönderir. İnspirasyonu erkenden keserek solunum **hızını** artırır.</li>
         </ul>
 
+        <div class="logic-box">
+            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mantık: Solunum Ritim Kontrolü</span>
+            Solunum, bir açma/kapama sistemidir. DRG açma sinyalini yollar, Pnömotaksik merkez ise "Yeter" deyip kapatma süresini belirler.
+        </div>
+        
         <h2>2. Kimyasal Kontrol: Patron $CO_2$'dir</h2>
 
         <h3>A. Merkezi Kemoreseptörler (En Güçlü Kontrol)</h3>
