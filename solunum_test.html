@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ünite Testi | Solunum Fizyolojisi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --paper: #f8fafc; --ink: #0f172a; --blue-ink: #0369a1; --correct: #059669; --wrong: #dc2626; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 260px; background: #1e293b; color: #e2e8f0; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid #334155; }
+        .brand { font-weight: bold; font-size: 1.2rem; color: white; text-decoration: none; margin-bottom: 40px; }
+        .menu-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        .menu-item:hover { background: #334155; color: white; }
+        .menu-item.active { background: var(--blue-ink); color: white; font-weight: bold; }
+        .quiz-area { flex: 1; padding: 20px 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; }
+        .quiz-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .score-badge { background: #e0f2fe; color: var(--blue-ink); padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+        .question-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; animation: fadeIn 0.4s ease; }
+        .q-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
+        .options-grid { display: grid; gap: 12px; }
+        .option-btn { padding: 15px 20px; border: 2px solid #e2e8f0; background: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 1rem; transition: all 0.2s; position: relative; }
+        .option-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+        .option-btn.correct { border-color: var(--correct); background: #ecfdf5; color: var(--correct); font-weight: bold; }
+        .option-btn.wrong { border-color: var(--wrong); background: #fef2f2; color: var(--wrong); opacity: 0.7; }
+        .explanation-box { margin-top: 25px; padding: 20px; background: #f8fafc; border-left: 5px solid var(--blue-ink); border-radius: 4px; display: none; }
+        .btn-nav { background: var(--ink); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result-screen { text-align: center; display: none; padding-top: 50px; }
+        .final-score { font-size: 4rem; font-weight: 900; color: var(--blue-ink); }
+        @media (max-width: 768px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; flex-direction: row; padding: 15px; justify-content: space-between; } .brand { margin: 0; } .menu-item { display: none; } .quiz-area { padding: 20px; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Menü</a>
+        <a href="solunum.html" class="menu-item"><i class="fa-solid fa-book-open"></i> Konu 1</a>
+        <a href="solunum2.html" class="menu-item"><i class="fa-solid fa-wind"></i> Konu 2</a>
+        <a href="solunum3.html" class="menu-item"><i class="fa-solid fa-brain"></i> Konu 3</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+    <main class="quiz-area">
+        <div class="quiz-header" id="quizHeader">
+            <div><h2 style="margin:0;">Solunum Fizyolojisi Sınavı</h2><small>Bölüm: Mekanik, Gazlar ve Kontrol</small></div>
+            <div class="score-badge">Soru: <span id="currentQ">1</span> / <span id="totalQ">50</span></div>
+        </div>
+        <div id="quizContainer">
+            <div class="question-card">
+                <div class="q-text" id="questionText">Yükleniyor...</div>
+                <div class="options-grid" id="optionsArea"></div>
+                <div class="explanation-box" id="expBox"><span style="font-weight:bold; display:block; color:#64748b;">AÇIKLAMA:</span><span id="expText"></span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;"><button class="btn-nav" id="nextBtn" onclick="nextQuestion()" disabled>Sonraki &rarr;</button></div>
+        </div>
+        <div class="result-screen" id="resultScreen">
+            <h1>Sınav Tamamlandı!</h1>
+            <div class="final-score" id="finalScoreDisplay">0</div>
+            <p id="finalMessage" style="font-size:1.2rem; margin-top:20px;"></p>
+            <button class="btn-nav" onclick="location.reload()">Tekrar Dene ↻</button>
+        </div>
+    </main>
+        <script>
+        const questions = [
+            { q: "Spirometre ile ölçülemeyen akciğer hacmi hangisidir?", opt: ["Tidal Hacim (TV)", "İnspiratuvar Yedek Hacim (IRV)", "Rezidüel Hacim (RV)", "Vital Kapasite (VC)"], correct: 2, exp: "Rezidüel hacim, en zorlu nefes vermede bile içeride kalan havadır. Dışarı çıkmadığı için spirometre ölçemez." },
+            { q: "Normal solunumda (İnspirasyon) intraplevra basıncı nasıl değişir?", opt: ["Pozitifleşir", "Daha negatif olur (-5'ten -7.5 cmH2O)", "Değişmez", "Sıfıra eşitlenir"], correct: 1, exp: "Göğüs kafesi genişledikçe akciğeri dışa çeken vakum (negatif basınç) artar." },
+            { q: "Alveollerde yüzey gerilimini azaltarak kollapsı (sönmeyi) engelleyen madde nedir?", opt: ["Mukus", "Sürfaktan", "Plazma", "Histamin"], correct: 1, exp: "Tip II pnimositlerden salgılanan sürfaktan, yüzey gerilimini düşürür (Laplace Yasası) ve küçük alveollerin açık kalmasını sağlar." },
+            { q: "Hemoglobinin oksijene afinitesini azaltan (Eğriyi SAĞA kaydıran) faktör hangisidir?", opt: ["pH artışı (Alkaloz)", "Sıcaklık düşüşü", "CO2 artışı ve Asidoz (Bohr Etkisi)", "HbF varlığı"], correct: 2, exp: "Dokular çalışınca asit ve CO2 üretir. Bu da Hb'nin oksijeni bırakmasını (sağa kayma) kolaylaştırır." },
+            { q: "Kanda Karbondioksit ($CO_2$) en çok hangi formda taşınır?", opt: ["Çözünmüş halde", "Hemoglobine bağlı (Karbamino)", "Bikarbonat ($HCO_3^-$) iyonu olarak", "Plazma proteinlerine bağlı"], correct: 2, exp: "%70 oranında bikarbonat olarak taşınır." },
+            { q: "Solunumun temel ritmini başlatan merkez neresidir?", opt: ["Pnömotaksik merkez", "Dorsal Solunum Grubu (DRG)", "Ventral Solunum Grubu (VRG)", "Korteks"], correct: 1, exp: "Medulla'daki DRG, 'İnspiratuvar Rampa Sinyali'ni oluşturarak ritmik nefes almayı sağlar." },
+            { q: "Hering-Breuer refleksi ne işe yarar?", opt: ["Nefes almayı başlatır", "Akciğer aşırı şişerse inspirasyonu durdurur (Koruyucu)", "Öksürük refleksidir", "Oksijen düşünce devreye girer"], correct: 1, exp: "Aşırı şişmeyi önlemek için Vagus yoluyla inspirasyonu keser." },
+            { q: "KOAH hastalarında solunumu sürdüren ana uyarı (Drive) nedir?", opt: ["Yüksek CO2", "Düşük O2 (Hipoksik Drive)", "Yüksek pH", "Ağrı"], correct: 1, exp: "Merkezi reseptörler kronik yüksek CO2'ye alıştığı için, solunum periferik reseptörlerin O2 duyarlılığına kalır." },
+            { q: "Anatomik Ölü Boşluk normalde yaklaşık ne kadardır?", opt: ["50 ml", "150 ml", "350 ml", "500 ml"], correct: 1, exp: "Gaz değişimine katılmayan iletici hava yolları (Burun, trakea, bronşlar) hacmidir." },
+            { q: "Obstrüktif akciğer hastalıklarında (Astım, KOAH) FEV1/FVC oranı nasıl değişir?", opt: ["Artar (>%90)", "Normal kalır", "Azalır (<%70)", "Değişmez"], correct: 2, exp: "Hava yolları daraldığı için 1 saniyede üflenen hava (FEV1) ciddi oranda düşer." },
+            { q: "Periferik kemoreseptörler (Karotis/Aort) neye en çok duyarlıdır?", opt: ["Arteriyel PO2 düşüşüne (<60 mmHg)", "Venöz PCO2", "pH artışına", "Hemoglobin miktarına"], correct: 0, exp: "Sadece oksijen ciddi oranda düştüğünde devreye giren 'Acil Durum' sistemidir." },
+            { q: "Vital Kapasite (VC) formülü nedir?", opt: ["TV + IRV", "TV + IRV + ERV", "TLC - RV", "Hepsi doğru"], correct: 3, exp: "Maksimum nefes alıp maksimum verme hacmidir." },
+            { q: "Fizyolojik ölü boşluk ne zaman artar?", opt: ["Egzersizde", "Pulmoner Emboli'de (Kanlanmayan alveol)", "Yatarken", "Derin nefesle"], correct: 1, exp: "Alveol var ama kan yoksa gaz değişimi olmaz. Buna alveoler ölü boşluk denir." },
+            { q: "Sürfaktan eksikliğinde (Yenidoğan RDS) akciğerlerde ne olur?", opt: ["Aşırı genişleme", "Ateletazi (Kollaps) ve sertleşme", "Mukus artışı", "Kanama"], correct: 1, exp: "Yüzey gerilimi artar, alveoller söner, akciğeri şişirmek çok zorlaşır (Compliance azalır)." },
+            { q: "Haldane Etkisi neyi açıklar?", opt: ["O2'nin Hb'ye bağlanmasını", "O2 ayrılınca Hb'nin CO2 taşıma kapasitesinin artmasını", "pH'ın O2'ye etkisini", "Sıcaklık etkisini"], correct: 1, exp: "Dokuda O2 bırakan Hb, proton ve CO2'yi daha iyi bağlar." },
+            { q: "Deniz seviyesinden yükseğe çıkıldığında (Düşük PO2) solunum neden artar?", opt: ["Merkezi kemoreseptörler uyarılır", "Periferik kemoreseptörler (Hipoksi) uyarılır", "CO2 artar", "Akciğer genişler"], correct: 1, exp: "Atmosferik oksijen düşünce kandaki PO2 düşer ve karotid cisimcisikleri uyarır." },
+            { q: "Karbonmonoksit (CO) zehirlenmesinde neden siyanoz (morarma) görülmez?", opt: ["CO renksizdir", "Hb-CO bileşiği kiraz kırmızısı renktedir", "Oksijen normaldir", "Kan akımı durur"], correct: 1, exp: "CO hemoglobine oksijenden 200 kat daha sıkı bağlanır ama kanın rengini parlak kırmızı yapar." },
+            { q: "Pnömotaksik merkez (Pons) ne işe yarar?", opt: ["Nefes almayı başlatır", "İnspirasyonu sonlandırarak (Switch-off) solunum hızını ayarlar", "Ekspirasyonu başlatır", "Öksürük yaratır"], correct: 1, exp: "Derin nefes almayı sınırlar, böylece solunum sayısını artırır." },
+            { q: "Alveolar Ventilasyon formülü nedir?", opt: ["Tidal Hacim x Hız", "(Tidal Hacim - Ölü Boşluk) x Hız", "Vital Kapasite / Hız", "IRV + ERV"], correct: 1, exp: "Sadece alveole ulaşan temiz hava gaz değişimine katılır." },
+            { q: "Ventral Solunum Grubu (VRG) ne zaman aktiftir?", opt: ["Sakin solunumda", "Uykuda", "Zorlu solunumda (Egzersiz)", "Hiçbir zaman"], correct: 2, exp: "Normalde pasiftir. Egzersizde ekspirasyon kaslarını da devreye sokar." },
+            { q: "Difüzyon kapasitesini (DLCO) azaltan hastalık hangisidir?", opt: ["Astım", "Pulmoner Fibrozis", "Bronşit", "Obezite"], correct: 1, exp: "Fibroziste alveol duvarı kalınlaşır, gazın geçiş yolu uzar ve zorlaşır." },
+            { q: "Hemoglobinin oksijen satürasyonu %90 olduğunda PO2 yaklaşık kaçtır?", opt: ["40 mmHg", "60 mmHg", "80 mmHg", "100 mmHg"], correct: 1, exp: "60 mmHg kritik sınırdır (Eğrinin dikleştiği yer)." },
+            { q: "2,3-DPG artışı oksijen eğrisini ne yapar?", opt: ["Sola kaydırır", "Sağa kaydırır (O2 bırakılır)", "Etkilemez", "Düzleştirir"], correct: 1, exp: "Hipoksi veya yüksek irtifada artar, dokuya oksijen sunumunu kolaylaştırır." },
+            { q: "Siyanöz (Morarma) ne zaman görülür?", opt: ["Her türlü hipokside", "İndirgenmiş (Oksijensiz) Hb > 5 g/dL olduğunda", "Anemide", "CO zehirlenmesinde"], correct: 1, exp: "Anemide Hb az olduğu için 5 grama ulaşamaz ve siyanöz görülmez (Solukluk görülür)." },
+            { q: "Akciğerlerin tepesi (Apex) ile tabanı (Base) arasındaki ventilasyon farkı nasıldır?", opt: ["Tepe daha iyi havalanır", "Taban daha iyi havalanır", "Eşittir", "Taban hiç havalanmaz"], correct: 1, exp: "Yerçekimi nedeniyle tabandaki alveoller daha sönüktür (daha az gergin) ve açılmaya (hava almaya) daha müsaittirler (Compliance yüksek)." },
+            { q: "Solunum işinin (Work of Breathing) en çok arttığı durum?", opt: ["Sakin solunum", "Yüksek compliance", "Restriktif ve Obstrüktif hastalıklar", "Uyku"], correct: 2, exp: "Akciğer sertse (Restriktif) veya yol darsa (Obstrüktif) kaslar aşırı çalışır." },
+            { q: "Kan-Beyin Bariyerini en hızlı geçen madde hangisidir?", opt: ["H+ iyonu", "HCO3-", "CO2", "O2"], correct: 2, exp: "CO2 yağda erir ve bariyeri hızla geçer. H+ geçemez. Bu yüzden CO2 artışı merkezi kemoreseptörü uyarır." },
+            { q: "Hipoksik vazokonstriksiyon nerede görülür?", opt: ["Beyin damarlarında", "Kalp damarlarında", "Akciğer damarlarında", "Deri damarlarında"], correct: 2, exp: "Akciğerde oksijen azsa damar büzülür! Amaç kanı oksijenin bol olduğu sağlam alveollere yönlendirmektir (Şantı önlemek)." },
+            { q: "Metabolik asidozda (Örn: Diyabetik ketoasidoz) solunum nasıl değişir?", opt: ["Yavaşlar", "Derin ve hızlı olur (Kussmaul)", "Değişmez", "Durur"], correct: 1, exp: "Vücut asitten kurtulmak için CO2'yi üfleyerek atmaya çalışır (Kompanzasyon)." },
+            { q: "Total Akciğer Kapasitesi (TLC) formülü?", opt: ["VC + RV", "TV + IRV", "FRC + TV", "IC + ERV"], correct: 0, exp: "Akciğerin alabileceği maksimum hava miktarıdır." },
+            { q: "Normal V/Q (Ventilasyon/Perfüzyon) oranı kaçtır?", opt: ["0.1", "0.8", "1.0", "5.0"], correct: 1, exp: "Alveoler ventilasyon (~4 L) / Kalp debisi (~5 L) = 0.8." },
+            { q: "Fonksiyonel Rezidüel Kapasite (FRC) nedir?", opt: ["Maksimum nefes sonrası kalan", "Normal nefes verdikten sonra içeride kalan hava (ERV + RV)", "Tidal hacim", "Ölü boşluk"], correct: 1, exp: "Dinlenme halindeki denge noktasıdır." },
+            { q: "Şant (Shunt) durumunda V/Q oranı nasıldır?", opt: ["Sıfır (0)", "Sonsuz", "Normal", "1"], correct: 0, exp: "Hava yolu tıkalı (V=0), kan akıyor. V/Q = 0." },
+            { q: "Ölü boşluk solunumunda V/Q oranı nasıldır?", opt: ["Sıfır", "Sonsuz", "0.8", "0.5"], correct: 1, exp: "Kan akımı yok (Q=0), hava var. V/Q = Sonsuz (Emboli)." },
+            { q: "Bohr etkisi hangisi için geçerlidir?", opt: ["O2 taşınması", "CO2 taşınması", "N2 taşınması", "H+ atılımı"], correct: 0, exp: "Asit ve CO2'nin Hb'nin O2 ilgisini azaltmasıdır." },
+            { q: "Bikarbonat ($HCO_3^-$) eritrositten plazmaya çıkarken içeri ne girer?", opt: ["Na+", "K+", "Cl- (Klor kayması)", "Ca++"], correct: 2, exp: "Elektriksel dengeyi sağlamak için Klor içeri girer (Hamburger fenomeni)." },
+            { q: "Uyku apnesinde görülen solunum tipi?", opt: ["Cheyne-Stokes", "Obstrüktif (Tıkanma)", "Kussmaul", "Biot"], correct: 1, exp: "Üst hava yolları çökerek nefesi keser." },
+            { q: "Surfaktan üreten hücre?", opt: ["Tip I Pnimosit", "Tip II Pnimosit", "Makrofaj", "Goblet"], correct: 1, exp: "Tip II hücreler üretir." },
+            { q: "Restriktif akciğer hastalığında (Örn: Fibrozis) ne azalır?", opt: ["Sadece FEV1", "Tüm hacimler (TLC, VC, RV)", "Hava yolu direnci", "Sürfaktan"], correct: 1, exp: "Akciğer 'küçülür' ve sertleşir. Kapasiteler düşer." },
+            { q: "Oksijenin difüzyon hızı CO2'ye göre nasıldır?", opt: ["Daha hızlıdır", "20 kat daha yavaştır", "Eşittir", "Bilinmez"], correct: 1, exp: "CO2 suda çok çözündüğü için O2'den 20 kat hızlı yayılır." },
+            { q: "Yüksek irtifada uzun süre kalınca vücut nasıl adapte olur?", opt: ["Solunumu yavaşlatır", "Eritropoietin (EPO) artar, polisitemi olur", "Kalp yavaşlar", "Doku damarları azalır"], correct: 1, exp: "Oksijen azlığına karşı kan hücresi sayısı artırılır." },
+            { q: "Dalış sırasında vurgun (Dekompresyon) hastalığına neden olan gaz?", opt: ["O2", "CO2", "Azot (Nitrojen)", "Helyum"], correct: 2, exp: "Basınçla kanda çözünen Azot, hızlı çıkışta kabarcıklaşır." },
+            { q: "Akciğerin elastikiyetinin (Recoil) kaybolduğu hastalık?", opt: ["Fibrozis", "Amfizem", "Astım", "Pnömoni"], correct: 1, exp: "Amfizemli akciğer, lastiği gevşemiş çorap gibidir. Hava içeride hapsolur." },
+            { q: "Hangisi solunum merkezini inhibe eder (yavaşlatır)?", opt: ["Korteks", "Ağrı", "Hering-Breuer refleksi", "Adrenalin"], correct: 2, exp: "Aşırı şişmeyi önlemek için durdurur." },
+            { q: "Oksihemoglobin eğrisinin 'Sola' kayması ne demektir?", opt: ["Oksijen kolay bırakılır", "Hb oksijene sıkıca yapışır (Bırakmaz)", "Afinite azalır", "Sıcaklık artmıştır"], correct: 1, exp: "Akciğerde (soğuk, düşük CO2) sola kayar ki oksijeni kapsın." },
+            { q: "Siyanid zehirlenmesi ne tür bir hipoksidir?", opt: ["Hipoksik", "Anemik", "Durgun", "Histotoksik"], correct: 3, exp: "Oksijen vardır ama hücre (mitokondri) onu kullanamaz." },
+            { q: "Normal solunum sayısı (Yetişkin)?", opt: ["8-10", "12-20", "25-30", "40+"], correct: 1, exp: "12-20/dk normaldir." },
+            { q: "Hangisi inspirasyon kasıdır?", opt: ["İç interkostal", "Karın kasları", "Diyafram ve Dış interkostal", "Hiçbiri"], correct: 2, exp: "Diyafram ana kastır." },
+            { q: "Transpulmoner basınç nedir?", opt: ["Alveol - Plevra basıncı farkı", "Ağız - Alveol farkı", "Atmosfer farkı", "Karın farkı"], correct: 0, exp: "Akciğeri açık (şişik) tutan basınçtır." },
+            { q: "Solunum sisteminin ana tamponu hangisidir?", opt: ["Fosfat", "Protein", "Bikarbonat", "Amonyak"], correct: 2, exp: "CO2-Bikarbonat sistemi en hızlı ve etkili tampondur." }
+        ];
+        </script>
+            <script>
+        let qIdx = 0; let score = 0;
+        const qArea = document.getElementById('optionsArea');
+        const qTxt = document.getElementById('questionText');
+        const expBox = document.getElementById('expBox');
+
+        function loadQ() {
+            const q = questions[qIdx];
+            qTxt.innerHTML = (qIdx+1) + ". " + q.q;
+            qArea.innerHTML = '';
+            expBox.style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('currentQ').innerText = qIdx+1;
+
+            q.opt.forEach((o, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = o;
+                btn.onclick = () => check(i, btn, q);
+                qArea.appendChild(btn);
+            });
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function check(i, btn, q) {
+            const btns = qArea.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            if(i === q.correct) { btn.classList.add('correct'); score++; }
+            else { btn.classList.add('wrong'); btns[q.correct].classList.add('correct'); }
+            
+            document.getElementById('expText').innerHTML = q.exp;
+            expBox.style.display = 'block';
+            document.getElementById('nextBtn').disabled = false;
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function nextQuestion() {
+            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
+            else {
+                document.getElementById('quizContainer').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                document.getElementById('finalScoreDisplay').innerText = score + " / 50";
+                let msg = score >= 40 ? "Tebrikler Doktor! Solunum ustası oldun." : score >= 25 ? "İdare eder. Biraz daha tekrar lazım." : "Kaldın. Guyton seni bekler.";
+                document.getElementById('finalMessage').innerText = msg;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>
