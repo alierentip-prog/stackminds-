@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalp Anatomisi | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #18181b; --text: #e4e4e7; --accent: #f43f5e; --panel: #27272a; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; }
+        .sidebar { width: 250px; background: #000; padding: 20px; border-right: 1px solid #333; height: 100vh; position: fixed; overflow-y: auto; }
+        .content { margin-left: 250px; padding: 40px; max-width: 800px; }
+        .menu-link { display: block; color: #a1a1aa; text-decoration: none; padding: 10px; margin-bottom: 5px; border-radius: 5px; }
+        .menu-link:hover, .menu-link.active { background: #333; color: white; font-weight: bold; }
+        h1 { color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .spot-card { background: var(--panel); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #3f3f46; }
+        .spot-title { color: #3b82f6; font-weight: bold; display: block; margin-bottom: 5px; font-size: 1.1rem; }
+        .nav-btn { float: right; background: var(--accent); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 30px; }
+        @media (max-width: 768px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="anatomi.html" style="color:white; font-weight:bold; text-decoration:none; font-size:1.2rem;">&larr; Atlas Menü</a>
+        <hr style="border-color:#333; margin:20px 0;">
+        <a href="anatomi_toraks.html" class="menu-link">1. Toraks Duvarı</a>
+        <a href="anatomi_diyafram.html" class="menu-link">2. Diyafram & Mediastinum</a>
+        <a href="anatomi_kalp.html" class="menu-link active">3. Kalp (Cor)</a>
+        <a href="anatomi_damar.html" class="menu-link">4. Damarlar</a>
+        <a href="anatomi_burun.html" class="menu-link">5. Burun & Sinüs</a>
+        <a href="anatomi_lenf.html" class="menu-link">6. Lenfatik Sistem</a>
+    </nav>
+
+    <div class="content">
+        <h1>Kalp Anatomisi (Cor)</h1>
+        
+        <h3>1. Odacıkların Özellikleri</h3>
+        <div class="spot-card">
+            <span class="spot-title">Sağ Atriyum</span>
+            <ul>
+                <li><strong>Fossa Ovalis:</strong> Fetal hayattaki Foramen Ovale'nin kapanmış izi.</li>
+                <li><strong>Sinus Coronarius:</strong> Kalbin kendi venöz kanının döküldüğü delik.</li>
+                <li><strong>Crista Terminalis:</strong> SA Düğüm bunun üst ucundadır.</li>
+            </ul>
+        </div>
+        <div class="spot-card">
+            <span class="spot-title">Sol Ventrikül</span>
+            Duvarı sağ ventrikülden 3 kat daha kalındır. Sistematik dolaşımı besler. Kalbin tepesini (Apex Cordis) oluşturur.
+        </div>
+
+        <h3>2. Koroner Arterler (Beslenme)</h3>
+        <p>Aorta Ascendens'ten çıkarlar. Kalbi diyastolde beslerler.</p>
+        <ul>
+            <li><strong>Sağ Koroner (RCA):</strong> SA ve AV düğümü besler (%70). Tıkanırsa bradikardi/blok olur. İnferior MI nedenidir.</li>
+            <li><strong>Sol Koroner (LCA):</strong>
+                <ul>
+                    <li><strong>LAD (Ön İnen):</strong> "Dul Bırakan". Septumu ve ön duvarı besler. En sık tıkanandır.</li>
+                    <li><strong>Circumflex (CX):</strong> Kalbin sol yanını ve arkasını dolanır.</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h3>3. Kapaklar ve Oskültasyon (Dinleme)</h3>
+        <table style="width:100%; color:#d4d4d8; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #52525b;"><th>Kapak</th><th>Yer</th></tr>
+            <tr><td>Mitral</td><td>5. interkostal aralık, orta hat (Apeks)</td></tr>
+            <tr><td>Triküspit</td><td>4-5. aralık, sternum solu</td></tr>
+            <tr><td>Aort</td><td>2. aralık, sternum sağı</td></tr>
+            <tr><td>Pulmoner</td><td>2. aralık, sternum solu</td></tr>
+        </table>
+
+        <a href="anatomi_damar.html" class="nav-btn">İleri: Damarlar &rarr;</a>
+    </div>
+</body>
+</html>
