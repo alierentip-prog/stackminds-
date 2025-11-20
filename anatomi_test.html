@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomi Sınavı | Stackminds</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --bg: #18181b; --panel: #27272a; --text: #e4e4e7; --green: #10b981; --red: #ef4444; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+
+        .sidebar { width: 250px; background: #000; padding: 20px; border-right: 1px solid #333; display: flex; flex-direction: column; }
+        .main-area { flex: 1; padding: 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; }
+
+        .question-card { background: var(--panel); padding: 30px; border-radius: 15px; border: 1px solid #3f3f46; margin-bottom: 20px; }
+        .q-text { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; color: #fff; }
+        
+        .options { display: grid; gap: 10px; }
+        .opt-btn { 
+            padding: 15px; background: #3f3f46; border: none; border-radius: 8px; color: #d4d4d8; 
+            text-align: left; cursor: pointer; transition: 0.2s; font-size: 0.95rem;
+        }
+        .opt-btn:hover { background: #52525b; color: white; }
+        .opt-btn.correct { background: var(--green); color: black; font-weight: bold; }
+        .opt-btn.wrong { background: var(--red); color: white; opacity: 0.6; }
+
+        .exp-box { background: #3f3f46; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; border-left: 4px solid var(--green); }
+        
+        .nav-btn { margin-top: 20px; padding: 10px 25px; background: #2563eb; color: white; border: none; border-radius: 5px; cursor: pointer; float: right; }
+        .nav-btn:disabled { background: #52525b; cursor: not-allowed; }
+
+        .result-screen { text-align: center; padding-top: 50px; display: none; }
+        .score-display { font-size: 4rem; font-weight: bold; color: var(--green); }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h3 style="color:#f43f5e;">ANATOMİ</h3>
+        <p>Soru: <span id="qNum">1</span> / 40</p>
+        <a href="anatomi.html" style="color:#a1a1aa; text-decoration:none; margin-top:auto;">&larr; Çıkış</a>
+    </div>
+
+    <div class="main-area">
+        <div id="quizContainer">
+            <div class="question-card">
+                <div class="q-text" id="questionText">Yükleniyor...</div>
+                <div class="options" id="optionsArea"></div>
+                <div class="exp-box" id="expBox"></div>
+            </div>
+            <button class="nav-btn" id="nextBtn" onclick="nextQ()" disabled>Sonraki Soru</button>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h2>Sınav Bitti</h2>
+            <div class="score-display" id="finalScore"></div>
+            <p id="finalMsg"></p>
+            <button class="nav-btn" onclick="location.reload()">Tekrar Dene</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // --- KALP (COR) ---
+            { q: "Kalbin apeksi (Apex Cordis) hangi seviyede bulunur?", opt: ["Sol 3. interkostal aralık", "Sol 5. interkostal aralık, midklaviküler hat", "4. kosta seviyesi", "Sternumun hemen arkası"], correct: 1, exp: "Kalbin tepesi (Apex), sol meme ucu hizasında, 5. aralıkta ele gelir." },
+            { q: "SA Düğüm ve AV Düğümün ana besleyici damarı hangisidir?", opt: ["A. Coronaria Sinistra (LCA)", "Circumflex Arter", "A. Coronaria Dextra (RCA)", "LAD"], correct: 2, exp: "RCA, vakaların %70'inde SA ve AV düğümü besler. Tıkanırsa bloklar oluşur." },
+            { q: "Kalbin venöz kanının %60'ını toplayıp sağ atriyuma döken ana yapı hangisidir?", opt: ["Vena Cava Superior", "Sinus Coronarius", "Vena Cava Inferior", "Vena Azygos"], correct: 1, exp: "Sinus coronarius, kalbin arkasında bulunan ve venleri toplayan genişlemiş bir yapıdır." },
+            { q: "Fossa Ovalis kalbin hangi odacığında bulunur?", opt: ["Sağ Ventrikül", "Sol Atriyum", "Sağ Atriyum (Septum interatriale)", "Sol Ventrikül"], correct: 2, exp: "Fetal hayattaki Foramen Ovale'nin kapanmış izidir, sağ atriyumdadır." },
+            { q: "En sık tıkanan ve 'Dul Bırakan' (Widow Maker) olarak bilinen koroner arter hangisidir?", opt: ["RCA", "LAD (R. Interventricularis Ant.)", "Circumflex", "Marginal Arter"], correct: 1, exp: "Sol ventrikülün ön yüzünü besler, tıkanıklığı ölümcüldür." },
+            { q: "Triküspit kapak en iyi nerede dinlenir?", opt: ["2. sağ aralık", "Apeks", "Sternum solu 4-5. aralık", "2. sol aralık"], correct: 2, exp: "Sağ ventrikül sternumun arkasında olduğu için kapak sesi sternum kenarından duyulur." },
+            
+            // --- TORAKS & DİYAFRAM ---
+            { q: "Angulus Sterni (Ludwig açısı) hangi seviyededir?", opt: ["T2", "T4-T5", "T7", "T9"], correct: 1, exp: "2. kostanın yapıştığı yerdir. Toraks anatomisinin en önemli nirengi noktasıdır." },
+            { q: "Vena Cava Inferior diyaframı hangi seviyede deler?", opt: ["T8", "T10", "T12", "L1"], correct: 0, exp: "Vena Cava en sağda ve en yukarıdadır (T8). (Ezber: 8-10-12 kuralı)." },
+            { q: "Hiatus Oesophagus'tan (T10) yemek borusu ile birlikte hangi sinir geçer?", opt: ["N. Phrenicus", "N. Vagus", "Duktus Torasikus", "V. Azygos"], correct: 1, exp: "Nervus Vagus, özofagusun etrafına sarılarak karına geçer." },
+            { q: "Hiatus Aorticus'tan (T12) aort ile birlikte ne geçer?", opt: ["Vena Cava", "Duktus Torasikus ve V. Azygos", "N. Vagus", "Özofagus"], correct: 1, exp: "Vücudun en büyük lenf damarı (Duktus Torasikus) buradan geçer." },
+            { q: "Torasentez (Sıvı alma) işlemi kostanın neresinden yapılır?", opt: ["Alt kenarından", "Üst kenarından", "Ortasından", "Fark etmez"], correct: 1, exp: "Kostanın ALT kenarında damar-sinir paketi (VAN) bulunur. Oraya girmemek için alttaki kostanın ÜSTÜNDEN girilir." },
+
+            // --- DAMARLAR & FETAL ---
+            { q: "Fetal dolaşımda en temiz (oksijenli) kan nerede bulunur?", opt: ["Aorta", "Vena Cava Inferior", "Vena Umbilicalis", "Pulmoner Arter"], correct: 2, exp: "Plesantadan gelen kan V. Umbilicalis ile bebeğe girer." },
+            { q: "Duktus Venosus fetal hayatta kanı nereye yönlendirir?", opt: ["Sağ atriyumdan sola", "Pulmoner arterden aorta", "V. Umbilicalis'ten V. Cava Inferior'a (Karaciğeri atlayarak)", "Aorttan pulmonere"], correct: 2, exp: "Temiz kanın karaciğerde harcanmadan kalbe gitmesini sağlar." },
+            { q: "Vena Portae Hepatis hangi damarların birleşmesiyle oluşur?", opt: ["V. Mesenterica Sup. + V. Splenica", "V. Renalis + V. Cava", "V. Hepatica + V. Portae", "V. Iliaca + V. Cava"], correct: 0, exp: "Bağırsak (SMV) ve Dalak (Splenica) venleri birleşip karaciğere giren kapı venini oluşturur." },
+            { q: "Arcus Aorta'dan çıkan ilk dal hangisidir?", opt: ["A. Subclavia Sinistra", "Truncus Brachiocephalicus", "A. Carotis Comm. Sinistra", "Koroner Arter"], correct: 1, exp: "Sağ tarafa giden kütük (Truncus) ilk çıkar." },
+            { q: "Ligamentum Arteriosum neyin kalıntısıdır?", opt: ["Duktus Venosus", "Foramen Ovale", "Duktus Arteriosus", "Vena Umbilicalis"], correct: 2, exp: "Fetal hayatta akciğeri bypass eden damarın (D. Arteriosus) doğum sonrası kapanmış halidir." },
+
+            // --- BURUN & SİNÜS ---
+            { q: "Sinus Maxillaris nereye açılır (drene olur)?", opt: ["Meatus Nasi Superior", "Meatus Nasi Medius", "Meatus Nasi Inferior", "Koana"], correct: 1, exp: "Meatus Medius en kalabalık yerdir; Frontal ve Maksiller sinüsler buraya dökülür." },
+            { q: "Gözyaşı kanalı (Ductus Nasolacrimalis) nereye açılır?", opt: ["Meatus Nasi Superior", "Meatus Nasi Medius", "Meatus Nasi Inferior", "Burun sırtı"], correct: 2, exp: "Ağlayınca burnumuzun akmasının sebebi budur. En alta (Inferior) açılır." },
+            { q: "Burun kanamalarının en sık görüldüğü bölge (Kiesselbach Pleksusu) nerededir?", opt: ["Septumun ön-alt kısmı", "Konkaların arkası", "Sinüs içi", "Burun kökü"], correct: 0, exp: "Little alanı olarak da bilinir. 4 damarın birleştiği yerdir." },
+            { q: "Hangi sinüsün iltihabı (Sinüzit) anatomik konumu nedeniyle göze ve beyne yayılma riski taşır?", opt: ["Maksiller", "Frontal", "Etmoid", "Sfenoid"], correct: 2, exp: "Etmoid sinüsler göz çukuru ile sadece ince bir kemikle (Lamina papyracea) ayrılır." },
+
+            // --- LENFATİK ---
+            { q: "Ductus Thoracicus vücudun neresinin lenfini toplamaz?", opt: ["Sol bacak", "Karın", "Sağ üst kadran (Sağ baş, kol, göğüs)", "Sol kol"], correct: 2, exp: "Vücudun sağ üst çeyreği hariç her yeri toplar. Sağ üstü 'Ductus Lymphaticus Dexter' toplar." },
+            { q: "Duktus Torasikus nereye dökülür?", opt: ["Sağ venöz açı", "Sol venöz açı (V. Jug. Int + Subclavia birleşimi)", "Vena Cava Inferior", "Aorta"], correct: 1, exp: "Sol taraftan venöz sisteme katılır." },
+            { q: "Cisterna Chyli hangi seviyede bulunur?", opt: ["T4", "T12-L2", "C7", "S1"], correct: 1, exp: "Karındaki lenflerin toplandığı kese şeklindeki başlangıç noktasıdır." },
+
+            // --- KARIŞIK VE DETAY ---
+            { q: "Perikardiyosentez (Kalp zarı sıvısını boşaltma) nereden yapılır?", opt: ["2. kosta", "Apeks", "Larrey açısı (Ksifoid sol tarafı)", "Sırt"], correct: 2, exp: "Kalbe ve akciğere zarar vermemek için ksifoidin hemen solundan yukarı doğru girilir." },
+            { q: "Vena Azygos nereye dökülür?", opt: ["Vena Cava Inferior", "Vena Cava Superior", "Vena Portae", "Vena Renalis"], correct: 1, exp: "Arkadan gelip Vena Cava Superior'a arkadan kanca atarak dökülür." },
+            { q: "Hangi damar 'Sinsilla' (Karotis Cisimciği) içerir ve kemoreseptördür?", opt: ["A. Carotis Interna başlangıcı", "Aorta Abdominalis", "A. Radialis", "Vena Jugularis"], correct: 0, exp: "Karotis bifurkasyonunda tansiyon ve oksijen ölçen reseptörler vardır." },
+            { q: "Sol akciğerde kaç lob vardır?", opt: ["1", "2", "3", "4"], correct: 1, exp: "Kalp olduğu için sol akciğer 2 lobludur (Superior, Inferior). Sağda 3 lob vardır." },
+            { q: "Trakea hangi seviyede ikiye ayrılır (Bifurcatio Tracheae)?", opt: ["C6", "T4-T5 (Angulus Sterni)", "T10", "L1"], correct: 1, exp: "Angulus sterni seviyesinde sağ ve sol ana bronşlara ayrılır." },
+            { q: "Hangi kapakçık 'Biküspit' (İki yapraklı) dir?", opt: ["Triküspit", "Mitral", "Aort", "Pulmoner"], correct: 1, exp: "Mitral kapak (Sol AV) iki yapraklıdır. Diğerleri üç yapraklıdır." },
+            { q: "Kalbin ileti sisteminde en yavaş iletim nerede olur?", opt: ["SA Düğüm", "AV Düğüm", "His Demeti", "Purkinje"], correct: 1, exp: "Ventriküllerin dolması için AV düğüm elektriği bekletir." },
+            
+            // --- 10 EKSTRA SORU (Tamamlamak için) ---
+            { q: "Plevra parietalis'in duyusunu hangi sinirler taşır?", opt: ["Sadece Otonom", "N. Phrenicus ve İnterkostal sinirler", "N. Vagus", "Hissizdir"], correct: 1, exp: "Parietal plevra ağrıya çok duyarlıdır." },
+            { q: "Yabancı cisim kaçması (Aspirasyon) en sık hangi bronşa olur?", opt: ["Sağ ana bronş", "Sol ana bronş", "Eşit", "Trakea"], correct: 0, exp: "Sağ ana bronş daha dik, daha geniş ve daha kısadır." },
+            { q: "Mediastinum posterius'ta hangisi BULUNMAZ?", opt: ["Özofagus", "Aorta Descendens", "Kalp", "V. Azygos"], correct: 2, exp: "Kalp Mediastinum Medium'dadır (Orta)." },
+            { q: "Wrisberg ve Santorini kanalları hangi organa aittir?", opt: ["Karaciğer", "Pankreas", "Dalak", "Böbrek"], correct: 1, exp: "Pankreasın boşaltım kanallarıdır (Major ve Minor)." },
+            { q: "Midenin venöz kanı direkt nereye gider?", opt: ["Vena Cava", "Portal Sistem", "Böbrek", "Akciğer"], correct: 1, exp: "Sindirim sistemi kanı önce karaciğere (Portal) uğrar." },
+            { q: "Glomus caroticum ne işe yarar?", opt: ["Tansiyon ölçer", "Oksijen/CO2 ölçer (Kemoreseptör)", "Sıcaklık ölçer", "Hormon salgılar"], correct: 1, exp: "Oksijen düşünce solunumu uyarır." },
+            { q: "A. Vertebralis hangi damarın dalıdır?", opt: ["A. Carotis Communis", "A. Subclavia", "Aorta", "Truncus"], correct: 1, exp: "Subclavian arterden çıkar, boyun omurlarının içinden beyne gider." },
+            { q: "Vena Saphena Magna nereye dökülür?", opt: ["V. Poplitea", "V. Femoralis", "V. Iliaca", "V. Cava"], correct: 1, exp: "Bacağın en büyük yüzeyel venidir, kasıkta V. Femoralis'e dökülür." },
+            { q: "Sirkulus Arteriosus Cerebri (Willis Poligonu) nerede bulunur?", opt: ["Kalp", "Beyin tabanı", "Karaciğer", "Böbrek"], correct: 1, exp: "Beyni besleyen arterlerin oluşturduğu anastomoz halkasıdır." },
+            { q: "Diafragma siniri (N. Phrenicus) hangi segmentlerden çıkar?", opt: ["C1-C2", "C3-C4-C5", "T1-T4", "T10"], correct: 1, exp: "'C3, 4, 5 keeps the diaphragm alive'." }
+        ];
+
+        let qIdx = 0; let score = 0;
+        const qTxt = document.getElementById('questionText');
+        const optArea = document.getElementById('optionsArea');
+        const expBox = document.getElementById('expBox');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function loadQ() {
+            const q = questions[qIdx];
+            qTxt.innerText = (qIdx+1) + ". " + q.q;
+            document.getElementById('qNum').innerText = qIdx+1;
+            optArea.innerHTML = '';
+            expBox.style.display = 'none';
+            nextBtn.disabled = true;
+
+            q.opt.forEach((o, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerText = o;
+                btn.onclick = () => check(i, btn, q);
+                optArea.appendChild(btn);
+            });
+        }
+
+        function check(i, btn, q) {
+            const all = optArea.querySelectorAll('button');
+            all.forEach(b => b.disabled = true);
+            
+            if(i === q.correct) { btn.classList.add('correct'); score++; }
+            else { btn.classList.add('wrong'); all[q.correct].classList.add('correct'); }
+            
+            expBox.innerHTML = "<strong>Açıklama:</strong> " + q.exp;
+            expBox.style.display = 'block';
+            nextBtn.disabled = false;
+        }
+
+        function nextQ() {
+            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
+            else {
+                document.getElementById('quizContainer').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                document.getElementById('finalScore').innerText = score + " / 40";
+                let msg = score >= 35 ? "Tebrikler! Anatomi canavarısın." : score >= 20 ? "İdare eder, tekrar yap." : "Kaldın. Atlası aç çalış.";
+                document.getElementById('finalMsg').innerText = msg;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>
