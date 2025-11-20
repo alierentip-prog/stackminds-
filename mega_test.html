@@ -218,66 +218,114 @@
             { t: "Solunum", q: "Solunum işinin %50'si neye harcanır?", opt: ["Doku direnci", "Hava yolu direnci ve Elastik güç", "Sürfaktan", "Kan akımı"], correct: 1, exp: "Akciğeri genişletmek enerji ister." }
         ];
 
-        let qIdx = 0; let score = 0;
+                ]; // SORU LİSTESİNİ KAPATAN PARANTEZ (BUNUN OLDUĞUNDAN EMİN OL)
+
+        // --- SINAV MOTORU (ÇALIŞTIRAN KOD) ---
+        let qIdx = 0; 
+        let score = 0;
+        
+        // Elementleri Seç
         const qArea = document.getElementById('optArea');
         const qTxt = document.getElementById('qText');
-        const expBox = document.getElementById('expArea');
+        const expArea = document.getElementById('expArea');
+        const nextBtn = document.getElementById('nextBtn');
+        const currQSpan = document.getElementById('currQ');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultScreen = document.getElementById('resultScreen');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const finalMsg = document.getElementById('finalMsg');
+        const examFooter = document.getElementById('examFooter');
 
+        // Soruyu Yükle
         function loadQ() {
             const q = questions[qIdx];
-            qTxt.innerHTML = (qIdx+1) + ". " + q.q;
+            qTxt.innerHTML = (qIdx + 1) + ". " + q.q;
+            currQSpan.innerText = qIdx + 1;
+            
+            // Alanı Temizle
             qArea.innerHTML = '';
-            expBox.style.display = 'none';
-            document.getElementById('nextBtn').disabled = true;
-            document.getElementById('currQ').innerText = qIdx+1;
+            expArea.style.display = 'none';
+            nextBtn.disabled = true;      // BUTONU KİLİTLE
+            nextBtn.style.opacity = "0.5"; // GRİ GÖRÜNSÜN
 
+            // Şıkları Oluştur
             q.opt.forEach((o, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerHTML = o;
-                btn.onclick = () => check(i, btn, q);
+                btn.onclick = () => check(i, btn, q); // Tıklayınca kontrol et
                 qArea.appendChild(btn);
             });
+
+            // Matematik sembollerini işle
             if(window.MathJax) MathJax.typeset();
         }
 
+        // Cevap Kontrolü
         function check(i, btn, q) {
-            const btns = qArea.querySelectorAll('button');
-            btns.forEach(b => b.disabled = true);
-            if(i === q.correct) { btn.classList.add('correct'); score++; }
-            else { btn.classList.add('wrong'); btns[q.correct].classList.add('correct'); }
+            // Tüm şıkları kilitle (Bir daha basamasın)
+            const allBtns = qArea.querySelectorAll('button');
+            allBtns.forEach(b => b.disabled = true);
+
+            // Doğru mu Yanlış mı?
+            if(i === q.correct) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                // Doğru olanı da göster
+                allBtns[q.correct].classList.add('correct');
+            }
             
-            document.getElementById('expArea').innerHTML = "<strong>Açıklama:</strong> " + q.exp;
-            expBox.style.display = 'block';
-            document.getElementById('nextBtn').disabled = false;
-            document.getElementById('scoreBadge').innerText = score + " Puan";
+            // Açıklamayı Göster
+            expArea.innerHTML = "<strong>AÇIKLAMA:</strong> " + q.exp;
+            expArea.style.display = 'block';
+
+            // BUTON KİLİDİNİ AÇ!
+            nextBtn.disabled = false;
+            nextBtn.style.opacity = "1";
+            nextBtn.style.cursor = "pointer";
+
             if(window.MathJax) MathJax.typeset();
         }
 
-        function nextQuestion() {
-            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
-            else {
-                document.getElementById('quizContainer').style.display = 'none';
-                document.getElementById('resultScreen').style.display = 'block';
-                document.getElementById('finalScore').innerText = score + "/200";
-                document.getElementById('finalPercent').innerText = Math.round((score/200)*100);
-                
-                let msg = "";
-                if(score >= 160) msg = "TEBRİKLER DOKTOR! BU KURULU PARÇALADIN.";
-                else if(score >= 120) msg = "İYİ İŞ. BİRAZ DAHA TEKRARLA EFSANE OLURSUN.";
-                else msg = "RİSKLİ BÖLGE. KONU ANLATIMLARINA DÖN.";
-                
-                document.getElementById('finalMsg').innerText = msg;
-                document.getElementById('examFooter').style.display = 'none';
+        // Sonraki Soruya Geç
+        function nextQ() {
+            if(qIdx < questions.length - 1) {
+                qIdx++;
+                loadQ();
+            } else {
+                finishExam();
             }
         }
 
-        // Geri gitme fonksiyonu (Basit)
+        // Önceki Soru (İsteğe bağlı)
         function prevQ() {
-            if(qIdx > 0) { qIdx--; loadQ(); }
+            if(qIdx > 0) {
+                qIdx--;
+                loadQ();
+            }
         }
 
+        // Sınavı Bitir
+        function finishExam() {
+            quizContainer.style.display = 'none';
+            examFooter.style.display = 'none';
+            document.querySelector('.exam-header').style.display = 'none';
+            
+            resultScreen.style.display = 'block';
+            finalScoreDisplay.innerText = score;
+            
+            // Mesaj
+            let ratio = (score / questions.length) * 100;
+            if(ratio > 80) finalMsg.innerText = "TEBRİKLER! DERECE YAPARSIN.";
+            else if(ratio > 50) finalMsg.innerText = "GEÇTİN. AMA TEKRAR LAZIM.";
+            else finalMsg.innerText = "KALDIN. ÇALIŞMAYA DEVAM.";
+        }
+
+        // SİSTEMİ BAŞLAT
         loadQ();
+
     </script>
 </body>
 </html>
