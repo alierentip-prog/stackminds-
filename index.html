@@ -6,11 +6,17 @@
     <title>Stackminds | Tıp Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- ANA TEMA --- */
+        /* --- FERAH MEDİKAL TEMA --- */
         :root {
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-dark: #1e293b;
+            --bg-color: #f8fafc;      /* Kırık Beyaz Zemin */
+            --card-bg: #ffffff;       /* Tam Beyaz Kartlar */
+            --primary: #0284c7;       /* Medikal Mavi */
+            --accent: #ef4444;        /* Arter Kırmızısı */
+            --green: #059669;         /* Solunum Yeşili */
+            --micro: #8b5cf6;         /* Mikrobiyoloji Moru */
+            --gold: #eab308;          /* Sınav Sarısı */
+            --dark: #0f172a;          /* Mega Sınav Siyahı */
+            --text-dark: #334155;     
             --text-light: #64748b;
             --shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
@@ -25,20 +31,24 @@
         /* --- HERO (ÜST KISIM) --- */
         header {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            padding: 80px 20px;
+            padding: 60px 20px;
             text-align: center;
             color: white;
-            border-bottom: 4px solid #3b82f6;
+            border-bottom: 4px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
-        h1 { font-size: 3rem; margin: 0; letter-spacing: -1px; }
-        .subtitle { font-size: 1.2rem; color: #94a3b8; margin-top: 10px; font-weight: 300; }
-        .stats { margin-top: 20px; font-size: 0.9rem; color: #60a5fa; font-weight: bold; letter-spacing: 1px; }
+        h1 { font-size: 2.8rem; margin: 0; letter-spacing: -1px; font-weight: 800; }
+        .subtitle { font-size: 1.1rem; color: #94a3b8; margin-top: 10px; font-weight: 300; }
+        .stats { 
+            margin-top: 20px; font-size: 0.85rem; color: var(--primary); font-weight: bold; letter-spacing: 1px;
+            background: rgba(255,255,255,0.05); display: inline-block; padding: 5px 15px; border-radius: 20px;
+        }
 
         /* --- KONTEYNER --- */
         .container {
             max-width: 1200px;
-            margin: -50px auto 50px auto;
+            margin: -40px auto 50px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -59,9 +69,10 @@
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            border-top: 4px solid transparent; /* Renk için yer tutucu */
         }
 
-        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); border-color: currentColor; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); }
 
         .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
         
@@ -69,62 +80,144 @@
             width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
         }
 
-        h3 { margin: 0; font-size: 1.3rem; }
-        p { margin: 0; color: var(--text-light); font-size: 0.95rem; line-height: 1.5; flex-grow: 1; }
+        h3 { margin: 0; font-size: 1.3rem; font-weight: 700; }
+        p { margin: 0; color: var(--text-light); font-size: 0.9rem; line-height: 1.5; flex-grow: 1; }
         
         .tag { 
-            display: inline-block; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; 
-            margin-top: 15px; font-weight: bold; align-self: flex-start; 
+            display: inline-block; font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; 
+            margin-top: 20px; font-weight: bold; align-self: flex-start; 
+        }
+        
+        /* Bölüm Başlıkları */
+        .section-title {
+            grid-column: 1 / -1;
+            font-size: 1.2rem; color: var(--text-light); margin-top: 20px; margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
         }
 
         /* --- RENK TEMALARI --- */
-        /* Fizyoloji (Mavi) */
-        .physio { border-top: 4px solid #3b82f6; }
-        .physio .icon-box { background: #eff6ff; color: #3b82f6; }
-        .physio .tag { background: #eff6ff; color: #3b82f6; }
-        .physio:hover { border-color: #3b82f6; }
+        /* 1. Fizyoloji (Mavi) */
+        .physio { border-color: var(--primary); }
+        .physio .icon-box { background: #eff6ff; color: var(--primary); }
+        .physio .tag { background: #eff6ff; color: var(--primary); }
 
-        /* Anatomi (Kırmızı) */
-        .anatomy { border-top: 4px solid #f43f5e; }
-        .anatomy .icon-box { background: #fff1f2; color: #f43f5e; }
-        .anatomy .tag { background: #fff1f2; color: #f43f5e; }
-        .anatomy:hover { border-color: #f43f5e; }
+        /* 2. Anatomi (Kırmızı) */
+        .anatomy { border-color: var(--accent); }
+        .anatomy .icon-box { background: #fff1f2; color: var(--accent); }
+        .anatomy .tag { background: #fff1f2; color: var(--accent); }
 
-        /* Mikrobiyoloji (Mor) */
-        .micro { border-top: 4px solid #8b5cf6; }
-        .micro .icon-box { background: #f3e8ff; color: #8b5cf6; }
-        .micro .tag { background: #f3e8ff; color: #8b5cf6; }
-        .micro:hover { border-color: #8b5cf6; }
+        /* 3. Mikrobiyoloji (Mor) */
+        .micro { border-color: var(--micro); }
+        .micro .icon-box { background: #f3e8ff; color: var(--micro); }
+        .micro .tag { background: #f3e8ff; color: var(--micro); }
         
-        /* Solunum (Yeşil) */
-        .resp { border-top: 4px solid #10b981; }
-        .resp .icon-box { background: #ecfdf5; color: #10b981; }
-        .resp .tag { background: #ecfdf5; color: #10b981; }
-        .resp:hover { border-color: #10b981; }
+        /* 4. Solunum (Yeşil) */
+        .resp { border-color: var(--green); }
+        .resp .icon-box { background: #ecfdf5; color: var(--green); }
+        .resp .tag { background: #ecfdf5; color: var(--green); }
+        
+        /* 5. Sınavlar (Altın/Siyah) */
+        .exam-gold { border-color: var(--gold); background: #fffbeb; }
+        .exam-gold .icon-box { background: #fef3c7; color: var(--gold); }
+        .exam-gold .tag { background: #fef3c7; color: #b45309; }
+
+        .exam-dark { border-color: var(--dark); background: #1e293b; color: white; }
+        .exam-dark h3, .exam-dark p { color: #f8fafc; }
+        .exam-dark .icon-box { background: #334155; color: #fff; }
+        .exam-dark .tag { background: #334155; color: #fff; }
 
         /* Footer */
-        footer { text-align: center; padding: 40px; color: #94a3b8; font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: 50px; }
+        footer { text-align: center; padding: 40px; color: var(--text-light); font-size: 0.9rem; border-top: 1px solid #e2e8f0; margin-top: 50px; background: #fff; }
 
     </style>
 </head>
 <body>
 
     <header>
-        <div style="font-size:3rem; margin-bottom:10px;"><i class="fa-solid fa-brain"></i></div>
+        <div style="font-size:3rem; margin-bottom:15px;"><i class="fa-solid fa-graduation-cap"></i></div>
         <h1>STACKMINDS</h1>
         <div class="subtitle">Kurul 2: Dolaşım ve Solunum Sistemi</div>
-        <div class="stats">Toplam 250+ Soru | 3 Simülatör | 2 Atlas</div>
+        <div class="stats">250+ Soru | 6 Simülatör | 10 Konu Modülü</div>
     </header>
 
     <div class="container">
 
-        <a href="anatomi.html" class="card anatomy">
+        <div class="section-title">Sınav Merkezi</div>
+
+        <a href="mega_test.html" class="card exam-dark">
             <div class="card-header">
                 <div class="icon-box"><i class="fa-solid fa-skull"></i></div>
+                <h3>MEGA SINAV</h3>
+            </div>
+            <p>Fizyoloji'nin tamamını kapsayan 200 soruluk dev sınav simülasyonu. Kendini dene!</p>
+            <div class="tag">200 Soru | Final Boss</div>
+        </a>
+
+        <a href="cikmislar.html" class="card exam-gold">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-star"></i></div>
+                <h3>Çıkmış Sorular</h3>
+            </div>
+            <p>Hocanın geçmiş yıllarda sorduğu kritik komite soruları.</p>
+            <div class="tag">Sınav Modu</div>
+        </a>
+
+        <div class="section-title">Fizyoloji Modülleri</div>
+
+        <a href="elektro.html" class="card physio">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+                <h3>1. Elektrofizyoloji</h3>
+            </div>
+            <p>Aksiyon potansiyeli, İyon kanalları ve İleti sistemi.</p>
+            <div class="tag">50 Soru + Konu</div>
+        </a>
+
+        <a href="mekanik.html" class="card physio">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h3>2. Kalp Mekaniği</h3>
+            </div>
+            <p>PV Döngüleri, Kalp sesleri ve Pompa fonksiyonu.</p>
+            <div class="tag">50 Soru + Simülatör</div>
+        </a>
+
+        <a href="ekg.html" class="card physio">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-wave-square"></i></div>
+                <h3>3. EKG & Aritmiler</h3>
+            </div>
+            <p>Dalgalar, Bloklar, İskemi ve Canlı Aritmi Monitörü.</p>
+            <div class="tag">50 Soru + Monitör</div>
+        </a>
+
+        <a href="dolasim.html" class="card physio">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-road"></i></div>
+                <h3>4. Hemodinamik</h3>
+            </div>
+            <p>Akım/Direnç yasaları, Starling ve Tansiyon kontrolü.</p>
+            <div class="tag">50 Soru + Fizik</div>
+        </a>
+
+        <a href="solunum.html" class="card resp">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-lungs"></i></div>
+                <h3>5. Solunum Sistemi</h3>
+            </div>
+            <p>Spirometri, Gaz değişimi, Oksijen eğrisi ve Kontrol.</p>
+            <div class="tag">50 Soru + Spirometre</div>
+        </a>
+
+        <div class="section-title">Diğer Dersler</div>
+
+        <a href="anatomi.html" class="card anatomy">
+            <div class="card-header">
+                <div class="icon-box"><i class="fa-solid fa-person"></i></div>
                 <h3>Anatomi Atlası</h3>
             </div>
-            <p>Kalp, Damarlar, Toraks, Diyafram, Burun ve Lenfatik sistem görsel notları.</p>
-            <div class="tag">22 Soru | Pratik Sınavı</div>
+            <p>Kalp, Damarlar, Toraks, Diyafram ve Lenfatik sistem görsel notları.</p>
+            <div class="tag">22 Soru + 40 Soru Test</div>
         </a>
 
         <a href="mikro.html" class="card micro">
@@ -133,59 +226,14 @@
                 <h3>Mikrobiyoloji</h3>
             </div>
             <p>Bakteri kartları: Enterobacteriaceae, Non-fermenterler ve Mikobakteriler.</p>
-            <div class="tag">10 Soru | Flashcards</div>
-        </a>
-
-        <a href="elektro.html" class="card physio">
-            <div class="card-header">
-                <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
-                <h3>Elektrofizyoloji</h3>
-            </div>
-            <p>Aksiyon potansiyeli, İyon kanalları, İleti sistemi ve Uyarılma-Kasılma.</p>
-            <div class="tag">50 Soru | Guyton</div>
-        </a>
-
-        <a href="mekanik.html" class="card physio">
-            <div class="card-header">
-                <div class="icon-box"><i class="fa-solid fa-heart-pulse"></i></div>
-                <h3>Kalp Mekaniği</h3>
-            </div>
-            <p>PV Döngüleri, Kalp sesleri, Preload/Afterload ve İnteraktif Simülatör.</p>
-            <div class="tag">50 Soru | Simülatör</div>
-        </a>
-
-        <a href="ekg.html" class="card physio">
-            <div class="card-header">
-                <div class="icon-box"><i class="fa-solid fa-wave-square"></i></div>
-                <h3>EKG & Aritmiler</h3>
-            </div>
-            <p>Dalgaların analizi, Bloklar, İskemi ve Canlı Aritmi Monitörü.</p>
-            <div class="tag">50 Soru | Klinik</div>
-        </a>
-
-        <a href="dolasim.html" class="card physio">
-            <div class="card-header">
-                <div class="icon-box"><i class="fa-solid fa-road"></i></div>
-                <h3>Hemodinamik</h3>
-            </div>
-            <p>Akım ve Direnç yasaları, Starling güçleri, Ödem ve RAAS kontrolü.</p>
-            <div class="tag">50 Soru | Fizik</div>
-        </a>
-
-        <a href="solunum.html" class="card resp">
-            <div class="card-header">
-                <div class="icon-box"><i class="fa-solid fa-lungs"></i></div>
-                <h3>Solunum Sistemi</h3>
-            </div>
-            <p>Spirometri, Gaz değişimi, Oksijen eğrisi ve Solunumun kontrolü.</p>
-            <div class="tag">50 Soru | Yeni</div>
+            <div class="tag">10 Soru + Flashcards</div>
         </a>
 
     </div>
 
     <footer>
         © 2024 Stackminds Tıp Kütüphanesi. <br>
-        Bu proje, Kurul 2 sınavını parçalamak için tasarlanmıştır. Başarılar Rafık! 🚀
+        Bu proje, Kurul 2 sınavını parçalamak için Ali Eren tarafından kodlanmıştır. 🚀
     </footer>
 
 </body>
