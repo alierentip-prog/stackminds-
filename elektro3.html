@@ -3,146 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elektrofizyoloji 3 | Stackminds Kütüphanesi</title>
+    <title>İleti Sistemi, Eşleşme ve Kontrol | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$']] } };</script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        /* --- GUYTON AKADEMİK TEMA --- */
-        :root { --paper: #fdfbf7; --ink: #111827; --blue-ink: #0369a1; --accent: #b91c1c; --success: #047857; }
-        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.8; display: flex; }
-
-        /* SIDEBAR */
-        .sidebar { width: 260px; height: 100vh; background: #f3f4f6; border-right: 1px solid #d1d5db; position: fixed; padding: 25px; overflow-y: auto; font-family: 'Segoe UI', sans-serif; z-index: 10; }
-        .brand { font-weight: 900; font-size: 1.2rem; margin-bottom: 30px; display: block; color: var(--ink); text-decoration: none;}
-        .chapter-link { display: block; padding: 8px; border-radius: 6px; color: #4b5563; text-decoration: none; transition:0.2s; margin-bottom: 5px; }
-        .chapter-link:hover { background: #e5e7eb; color: var(--blue-ink); }
-        .chapter-link.active { background: var(--blue-ink); color: white; font-weight: bold; }
-
-        /* CONTENT */
-        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 800px; }
-        h1 { font-size: 2.5rem; color: #0f172a; font-family: 'Segoe UI', sans-serif; }
-        h2 { margin-top: 50px; border-bottom: 2px solid var(--blue-ink); color: var(--blue-ink); font-family: 'Segoe UI', sans-serif; }
-        h3 { margin-top: 30px; font-weight: bold; color: #374151; }
+        /* --- PROFESÖR TEMASI --- */
+        :root { --paper: #fffbf0; --ink: #1a1a1a; --blue: #0056b3; --red: #c0392b; --gold: #d35400; --success: #1abc9c; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Georgia', serif; line-height: 1.9; display: flex; }
         
-        /* Diyagramlar */
-        .pathway-container { display: flex; flex-direction: column; align-items: center; margin: 40px 0; gap: 10px; font-family: 'Segoe UI', sans-serif; }
-        .node-box { border: 2px solid var(--blue-ink); padding: 10px 20px; border-radius: 20px; width: 300px; text-align: center; background: white; font-weight: bold; }
-        .node-box.slow { border-color: var(--accent); color: var(--accent); background: #fef2f2; }
-        .node-box.fast { border-color: var(--success); color: var(--success); background: #f0fdf4; }
+        .sidebar { width: 260px; height: 100vh; background: #2c3e50; color: white; position: fixed; padding: 20px; overflow-y: auto; z-index:10; }
+        .brand { font-size: 1.2rem; font-weight: bold; color: #f1c40f; text-decoration: none; display: block; margin-bottom: 30px; }
+        .menu-item { display: block; color: #bdc3c7; text-decoration: none; padding: 10px; border-bottom: 1px solid #34495e; }
+        .menu-item:hover, .menu-item.active { color: white; background: #34495e; padding-left: 15px; transition: 0.3s; }
 
-        /* Kutu Tasarımları */
-        .clinical-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #064e3b; }
-        .warning-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; color: #7f1d1d; }
+        .content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        
+        h1 { font-size: 2.5rem; color: var(--blue); border-bottom: 3px solid var(--blue); padding-bottom: 10px; }
+        h2 { margin-top: 50px; color: var(--red); font-weight: bold; border-left: 5px solid var(--red); padding-left: 15px; }
+        h3 { margin-top: 30px; font-weight: bold; color: #2c3e50; }
+        
+        /* KUTULAR */
+        .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; }
+        .logic-title { color: #16a085; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
 
-        /* Tablo */
-        table { width: 100%; border-collapse: collapse; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; }
-        th, td { border: 1px solid #d1d5db; padding: 12px; }
-        th { background: #e5e7eb; text-align: left; }
+        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; }
+        .trap-title { color: #c0392b; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 10px; }
+        
+        .pharm-box { background: #f0fdf4; border: 2px solid var(--success); padding: 15px; margin: 20px 0; border-radius: 8px; font-size: 0.95rem; }
+        .pharm-title { color: var(--success); font-weight: bold; }
 
-        .page-nav { display: flex; justify-content: space-between; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; font-family: 'Segoe UI', sans-serif; }
-        .nav-btn { padding: 12px 25px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: 0.2s; }
-        .prev { background: #f3f4f6; color: #374151; }
-        .next { background: var(--accent); color: white; }
+        /* TABLO */
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; font-size: 0.95rem; }
+        th { background: #f3f4f6; color: #1a1a1a; }
+        .highlight { background: #dcdcdc; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { width: 100%; height: auto; position: relative; } .page-content { margin: 0; padding: 20px; } }
+        /* NAV */
+        .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
+        .btn { text-decoration: none; background: var(--blue); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
+
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Kütüphane</a>
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px;">Bu Ünite</div>
-        <a href="elektro.html" class="chapter-link">1. Membran Fiziği</a>
-        <a href="elektro2.html" class="chapter-link">2. Aksiyon Potansiyeli</a>
-        <a href="elektro3.html" class="chapter-link active">3. İleti ve Regülasyon</a>
-        <a href="elektro_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+        <a href="index.html" class="brand"><i class="fa-solid fa-book-medical"></i> MEDBASE</a>
+        <a href="elektro.html" class="menu-item">1. Membran ve İyonlar</a>
+        <a href="elektro2.html" class="menu-item">2. Aksiyon Potansiyeli</a>
+        <a href="elektro3.html" class="menu-item active">3. İleti ve Regülasyon</a>
+        <a href="elektro_test.html" class="menu-item" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
-    <main class="page-content">
-        <div style="color:#6b7280; font-size:0.9rem;">Ünite 1: Kardiyak Elektrofizyoloji</div>
-        <h1>Bölüm 3: İleti, Kasılma ve Regülasyon</h1>
-
+    <main class="content">
+        <h1>Bölüm 3: İleti Sistemi, Kontrol ve Elektrolitler</h1>
+        
         <p>
-            Kalbin düzenli çalışması sadece elektriğin üretilmesiyle değil, bu elektriğin doğru hızda iletilmesi, kasa dönüştürülmesi ve otonom sinir sistemi tarafından yönetilmesiyle mümkündür.
+            Kalp ritminin hızı, otonom sinir sistemi tarafından ayarlanır. Ayrıca kandaki $K^+$ (Potasyum) seviyesi değişirse, kalbin elektriksel çalışması anında durabilir.
         </p>
 
-        <h2>1. Pacemaker (Doğal Pil) Mekanizması</h2>
+        <h2>1. Pacemaker Potansiyeli ve $I_f$ Akımı</h2>
         <p>
-            SA Düğüm hücreleri asla "dinlenmez". Faz 4'te sürekli yukarı doğru sızan bir voltajları vardır. Buna <strong>"Pacemaker Potansiyeli"</strong> denir. Eşik değere (-40 mV) ulaştıklarında kendiliğinden ateşlerler.
+            SA Düğüm hücreleri (hız 70-80/dk) ve AV Düğüm hücreleri (hız 40-60/dk) <strong>"Yavaş Yanıtlı"</strong> hücrelerdir. 
+            Bu hücrelerde asla stabil bir dinlenme potansiyeli yoktur; potansiyel sürekli olarak yavaşça eşik değere doğru hareket eder (Faz 4 eğimi).
         </p>
-        <h3>Funny Current ($I_f$)</h3>
-        <p>
-            SA düğümde bulunan ve hiperpolarizasyonla açılan özel kanallardır. Sodyumun yavaşça içeri sızmasına izin verirler. Bu sızıntı kalbin otomatik olarak atmasını sağlar.
-        </p>
-
-        <h2>2. İleti Yolu ve Hızları</h2>
-        <div class="pathway-container">
-            <div class="node-box">SA Düğüm (0.05 m/sn)</div>
-            <i class="fa-solid fa-arrow-down" style="color:#9ca3af"></i>
-            <div class="node-box slow">AV Düğüm (0.05 m/sn)<br><small>Gecikme (Delay) Bölgesi</small></div>
-            <i class="fa-solid fa-arrow-down" style="color:#9ca3af"></i>
-            <div class="node-box fast">His-Purkinje (4.0 m/sn)<br><small>En Hızlı İletim</small></div>
+        
+        <div class="logic-box">
+            <span class="logic-title"><i class="fa-solid fa-bolt"></i> Mekanizma: Neden Kendiliğinden Atar?</span>
+            Faz 4 boyunca, zar hiperpolarize olmasına rağmen <strong>Funny Current ($I_f$)</strong> olarak adlandırılan özel bir sodyum kanalı (HCN) açılır. 
+            Bu $Na^+$ sızıntısı hücreyi yavaşça pozitifleştirir. Bu olay, kalbin doğal atım hızını (Otomatiklik) belirler.
         </div>
+        
+        <h2>2. İleti Yolu ve AV Gecikmesi</h2>
         <p>
-            <strong>AV Delay (Gecikme):</strong> Elektrik AV düğümde 0.09 saniye bekler. Nedeni Gap Junction azlığıdır. Bu sayede atriyumlar kasılıp kanı ventriküle boşaltmak için zaman kazanır.
+            Elektrik SA Düğümden çıktıktan sonra His-Purkinje otobanına ulaşana kadar bekler. 
+            Bu iletim hiyerarşisi, kalbin verimli pompalaması için şarttır.
         </p>
-
-        <h2>3. Uyarılma - Kasılma Eşleşmesi (E-C Coupling)</h2>
-        <p>Elektriğin mekanik güce dönüşmesidir. Başrol oyuncusu <strong>Kalsiyumdur ($Ca^{++}$)</strong>.</p>
-        <div class="clinical-box">
-            <strong>Kalsiyumun Tetiklediği Kalsiyum Salınımı (CICR):</strong><br>
-            Hücre dışından giren az miktarda $Ca^{++}$ (Tetikleyici), Sarkoplazmik Retikulum (SR) üzerindeki <strong>Ryanodine</strong> kapılarını açar ve içeriden devasa miktarda $Ca^{++}$ boşalır. Bu kalsiyum Troponin-C'ye bağlanır ve kasılma başlar.
+        
+        <div style="margin:20px 0;">
+            [attachment_0](attachment)
         </div>
 
-        <h2>4. Otonom Sinir Sistemi Kontrolü</h2>
-        <p>Kalp kendi kendine atar ama hızı beyin tarafından (Sempatik/Parasempatik) ayarlanır.</p>
+        <div class="trap-box">
+            <span class="trap-title">Sınav Tuzağı: AV Gecikmesinin Amacı</span>
+            AV düğüm, iletiyi kasıtlı olarak yavaşlatır (AV Delay, $\approx 0.13 \text{ sn}$).<br>
+            <strong>Amaç:</strong> Atriyumun (Pompalamanın) ventrikül kasılmasından (QRS) önce bitmesine zaman tanımaktır. Bu sayede ventriküller kanla dolar.
+        </div>
+
+        <h2>3. Otonom Sinir Sistemi Kontrolü</h2>
+        <p>
+            Sempatik ve Parasempatik sistemler kalp hızını ve kontraktiliteyi ayarlamak için *doğrudan* bu Faz 4 eğimini ve Faz 2 kalsiyum girişini hedefler.
+        </p>
 
         <h3>A. Sempatik Etki (Hızlanma)</h3>
-        <p>
-            <strong>Norepinefrin</strong> $\beta_1$ reseptörüne bağlanır. Hücre içi <strong>cAMP</strong> artar.
-            Bu durum "Funny" ($I_f$) ve $Ca^{++}$ kanallarını açar.
-            <br>
-            <strong>Sonuç:</strong> Faz 4 eğimi dikleşir, eşik değere daha çabuk ulaşılır, kalp hızlanır (Taşikardi). Ayrıca kasılma gücü artar.
-        </p>
+        <div class="pharm-box">
+            <span class="pharm-title">Norepinefrin (Adrenalin) Mekanizması</span><br>
+            $\beta_1$ reseptörüne bağlanma $\rightarrow$ cAMP artışı $\rightarrow$ Bu artış, $I_f$ (Funny) ve $Ca^{++}$ kanallarını uyarır.<br>
+            **Sonuç:** Faz 4 eğimi dikleşir, eşik değere daha çabuk ulaşılır. **Taşikardi.**
+        </div>
 
         <h3>B. Parasempatik Etki (Yavaşlama)</h3>
+        <div class="pharm-box" style="border-color:#1abc9c;">
+            <span class="pharm-title">Asetilkolin (Vagus) Mekanizması</span><br>
+            $M_2$ reseptörüne bağlanma $\rightarrow$ $K^+$ kanallarını ($I_{K.ACh}$) açar.<br>
+            **Sonuç:** Hücre dışına $K^+$ kaçar, hücre $-90 \text{ mV}$ yerine $\approx -100 \text{ mV}$'a kadar negatifleşir (Hiperpolarizasyon). Eşik değerden uzaklaşıldığı için hız yavaşlar.
+        </div>
+
+        <h2>4. Uyarılma-Kasılma Eşleşmesi (E-C Coupling)</h2>
         <p>
-            Vagus sinirinden salınan <strong>Asetilkolin (ACh)</strong>, muskarinik ($M_2$) reseptörlere bağlanır.
-            Bu reseptörler özel $K_{ACh}$ kanallarını açar. Potasyum dışarı kaçar ve hücre içi aşırı negatifleşir (<strong>Hiperpolarizasyon</strong>).
-            <br>
-            <strong>Sonuç:</strong> Eşik değerden uzaklaşılır, kalp yavaşlar (Bradikardi).
+            Elektrik sinyalinin $Ca^{++}$ aracılığıyla mekanik güce dönüştürülme sürecidir. 
+            Bu süreç, <strong>Kalsiyumun Tetiklediği Kalsiyum Salınımı (CICR)</strong> olarak bilinir.
         </p>
-
-        <h2>5. Elektrolit Bozuklukları (Klinik Hayat)</h2>
-        <div class="warning-box">
-            <h3>⚠️ Hiperkalemi (Yüksek Potasyum)</h3>
-            <p>
-                Kanda $K^+$ artarsa, hücre içindeki potasyum dışarı çıkmak istemez (Gradyan azalır). Hücre içi pozitifleşir (RMP -90'dan -70'e çıkar).
-                <br>
-                Bu başta uyarılabilirliği artırsa da, voltaj kapılı $Na^+$ kanalları "inaktif" hale geçer ve kilitlenir.
-                <br>
-                <strong>Sonuç:</strong> İletim yavaşlar, kalp geniş QRS ile durur (Diyastolik Arrest). <strong>Ölümcüldür.</strong>
-            </p>
+        <p>
+            Faz 2'de içeri giren az miktardaki $Ca^{++}$ bile (L-Tipi kanal), Sarkoplazmik Retikulum (SR) üzerindeki **Ryanodine Reseptörlerini (RyR)** tetikler ve SR'dan büyük miktarda $Ca^{++}$ salınır. Bu kalsiyum kasılmayı başlatır.
+        </p>
+        
+        <h2>5. Klinik Tuzak: Potasyumun ($K^+$) Etkisi</h2>
+        <div class="trap-box">
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Hiperkalemi (Yüksek $K^+$)</span>
+            Kanda $K^+$ çok artarsa RMP, $-90 \text{ mV}$'dan $-70 \text{ mV}$'a yükselir (Kısmi Depolarizasyon).
+            <br>
+            <strong>SONUÇ:</strong> Bu kısmi yükselme, hızlı $Na^+$ kanallarının **inaktivasyon (kilitlenme) kapısını** devreye sokar. Kanallar kilitlenir ve ileti durur. EKG'de geniş QRS ve sivri T dalgaları görülür $\rightarrow$ **Diyastolik Arrest (Durma).**
         </div>
 
-        <div class="warning-box" style="background:#fff7ed; border-color:#f97316; color:#9a3412;">
-            <h3>⚠️ Hiperkalsemi (Yüksek Kalsiyum)</h3>
-            <p>
-                Hücre dışı $Ca^{++}$ artarsa, hücre içine giren kalsiyum artar. Kas lifleri gevşeyemez.
-                <br>
-                <strong>Sonuç:</strong> Kalp kasılı halde durur (Kalsiyum Rijiditesi / Taş Kalp).
-            </p>
-        </div>
-
-        <div class="page-nav">
-            <a href="elektro2.html" class="nav-btn prev">&larr; Bölüm 2: Aksiyon Potansiyeli</a>
-            <a href="elektro_test.html" class="nav-btn next">Ünite Testine Başla (50 Soru) &rarr;</a>
+        <div class="nav-area">
+            <a href="elektro2.html" class="btn" style="background:#7f8c8d">&larr; Bölüm 2: Aksiyon Potansiyeli</a>
+            <a href="elektro_test.html" class="btn">Ünite Testi &rarr;</a>
         </div>
 
     </main>
-
 </body>
 </html>
