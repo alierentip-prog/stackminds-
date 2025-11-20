@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ünite Testi | Kardiyak Elektrofizyoloji</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* --- STACKMINDS AKADEMİK TEMA --- */
+        :root {
+            --paper: #f8fafc;
+            --ink: #0f172a;
+            --blue-ink: #0369a1;
+            --border: #e2e8f0;
+            --correct: #059669; /* Yeşil */
+            --wrong: #dc2626;   /* Kırmızı */
+        }
+
+        body {
+            margin: 0; background-color: var(--paper); color: var(--ink);
+            font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px; background: #1e293b; color: #e2e8f0;
+            display: flex; flex-direction: column; padding: 20px;
+            border-right: 1px solid #334155;
+        }
+        .brand { font-weight: bold; font-size: 1.2rem; color: white; text-decoration: none; margin-bottom: 40px; }
+        .menu-item {
+            padding: 12px; margin-bottom: 5px; border-radius: 8px; color: #94a3b8; text-decoration: none; transition: 0.2s;
+        }
+        .menu-item:hover { background: #334155; color: white; }
+        .menu-item.active { background: var(--blue-ink); color: white; font-weight: bold; }
+
+        /* TEST ALANI */
+        .quiz-area {
+            flex: 1; padding: 40px 60px; overflow-y: auto; max-width: 900px; margin: 0 auto;
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #cbd5e1; padding-bottom: 20px; margin-bottom: 30px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .score-badge {
+            background: #e0f2fe; color: var(--blue-ink); padding: 8px 16px; border-radius: 20px; font-weight: bold;
+        }
+
+        /* SORU KARTI */
+        .question-card {
+            background: white; padding: 30px; border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .q-text { font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
+
+        .options-grid { display: grid; gap: 12px; }
+
+        .option-btn {
+            padding: 18px 20px; border: 2px solid #e2e8f0; background: white;
+            border-radius: 10px; cursor: pointer; text-align: left; font-size: 1rem;
+            transition: all 0.2s; position: relative;
+        }
+        .option-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+        
+        /* DOĞRU / YANLIŞ STİLLERİ */
+        .option-btn.correct {
+            border-color: var(--correct); background: #ecfdf5; color: var(--correct); font-weight: bold;
+        }
+        .option-btn.correct::after { content: '\f00c'; font-family: "Font Awesome 6 Free"; position: absolute; right: 20px; }
+
+        .option-btn.wrong {
+            border-color: var(--wrong); background: #fef2f2; color: var(--wrong); opacity: 0.7;
+        }
+        .option-btn.wrong::after { content: '\f00d'; font-family: "Font Awesome 6 Free"; position: absolute; right: 20px; }
+
+        /* AÇIKLAMA KUTUSU */
+        .explanation-box {
+            margin-top: 25px; padding: 20px; background: #f8fafc; 
+            border-left: 5px solid var(--blue-ink); border-radius: 4px;
+            display: none; /* JS ile açılacak */
+        }
+        .exp-title { font-weight: bold; font-size: 0.9rem; text-transform: uppercase; color: #64748b; margin-bottom: 5px; display: block; }
+
+        /* NAVİGASYON */
+        .quiz-footer {
+            margin-top: 30px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn-nav {
+            background: var(--ink); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold;
+        }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* SONUÇ EKRANI */
+        .result-screen { text-align: center; display: none; padding-top: 50px; }
+        .final-score { font-size: 4rem; font-weight: 900; color: var(--blue-ink); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* MOBİL */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px; }
+            .brand { margin: 0; }
+            .menu-item { display: none; } /* Mobilde menüyü gizle */
+            .quiz-area { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Menü</a>
+        <a href="elektro.html" class="menu-item"><i class="fa-solid fa-book-open"></i> Konu 1</a>
+        <a href="elektro2.html" class="menu-item"><i class="fa-solid fa-bolt"></i> Konu 2</a>
+        <a href="elektro3.html" class="menu-item"><i class="fa-solid fa-network-wired"></i> Konu 3</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+
+    <main class="quiz-area">
+        
+        <div class="quiz-header" id="quizHeader">
+            <div>
+                <h2 style="margin:0;">Kardiyovasküler Fizyoloji Sınavı</h2>
+                <small style="color:#64748b;">Bölüm: Elektrofizyoloji ve İleti</small>
+            </div>
+            <div class="score-badge">Soru: <span id="currentQ">1</span> / <span id="totalQ">30</span></div>
+        </div>
+
+        <div id="quizContainer">
+            <div class="question-card">
+                <div class="q-text" id="questionText">Sorular Yükleniyor...</div>
+                <div class="options-grid" id="optionsArea">
+                    </div>
+                
+                <div class="explanation-box" id="expBox">
+                    <span class="exp-title">AÇIKLAMA VE KLİNİK BAĞLANTI</span>
+                    <span id="expText">Burada cevabın detayı yer alacak.</span>
+                </div>
+            </div>
+
+            <div class="quiz-footer">
+                <button class="btn-nav" id="nextBtn" onclick="nextQuestion()" disabled>Sonraki Soru &rarr;</button>
+            </div>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h1>Sınav Tamamlandı!</h1>
+            <p>İşte Guyton standartlarına göre sonucun:</p>
+            <div class="final-score" id="finalScoreDisplay">0</div>
+            <p id="finalMessage" style="font-size:1.2rem; color:#64748b; margin-top:20px;"></p>
+            <button class="btn-nav" onclick="location.reload()" style="margin-top:30px;">Tekrar Dene ↻</button>
+        </div>
+
+    </main>
+
+    <script>
+        // --- ZORLU SORU BANKASI (30 ADET ÖRNEK) ---
+        const questions = [
+            {
+                q: "Ventrikül kas hücresinde 'Dinlenme Membran Potansiyeli'nin (RMP) -90 mV seviyesinde, yani K+ denge potansiyeline çok yakın olmasının temel nedeni nedir?",
+                opt: [
+                    "Na+/K+ pompasının elektrojenik etkisi",
+                    "Zarın istirahat halinde K+ iyonuna, Na+ iyonundan yaklaşık 100 kat daha geçirgen olması",
+                    "Hücre içindeki anyonların (proteinlerin) negatif yüklü olması",
+                    "Hücre dışı Na+ konsantrasyonunun yüksek olması"
+                ],
+                correct: 1,
+                exp: "<strong>Doğru cevap B.</strong> Nernst denklemine göre zar hangi iyona geçirgen ise potansiyel ona yaklaşır. İstirahat halinde 'Inward Rectifier' K+ kanalları açıktır ve K+ sızıntısı mevcuttur. Na+ kanalları ise kapalıdır."
+            },
+            {
+                q: "Aksiyon potansiyelinin Faz 2 (Plato) evresinde membran potansiyelinin 0 mV civarında sabit kalmasını sağlayan iyonik denge hangisidir?",
+                opt: [
+                    "Na+ girişi ve K+ çıkışı dengesi",
+                    "Ca++ girişi ve K+ çıkışı dengesi",
+                    "Ca++ çıkışı ve Na+ girişi dengesi",
+                    "Cl- girişi ve K+ girişi dengesi"
+                ],
+                correct: 1,
+                exp: "<strong>Doğru cevap B.</strong> Plato fazında L-Tipi Kalsiyum kanallarından içeri giren pozitif yük ($Ca^{++}$), dışarı çıkan Potasyum ($K^+$) yükünü dengeler. Bu sayede voltaj değişmez ve kasılma süresi uzar."
+            },
+            {
+                q: "Aşağıdaki dokulardan hangisinde aksiyon potansiyeli iletim hızı EN YÜKSEKTİR?",
+                opt: [
+                    "Atriyal kas lifleri",
+                    "AV Düğüm",
+                    "Purkinje lifleri",
+                    "Ventriküler kas lifleri"
+                ],
+                correct: 2,
+                exp: "<strong>Doğru cevap C.</strong> Purkinje lifleri 4 m/sn hızla iletir. Bu yüksek hız, ventriküllerin senkronize (aynı anda) kasılmasını sağlar. En yavaş iletim ise AV düğümdedir (0.05 m/sn)."
+            },
+            {
+                q: "Mutlak Refrakter Dönem (ARP) sırasında kalbe verilecek çok güçlü bir elektriksel uyarının sonucu ne olur?",
+                opt: [
+                    "Zayıf bir aksiyon potansiyeli oluşur",
+                    "Normalden daha güçlü bir aksiyon potansiyeli oluşur",
+                    "Hiçbir aksiyon potansiyeli oluşmaz",
+                    "Ventriküler fibrilasyon başlar"
+                ],
+                correct: 2,
+                exp: "<strong>Doğru cevap C.</strong> Mutlak refrakter dönemde (Faz 0, 1, 2) sodyum kanallarının inaktivasyon kapıları (h kapısı) kapalıdır. Kapı kilitli olduğu için uyarı ne kadar güçlü olursa olsun kanallar açılamaz."
+            },
+            {
+                q: "Sinoatriyal (SA) düğümün 'Pacemaker' (doğal pil) olarak çalışmasını sağlayan, Faz 4'teki spontan depolarizasyondan sorumlu temel akım hangisidir?",
+                opt: [
+                    "Hızlı Na+ akımı (INa)",
+                    "Funny akımı (If)",
+                    "L-tipi Ca++ akımı",
+                    "Gecikmiş K+ akımı"
+                ],
+                correct: 1,
+                exp: "<strong>Doğru cevap B.</strong> 'Funny Current' (If), hiperpolarizasyonla aktive olan ve sodyum sızıntısına izin veren özel kanallardır. Bu sızıntı zarı yavaşça eşik değere taşır."
+            },
+            {
+                q: "Kalp kasında 'Uyarılma-Kasılma Eşleşmesi'nde (E-C Coupling), sarkoplazmik retikulumdan kalsiyum salınımını tetikleyen ana faktör nedir?",
+                opt: [
+                    "Hücre içine giren Sodyum",
+                    "Hücre dışından T-tübüller yoluyla giren 'Tetikleyici' Kalsiyum",
+                    "ATP hidrolizi",
+                    "Potasyum çıkışı"
+                ],
+                correct: 1,
+                exp: "<strong>Doğru cevap B.</strong> Buna 'Kalsiyumun Tetiklediği Kalsiyum Salınımı' (CICR) denir. Hücre dışından giren az miktarda Ca++, Ryanodine reseptörlerini açarak depodan devasa Ca++ boşalmasını sağlar."
+            },
+            {
+                q: "Sempatik sinir sistemi aktivasyonu (Norepinefrin), kalp hızını hangi mekanizma ile artırır?",
+                opt: [
+                    "Potasyum kanallarını açıp hiperpolarizasyon yaparak",
+                    "Hücre içi cAMP'yi artırıp, If (Funny) ve Ca++ kanallarının geçirgenliğini artırarak",
+                    "Asetilkolin reseptörlerini bloke ederek",
+                    "Na+/K+ pompasını yavaşlatarak"
+                ],
+                correct: 1,
+                exp: "<strong>Doğru cevap B.</strong> Norepinefrin Beta-1 reseptörüne bağlanır -> cAMP artar -> Bu da Funny kanalları ve Ca++ kanallarını fosforile eder. Eşik değere ulaşma süresi kısalır, kalp hızlanır."
+            },
+            {
+                q: "Hiperkalemi (Kanda potasyum yüksekliği) durumunda kalbin dinlenme potansiyeli ve uyarılabilirliği ilk etapta nasıl etkilenir?",
+                opt: [
+                    "Hiperpolarize olur (Uyarılabilirlik azalır)",
+                    "Kısmen depolarize olur (Membran potansiyeli eşiğe yaklaşır)",
+                    "Değişmez",
+                    "Aksiyon potansiyeli süresi uzar"
+                ],
+                correct: 1,
+                exp: "<strong>Doğru cevap B.</strong> Nernst denklemine göre dışarıda K+ artarsa, K+ dışarı çıkmak istemez. İçeride pozitif yük birikir. RMP -90'dan -80/-70'e yükselir. Bu başta uyarılabilirliği artırsa da, ilerleyen durumda Na+ kanallarını inaktive ederek kalbi durdurur."
+            },
+            {
+                q: "Kardiyak glikozidlerin (Digoksin) kalbin kasılma gücünü artırma (Pozitif İnotrop) mekanizması nedir?",
+                opt: [
+                    "Doğrudan kalsiyum kanallarını açarak",
+                    "Beta reseptörleri uyararak",
+                    "Na+/K+ ATPaz pompasını inhibe edip, dolaylı yoldan hücre içi kalsiyumu artırarak",
+                    "Ryanodine reseptörlerini bloke ederek"
+                ],
+                correct: 2,
+                exp: "<strong>Doğru cevap C.</strong> Na/K pompası durursa, içeride Na+ birikir. Na+/Ca++ değiştiricisi (NCX) çalışamaz (çünkü Na gradyanı bozulur). Kalsiyum dışarı atılamaz ve hücre içinde birikir, kasılma gücü artar."
+            },
+            {
+                q: "AV Düğümdeki iletimin yavaş olmasının (AV Delay) histolojik nedeni nedir?",
+                opt: [
+                    "Hücrelerin çok uzun olması",
+                    "Miyelin kılıfının kalın olması",
+                    "Gap junction (Oluklu bağlantı) sayısının çok az olması",
+                    "Sodyum kanalı yoğunluğunun çok yüksek olması"
+                ],
+                correct: 2,
+                exp: "<strong>Doğru cevap C.</strong> Gap junctionlar iyonların bir hücreden diğerine geçiş kapılarıdır. Sayıları azsa direnç artar, iletim yavaşlar. Bu gecikme atriyumların ventriküllerden önce kasılmasına zaman tanır."
+            },
+            // ... BURAYA DAHA FAZLA SORU EKLENEBİLİR ...
+             { q: "Hangi fazda 'Inward Rectifier' K+ kanalları (IK1) maksimum geçirgenliğe sahiptir?", opt: ["Faz 0", "Faz 2", "Faz 3", "Faz 4"], correct: 3, exp: "Faz 4 (Dinlenme) sırasında K+ sızıntısını sağlayan ana kanallardır." },
+             { q: "T-tübüllerin kalp kasındaki konumu iskelet kasından nasıl farklıdır?", opt: ["A-I bandı birleşimindedir", "Z çizgisi seviyesindedir", "Sadece atriyumda bulunur", "Bulunmaz"], correct: 1, exp: "Kalp kasında T-tübüller Z çizgisi hizasında bulunur ve iskelet kasına göre çapları daha geniştir." },
+             { q: "Lidokain (Sınıf 1B antiaritmik) aksiyon potansiyelinin hangi fazını etkileyerek etki gösterir?", opt: ["Faz 0 (Vmax'ı azaltır)", "Faz 2 (Platoyu kısaltır)", "Faz 3", "Faz 4"], correct: 0, exp: "Hızlı Na+ kanallarını bloke ederek depolarizasyon hızını yavaşlatır." },
+             { q: "Asetilkolin (Vagus uyarısı) kalbi nasıl yavaşlatır?", opt: ["Hücre içine Na+ alarak", "Hücre dışına K+ çıkışını artırıp hiperpolarizasyon yaparak", "Ca++ girişini artırarak", "Cl- kanallarını kapatarak"], correct: 1, exp: "Asetilkolin muskarinik reseptörlere bağlanır, K+ kanallarını açar. K+ dışarı kaçar, hücre -100mV'a kadar hiperpolarize olur ve uyarılması zorlaşır." },
+             { q: "Frank-Starling yasası elektrofizyolojik değil, mekanik bir yasadır. Ancak temeli neye dayanır?", opt: ["Kalsiyum miktarına", "Sarkomer boyunun uzamasıyla aktin-miyozin örtüşmesinin optimizasyonuna", "ATP miktarına", "Na+ konsantrasyonuna"], correct: 1, exp: "Kalp kası lifleri gerildikçe (optimal sınıra kadar), aktin ve miyozin daha iyi kenetlenir ve kasılma gücü artar." },
+             // 15 Soru oldu. (Kullanıcı isterse bu array'i kopyalayıp çoğaltabilir).
+              // ... Mevcut 15 sorunun altına virgül koyup bunları yapıştır:
+
+    {
+        q: "Kalpte 'Overdrive Suppression' (Aşırı hızla baskılama) mekanizmasının temel fizyolojik sonucu nedir?",
+        opt: ["Ektopik odakların ateşlemesini engellemek", "AV düğüm iletimini hızlandırmak", "Ventrikül kasılmasını güçlendirmek", "Koroner kan akımını artırmak"],
+        correct: 0,
+        exp: "<strong>Doğru cevap A.</strong> SA düğüm (Hızlı sürücü), daha yavaş olan potansiyel pacemakerları (AV düğüm, Purkinje) sürekli depolarize ederek onları susturur. SA düğüm durursa diğerleri uyanır."
+    },
+    {
+        q: "Sol atriyuma elektriksel uyarının sağ atriyumdan (SA düğümden) hızlıca geçmesini sağlayan ana yol hangisidir?",
+        opt: ["Arka internodal yol", "Orta internodal yol", "Bachmann demeti", "His demeti"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> Bachmann demeti (Anterior Interatrial Band), uyarının sol atriyuma hızla geçmesini ve iki atriyumun aynı anda kasılmasını sağlar."
+    },
+    {
+        q: "Parasempatik (Vagal) uyarının ventrikül kasılma gücü (İnotropi) üzerindeki etkisi neden çok sınırlıdır?",
+        opt: ["Ventrikül hücrelerinde muskarinik reseptör yoktur", "Vagus siniri ventrikülleri çok az innerve eder", "Asetilkolin ventrikülde çok hızlı yıkılır", "Ventrikülde Ca++ kanalları yoktur"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Vagus siniri esas olarak SA ve AV düğümü ve atriyumları innerve eder. Ventriküllere giden lif sayısı çok azdır, bu yüzden kasılma gücünü fazla düşüremez."
+    },
+    {
+        q: "Sarkoplazmik Retikulum içinde kalsiyumu depolayan ve tamponlayan ana protein hangisidir?",
+        opt: ["Kalsequestrin", "Kalmodulin", "Troponin-C", "Miyozin"],
+        correct: 0,
+        exp: "<strong>Doğru cevap A.</strong> Kalsequestrin, SR içinde kalsiyumu bağlayarak depo kapasitesini artırır ve serbest Ca++ konsantrasyonunu düşük tutar."
+    },
+    {
+        q: "Aksiyon potansiyeli süresi (QT aralığı) kalp hızı arttıkça (örneğin egzersizde) nasıl değişir?",
+        opt: ["Uzar", "Kısalır", "Değişmez", "Önce uzar sonra kısalır"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Kalp hızlandıkça diyastol süresi kısalır. Dolumun yeterli olması ve kalbin bir sonraki atıma yetişmesi için repolarizasyonun hızlanması ve AP süresinin kısalması gerekir."
+    },
+    {
+        q: "Hücre dışı Kalsiyum seviyesinin artması (Hiperkalsemi), kalbi sistolde (kasılı halde) durdurabilir. Bunun moleküler nedeni nedir?",
+        opt: ["Sodyum kanallarını bloke etmesi", "Hücre içine aşırı kalsiyum girerek gevşemeyi engellemesi", "Potasyum çıkışını durdurması", "ATP üretimini durdurması"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> 'Kalsiyum Rijiditesi'. Hücre dışı Ca++ çok artarsa, içeri giren miktar artar ve kas lifleri gevşeyemez (sürekli kasılı kalır)."
+    },
+    {
+        q: "Aşağıdaki iyon kanallarından hangisinin açılması membranı 'Hiperpolarize' eder (daha negatif yapar)?",
+        opt: ["Sodyum kanalı", "Kalsiyum kanalı", "Potasyum kanalı", "Klor kanalı (İçeride Cl- düşükse)"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> Potasyum (K+) pozitif yüklüdür ve hücre dışına çıkma eğilimindedir. Pozitif yük kaybeden hücre içi daha da negatifleşir."
+    },
+    {
+        q: "Wolf-Parkinson-White (WPW) sendromunda görülen 'Delta Dalgası'nın nedeni nedir?",
+        opt: ["AV düğüm bloğu", "Aksesuar bir yol (Kent demeti) üzerinden ventrikülün erken uyarılması", "Purkinje liflerinin hasarı", "SA düğüm durması"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Elektrik, yavaş olan AV düğümü bypass edip hızlı bir yan yoldan (Kent) geçer. Ventrikülün bir kısmı erken kasılır (Pre-eksitasyon)."
+    },
+    {
+        q: "Gap Junction (Oluklu bağlantı) kanallarını oluşturan protein birimlerine ne ad verilir?",
+        opt: ["İntegrin", "Koneksin", "Kaderin", "Okludin"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> 6 adet Koneksin birleşerek bir Konnexon (Gap Junction) oluşturur. Kalpte en sık Connexin-43 bulunur."
+    },
+    {
+        q: "Hücre zarındaki Na+/Ca++ Değiştiricisi (NCX) normal şartlarda nasıl çalışır?",
+        opt: ["3 Na+ dışarı, 1 Ca++ içeri", "3 Na+ içeri, 1 Ca++ dışarı", "1 Na+ içeri, 1 Ca++ dışarı", "ATP harcayarak Ca++ içeri"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> NCX, sodyumun içeri girme isteğini (gradyanını) kullanarak kalsiyumu dışarı atar (Sekonder aktif taşıma). Bu, gevşeme sırasında Ca++ temizliğinin %30'unu yapar."
+    },
+    {
+        q: "Atropin verilmesi kalp hızını neden artırır?",
+        opt: ["Beta reseptörleri uyararak", "Muskarinik (M2) reseptörleri bloke ederek", "Sodyum kanallarını açarak", "Adrenalin salgılatarak"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Vagus siniri sürekli fren yapar (Parasempatik tonus). Atropin bu freni (Muskarinik reseptörleri) bloke ederse, kalp kendi doğal hızına (daha yüksek) çıkar."
+    },
+    {
+        q: "Stokes-Adams sendromunun temel mekanizması nedir?",
+        opt: ["Ani SA düğüm durması", "Tam AV blok sonucu ventriküllerin kendi ritmini (Idioventriküler) oluşturana kadar geçen süredeki bayılma", "Ventriküler fibrilasyon", "Atriyal taşikardi"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> AV iletim kesilirse, Purkinje liflerinin uyanıp kendi ritmini (15-40 atım/dk) başlatması 5-30 saniye sürer. Bu arada beyne kan gitmez ve hasta bayılır."
+    },
+    {
+        q: "Kalp kası hücreleri neden 'Fonksiyonel Sinsityum' olarak adlandırılır?",
+        opt: ["Sitoplazmaları birleşik olduğu için", "Gap junctionlar sayesinde iyonlar serbestçe geçip tüm hücreleri aynı anda uyardığı için", "Tek bir çekirdekleri olduğu için", "Sinir hücresi içermedikleri için"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Anatomik olarak ayrıdırlar ama elektriksel olarak tek bir dev hücre gibi davranırlar."
+    },
+    {
+        q: "EKG'de QT aralığı neyi temsil eder?",
+        opt: ["Atriyal depolarizasyonu", "Ventriküler depolarizasyon ve repolarizasyonun toplam süresini", "Sadece ventriküler kasılmayı", "AV iletim süresini"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Q dalgasının başından T dalgasının sonuna kadar olan süredir. Ventrikülün elektriksel sistolüdür."
+    },
+    {
+        q: "Bainbridge refleksi nedir?",
+        opt: ["Tansiyon artınca kalp hızının düşmesi", "Atriyumların gerilmesi sonucu (venöz dönüş artışı) kalp hızının artması", "Oksijen azalınca kalp hızının artması", "Ağrı ile kalp hızının artması"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Kalbe dönen kan artarsa atriyumlar gerilir. SA düğüm mekanik olarak uyarılır ve kalp hızlanır ki gelen yükü pompalayıp atabilsin."
+    },
+    {
+        q: "İskelet kasının aksine, kalp kası neden oksijen borçlanmasına (anaerobik solunuma) tolerans gösteremez?",
+        opt: ["Glikojen deposu çok azdır", "Mitokondri sayısı azdır", "Laktat dehidrogenaz enzimi yoktur", "Sadece yağ asidi yakabilir"],
+        correct: 0,
+        exp: "<strong>Doğru cevap A.</strong> Kalp kası %98 oksidatif (aerobik) metabolizma kullanır. Mitokondrisi çoktur ama glikojen deposu çok azdır. Oksijen kesilirse (İskemi) dakikalar içinde hasar başlar."
+    },
+    {
+        q: "Hangisi kalbin 'Kronotropik' (Hız) etkisinden sorumludur?",
+        opt: ["SA Düğüm ateşleme hızı", "Kalsiyum giriş miktarı", "Aktin-Miyozin örtüşmesi", "Ventrikül duvar kalınlığı"],
+        correct: 0,
+        exp: "<strong>Doğru cevap A.</strong> Kronotropi = Zaman/Hız. İnotropi = Güç. Dromotropi = İletim hızı. Lusitropi = Gevşeme hızı."
+    },
+    {
+        q: "Re-entry (Yeniden giriş) aritmilerinin oluşması için hangisi GEREKLİ DEĞİLDİR?",
+        opt: ["Tek yönlü blok", "İleti yolunun uzaması (Dilatasyon)", "İletim hızının yavaşlaması", "Hızlı Sodyum kanallarının aşırı aktivasyonu"],
+        correct: 3,
+        exp: "<strong>Doğru cevap D.</strong> Re-entry bir kısırdöngüdür. Uyarı söneceğine dönüp tekrar gelir. Bunun için yolun uzun olması veya iletimin yavaş olması ve tek yönlü blok gerekir. Sodyum kanallarının hızlı olması re-entry'i engeller."
+    },
+    {
+        q: "Hangi durumda EKG'de P dalgası görülmez ancak QRS normaldir?",
+        opt: ["Sinüs taşikardisi", "Atriyal Fibrilasyon", "1. Derece AV blok", "Sağ dal bloğu"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Atriyal fibrilasyonda atriyumlar düzenli kasılmaz, titreşir. Net bir P dalgası yerine düzensiz 'f' dalgaları görülür."
+    },
+    {
+        q: "Digoksin zehirlenmesinde görülen karakteristik EKG bulgusu nedir?",
+        opt: ["ST elevasyonu", "Çanak şeklinde ST depresyonu", "Sivri T dalgası", "Geniş QRS"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> 'Salvador Dali bıyığı' veya çanak (scooped) ST depresyonu dijital etkisinin tipik bulgusudur."
+    },
+    {
+        q: "Kalp kası hücrelerinde T-tübüllerin içindeki sıvı, hangi sıvı ile devamlılık gösterir?",
+        opt: ["Sitoplazma", "Sarkoplazmik retikulum sıvısı", "Hücre dışı sıvı (Ekstrasellüler)", "Lenf sıvısı"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> T-tübüller hücre zarının içeri çöküntüleridir. İçlerinde hücre dışı sıvı bulunur ve kalsiyum buradan difüzyonla gelir."
+    },
+    {
+        q: "S2 kalp sesi (Dup) ne zaman duyulur?",
+        opt: ["İzovolumetrik kasılmanın başında", "İzovolumetrik gevşemenin başında", "Fırlatma fazının ortasında", "Atriyal sistolde"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Ventrikül kasılması bitip basınç düştüğünde, Aort ve Pulmoner kapaklar (Semilunar) sertçe kapanır. Bu S2 sesidir."
+    },
+    {
+        q: "Valsalva manevrası (Ikınma) sırasında venöz dönüş ve kalp debisi nasıl değişir?",
+        opt: ["Artar", "Azalır", "Değişmez", "Önce azalır sonra artar"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Göğüs içi basınç artar, vena kavalara baskı olur, kalbe kan dönüşü azalır. Bu yüzden kalp debisi düşer."
+    },
+    {
+        q: "Normal bir kalpte 'Ejeksiyon Fraksiyonu' (EF) yaklaşık ne kadardır?",
+        opt: ["%10-20", "%30-40", "%55-70", "%90-100"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> Kalp her atımda içindeki kanın tamamını atmaz. Yaklaşık %60'ını atar. %40 ve altı kalp yetmezliğidir."
+    },
+    {
+        q: "Uzun QT sendromu hastalarında en çok korkulan ölümcül aritmi hangisidir?",
+        opt: ["Atriyal Flutter", "Torsades de Pointes", "Sinüs Bradikardisi", "1. Derece Blok"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> 'Noktaların bükülmesi' anlamına gelen, ekseni sürekli dönen özel bir Ventriküler Taşikardi türüdür."
+    },
+    {
+        q: "Baroreseptörler (Basınç ölçerler) en yoğun nerede bulunur?",
+        opt: ["Sol ventrikül duvarı", "Karotid sinüs ve Aort arkı", "Vena cava superior", "Pulmoner arter"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Beyne giden kan basıncını ölçmek için şah damarında (karotid) ve vücuda giden basınç için aort arkında bulunurlar."
+    },
+    {
+        q: "Kalp kası enerji ihtiyacının %60-70'ini hangi yakıttan karşılar?",
+        opt: ["Glukoz", "Laktat", "Yağ Asitleri", "Aminoasitler"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> Kalp bir yağ yakma makinesidir. Ancak ağır egzersizde laktatı da kullanabilir."
+    },
+    {
+        q: "Bezold-Jarisch refleksi neye neden olur?",
+        opt: ["Tansiyon artışı ve taşikardi", "Hipotansiyon ve bradikardi", "Sadece hipertansiyon", "Sadece taşikardi"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Ventrikül duvarındaki reseptörlerin uyarılmasıyla (örn. bazı kimyasallar veya iskemi) vagus aktivasyonu olur, kalp yavaşlar ve damarlar gevşer."
+    },
+    {
+        q: "Hangi iyonun hücre içi konsantrasyonundaki artış, Gap Junctionları kapatarak iletimi durdurur?",
+        opt: ["Magnezyum", "Sodyum", "Hidrojen (Asidoz) ve Kalsiyum", "Potasyum"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> İskemi sırasında hücre içinde Asit (H+) ve Kalsiyum artar. Bu zehirli maddeler komşu sağlam hücreye geçmesin diye Gap Junctionlar kendini kapatır (İzolasyon)."
+    },
+    {
+        q: "Preload (Ön yük) arttığında kalbin kasılma gücünün artması hangi yasa ile açıklanır?",
+        opt: ["Laplace Yasası", "Frank-Starling Yasası", "Poiseuille Yasası", "Ohm Yasası"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Kalp kası lifi ne kadar gerilirse (aşırıya kaçmadan), o kadar güçlü kasılır."
+    },
+    {
+        q: "Kalbin 'Afterload'unu (Ard yük) artıran temel faktör nedir?",
+        opt: ["Venöz dönüş", "Aort basıncı (Hipertansiyon)", "Kalp hızı", "Kan hacmi"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Afterload, ventrikülün kanı fırlatmak için yenmek zorunda olduğu dirençtir. Aort basıncı ne kadar yüksekse, kalp o kadar zorlanır."
+    },
+    {
+        q: "Koroner kan akımı en çok hangi evrede gerçekleşir?",
+        opt: ["İzovolumetrik kasılma", "Fırlatma (Sistol)", "Diyastol", "Tüm evrelerde eşit"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> Sistolde kalp kası kendi damarlarını sıkar ve kan akımı durur. Kalp sadece gevşediğinde (Diyastol) beslenebilir."
+    },
+    {
+        q: "Epinefrin (Adrenalin) beta-reseptörlere bağlanarak G-proteini üzerinden hangi ikincil haberciyi artırır?",
+        opt: ["cGMP", "IP3", "cAMP", "Ca++"],
+        correct: 2,
+        exp: "<strong>Doğru cevap C.</strong> Adenilat siklazı aktive eder, cAMP artar, Protein Kinaz A (PKA) aktifleşir. Bu da kalsiyum kanallarını fosforile eder."
+    },
+    {
+        q: "Connexin-40 proteini en yoğun nerede bulunur?",
+        opt: ["Ventrikül kası", "Atriyum ve İleti sistemi (Purkinje)", "SA Düğüm", "Mitral kapak"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> Ventrikülde Cx43 hakimken, hızlı iletim gereken atriyum ve Purkinje liflerinde Cx40 daha yoğundur."
+    },
+    {
+        q: "Sinüs ritminde 'P dalgası'nın elektriksel ekseni (vektörü) normalde nereye doğrudur?",
+        opt: ["Yukarı ve sağa", "Aşağı ve sola", "Tamamen sola", "Tamamen sağa"],
+        correct: 1,
+        exp: "<strong>Doğru cevap B.</strong> SA düğüm sağ üsttedir. Uyarı aşağı ve sola (apexe) doğru yayılır. Bu yüzden P dalgası D2 derivasyonunda pozitiftir."
+          }
+      
+        ];
+
+        // --- OYUN MOTORU ---
+        let currentQIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        // Eleman Seçiciler
+        const qText = document.getElementById('questionText');
+        const optionsArea = document.getElementById('optionsArea');
+        const expBox = document.getElementById('expBox');
+        const expText = document.getElementById('expText');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentQSpan = document.getElementById('currentQ');
+        const totalQSpan = document.getElementById('totalQ');
+        const quizContainer = document.getElementById('quizContainer');
+        const resultScreen = document.getElementById('resultScreen');
+        const finalScoreDisplay = document.getElementById('finalScoreDisplay');
+        const finalMessage = document.getElementById('finalMessage');
+
+        // Başlangıç Ayarları
+        document.getElementById('totalQ').innerText = questions.length;
+
+        // Soruyu Yükle
+        function loadQuestion(index) {
+            const q = questions[index];
+            qText.innerHTML = `<strong>${index + 1}.</strong> ${q.q}`;
+            
+            // Şıkları Temizle
+            optionsArea.innerHTML = '';
+            expBox.style.display = 'none';
+            nextBtn.disabled = true;
+
+            // Şıkları Oluştur
+            q.opt.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = opt; // HTML (Matematik sembolleri için)
+                btn.onclick = () => checkAnswer(i, btn);
+                optionsArea.appendChild(btn);
+            });
+
+            // MathJax ile sembolleri yenile
+            if(window.MathJax) MathJax.typeset();
+            
+            currentQSpan.innerText = index + 1;
+        }
+
+        // Cevabı Kontrol Et
+        function checkAnswer(selectedIndex, btnElement) {
+            const q = questions[currentQIndex];
+            const allBtns = optionsArea.querySelectorAll('.option-btn');
+            
+            // Tüm butonları kilitle
+            allBtns.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === q.correct) {
+                // DOĞRU
+                btnElement.classList.add('correct');
+                score++;
+            } else {
+                // YANLIŞ
+                btnElement.classList.add('wrong');
+                allBtns[q.correct].classList.add('correct'); // Doğruyu göster
+            }
+
+            // Açıklamayı Göster
+            expText.innerHTML = q.exp;
+            expBox.style.display = 'block';
+            
+            // Sonraki butonu aç
+            nextBtn.disabled = false;
+            
+            // MathJax tekrar çalıştır (Açıklama içindeki semboller için)
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        // Sonraki Soru
+        function nextQuestion() {
+            if (currentQIndex < questions.length - 1) {
+                currentQIndex++;
+                loadQuestion(currentQIndex);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        // Sınavı Bitir
+        function finishQuiz() {
+            quizContainer.style.display = 'none';
+            document.getElementById('quizHeader').style.display = 'none';
+            resultScreen.style.display = 'block';
+            
+            finalScoreDisplay.innerText = score + " / " + questions.length;
+            
+            const percentage = (score / questions.length) * 100;
+            
+            if(percentage >= 80) {
+                finalMessage.innerText = "Mükemmel! Guyton seninle gurur duyuyor.";
+                finalMessage.style.color = "#059669";
+            } else if (percentage >= 50) {
+                finalMessage.innerText = "Geçer not. Ama mekanizmaları tekrar etmelisin.";
+                finalMessage.style.color = "#d97706";
+            } e
