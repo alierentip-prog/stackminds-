@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İleti Blokları ve Aks Sapması | Stackminds Kütüphanesi</title>
+    <title>Aritmi Simülatörü ve Patoloji | Stackminds</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
@@ -21,7 +21,7 @@
         .menu-item.active { background: #34495e; color: white; font-weight: bold; }
 
         /* CONTENT */
-        .page-content { margin-left: 260px; padding: 60px 100px; max-width: 900px; }
+        .page-content { margin-left: 260px; padding: 40px 80px; max-width: 900px; width: 100%; }
         h1 { font-size: 2.5rem; font-family: sans-serif; color: var(--blue-ink); border-bottom: 3px solid var(--blue-ink); padding-bottom: 10px; }
         h2 { margin-top: 50px; color: var(--accent); font-weight: bold; border-left: 5px solid var(--accent); padding-left: 15px; }
         h3 { font-weight: bold; color: #374151; margin-top: 30px; }
@@ -29,110 +29,205 @@
         /* DÜZEN DÜZELTMESİ (KRİTİK) */
         p, ul, ol, div, table { overflow-wrap: break-word; word-wrap: break-word; text-align: justify; }
 
-        /* KUTULAR */
-        .trap-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; position: relative; color: #c0392b; }
-        .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
-        .mnem { background: #fdf5e6; border: 2px solid #f0ad4e; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; margin: 20px 0; font-size: 1.1rem; color: #333; }
-        .warning-box { background: #dcdcdc; border-left: 4px solid #111; padding: 15px; margin: 20px 0; font-family: sans-serif; font-size: 0.95rem; color: #111; }
+        /* MONİTÖR */
+        .sim-section { background: #0f172a; border-radius: 10px; color: #10b981; margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 15px; }
+        .canvas-container { height: 200px; width: 100%; position: relative; }
+        canvas { display: block; width: 100%; height: 100%; }
+        .monitor-header { display: flex; justify-content: space-between; font-family: 'Courier New', monospace; font-size: 1.1rem; margin-bottom: 10px; }
 
+        /* KONTROLLER */
+        .control-panel { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; justify-content: center; }
+        .btn-rhythm { padding: 10px 15px; border: 1px solid #475569; border-radius: 5px; cursor: pointer; font-weight: 600; background: #2c3e50; color: #cbd5e1; transition: 0.2s; }
+        .btn-rhythm.active { background: #10b981; color: black; border-color: #10b981; }
+        .btn-rhythm.danger.active { background: #ef4444; color: white; border-color: #ef4444; }
+
+        /* KUTULAR */
+        .logic-box { background: #e8f6f3; border: 2px solid #1abc9c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #148f77; }
+        .warning-box { background: #fdedec; border: 2px solid #e74c3c; padding: 20px; margin: 25px 0; border-radius: 8px; color: #c0392b; }
 
         /* NAV */
         .nav-area { margin-top: 80px; border-top: 1px solid #ccc; padding-top: 20px; display: flex; justify-content: space-between; }
         .btn { text-decoration: none; background: var(--blue-ink); color: white; padding: 12px 30px; border-radius: 5px; font-weight: bold; font-family: sans-serif; }
 
-        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .content { margin: 0; padding: 20px; } }
+        @media (max-width: 1024px) { body { flex-direction: column; } .sidebar { position: relative; width: 100%; height: auto; } .page-content { margin: 0; padding: 20px; } }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <a href="index.html" class="brand"><i class="fa-solid fa-heart"></i> MEDBASE</a>
-        <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
         <a href="ekg.html" class="menu-item">1. EKG Temelleri</a>
-        <a href="ekg2.html" class="menu-item">2. Aritmi Simülatörü</a>
-        <a href="ekg3.html" class="menu-item active">3. İleti Blokları</a>
+        <a href="ekg2.html" class="menu-item active">2. Aritmi Simülatörü</a>
+        <a href="ekg3.html" class="menu-item">3. İleti Blokları</a>
         <a href="ekg_test.html" class="menu-item" style="color:#f1c40f;">★ Ünite Sınavı</a>
     </nav>
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 3: EKG ve Aritmiler</div>
-        <h1>Bölüm 3: İleti Blokları ve Aks Analizi</h1>
+        <h1>Bölüm 2: Patolojiler ve Canlı Simülasyon</h1>
 
         <p>
-            Elektriksel iletinin Purkinje sisteminde veya AV düğümde takılması sonucu QRS kompleksinin genişlemesi veya atımların düşmesi görülür. Bu durumlar EKG'de kritik öneme sahiptir.
+            EKG'yi anlamanın en iyi yolu, patolojik ritimlerin gerçek bir monitörde nasıl göründüğünü deneyimlemektir. Aşağıdaki simülatörde farklı ritimlere basarak EKG dalgalarının nasıl değiştiğini izleyin.
         </p>
 
-        <h2>1. Atriyoventriküler (AV) Bloklar</h2>
-        <p>
-            AV Düğümdeki iletimdeki aksaklıklardır. Tanının anahtarı **PR Aralığı**nın takibidir.
-        </p>
-
-        <div class="logic-box">
-            <span class="logic-title"><i class="fa-solid fa-lightbulb"></i> Mobitz Tip 1 vs Tip 2 Ayrımı</span>
-            <p>
-            **Mobitz Tip 1 (Wenckebach):** AV düğüm yorulur. $\mathbf{PR \text{ uzar, uzar, uzar... ve bir QRS düşer.}$ Genellikle iyi huyludur.<br><br>
-            **Mobitz Tip 2:** $\mathbf{PR \text{ sabittir}}$, ancak **aniden QRS kaybolur.** Bu, His demeti hasarıdır ve Tam Bloğa (3. Derece) dönüşebilir. Bu yüzden **pil (pacemaker)** gerekir.
-            </p>
+        <div class="sim-section">
+            <div class="monitor-header">
+                <span id="rhythmTitle">NORMAL SINUS RHYTHM</span>
+                <span id="hrValue">HR: 72</span>
+            </div>
+            <div class="canvas-container">
+                <canvas id="ecgCanvas"></canvas>
+            </div>
+            <div class="control-panel">
+                <button class="btn-rhythm active" onclick="setRhythm('nsr')">Normal Sinüs</button>
+                <button class="btn-rhythm" onclick="setRhythm('tachy')">Sinüs Taşikardi</button>
+                <button class="btn-rhythm" onclick="setRhythm('afib')">Atriyal Fibrilasyon</button>
+                <button class="btn-rhythm" onclick="setRhythm('stemi')">Akut MI (STEMI)</button>
+                <button class="btn-rhythm danger" onclick="setRhythm('vfib')">V-Fib (Arrest)</button>
+                <button class="btn-rhythm danger" onclick="setRhythm('asystole')">Asistoli</button>
+            </div>
         </div>
-
-        <h3>3. Derece (Tam) AV Blok</h3>
-        <p>
-            Atriyum ve Ventrikül arasındaki elektriksel köprü tamamen yıkılmıştır. P dalgaları ve QRS'ler birbirinden bağımsız, farklı hızlarda atar (**AV Disosiasyon**). Ventrikül kaçış ritmi düşüktür ($\approx 30 \text{ atım/dk}$). Acil müdahale gerektirir.
-        </p>
-
-        <h2>2. Dal Blokları (Bundle Branch Blocks)</h2>
-        <p>
-            QRS genişler ($\mathbf{\ge 0.12 \text{ sn}}$). Sağ veya Sol Dalın tıkanması, uyarının hasta tarafa yavaşça kas üzerinden dolanarak gitmesine neden olur.
-        </p>
         [attachment_0](attachment)
 
-        <h3>RBBB (Sağ Dal Bloğu)</h3>
-        <p>
-            Sağ ventrikül geç uyarılır. EKG'de **V1/V2'de "M" harfi (Tavşan Kulağı)** şeklinde son bir pozitif dalga (R') görülür.
-        </p>
-        <div class="mnem">
-             EZBER KODU: MaRoW (V1'de M, V6'da W)
-        </div>
 
-        <h3>LBBB (Sol Dal Bloğu)</h3>
+        <h2>1. Atriyal Aritmiler</h2>
+        <h3>Atriyal Fibrilasyon (AFib)</h3>
         <p>
-            Sol ventrikül geç uyarılır. LBBB her zaman patolojik kabul edilmelidir. **V5/V6'da geniş, çentikli "M" harfi** (veya R dalgası) görülür.
+            En sık görülen aritmidir. Atriyumda birden çok "mikro re-entry" halkası döner. 
+            Atriyumlar kasılmaz, sadece titreşir. Bu durum, $P$ dalgasının kaybolmasına ve EKG'nin **tamamen düzensiz** olmasına neden olur.
         </p>
-        <div class="mnem" style="background:#e0f2fe; border-color:#3b82f6; color:#0369a1;">
-             EZBER KODU: WiLLiaM (V1'de W, V6'da M)
+        <div class="logic-box">
+            <span class="logic-title">EKG Mantığı ve Riski</span>
+            AV düğüm bu kaotik sinyallerden rastgele seçtiklerini geçirir. Sonuç: **P dalgası yokluğu** ve **tamamen düzensiz (Irregularly Irregular)** bir ritim. Bu düzensizlik, pıhtı atma ve inme riskini artırır.
         </div>
-
-        <h2>3. QRS Aksının Hesaplanması ve Hipertrofi</h2>
+        <h3>Atriyal Flutter</h3>
         <p>
-            Aks, kalbin elektriksel vektörünün hangi yöne baktığını gösterir. Normal eksen $\mathbf{-30^\circ}$ ile $\mathbf{+90^\circ}$ arasındadır.
+            AV düğüm etrafında düzenli, büyük bir re-entry halkası döner. Atım hızı dakikada 250-350'dir.
+            <br>
+            **EKG:** Testere dişi (Sawtooth) görünümlü $F$ dalgaları görülür.
         </p>
-        
+
+        <h2>2. Ventriküler Aritmiler ve Elektrolit Etkisi</h2>
+        <h3>Ventriküler Fibrilasyon (V-Fib)</h3>
+        <p>
+            Kalbin en ölümcül ritmidir. Ventrikül kası organize bir şekilde kasılamaz, sadece titrer. $QRS$ ve $T$ dalgaları seçilemez. Kalp debisi $\mathbf{Sıfırdır}$.
+        </p>
         <div class="warning-box">
-            <span class="trap-title">Tuzak: Lead I ve aVF Kuralı</span>
-            <table style="width:100%; border:1px solid #b91c1c;">
-                <thead><tr><th>LEAD I</th><th>aVF</th><th>SONUÇ</th></tr></thead>
-                <tbody>
-                    <tr><td>Pozitif (+)</td><td>Pozitif (+)</td><td>✅ Normal Aks</td></tr>
-                    <tr><td>Pozitif (+)</td><td>Negatif (-)</td><td>❌ Sol Aks Sapması (LVH, LBBB)</td></tr>
-                    <tr><td>Negatif (-)</td><td>Pozitif (+)</td><td>❌ Sağ Aks Sapması (RVH, Pulmoner HT)</td></tr>
-                </tbody>
-            </table>
+            <span class="trap-title"><i class="fa-solid fa-triangle-exclamation"></i> Kritik Tedavi Farkı</span>
+            **V-Fib'e Şok (Defibrilasyon) VERİLİR.** Amaç tüm hücreleri aynı anda uyarıp kaosu durdurmak.<br>
+            **Asistoli'ye Şok VERİLMEZ.** Elektrik yoktur, CPR ve ilaç gerekir.
+        </div>
+        
+        <h3>Potasyumun ($K^+$) Etkisi</h3>
+        <p>
+            $K^+$ iyonu, kalbin repolarizasyonunda kilit rol oynar.
+        </p>
+        <div class="logic-box" style="border-color:#b91c1c; color:#b91c1c;">
+            **Hiperkalemi Etkisi:** EKG'de ilk olarak **dar tabanlı, sivri T dalgaları** görülür. Potasyum artmaya devam ederse QRS genişler ve kalp durur.
         </div>
 
-        <h3>Ventrikül Hipertrofisi</h3>
+        <h2>3. İskemi ve Enfarktüs</h2>
+        <h3>STEMI (ST Elevasyonlu MI)</h3>
         <p>
-            Kas kitlesindeki artış, QRS voltajını artırır ve vektörü kalınlaşan tarafa doğru saptırır.
+            Koroner damar tam tıkandığında, hasar gören hücreler depolarize halde kalır ve komşuya doğru **"Hasar Akımı"** (Current of Injury) sızdırır.
         </p>
-        <div class="logic-box" style="border-color:#0369a1;">
-            <strong>LVH (Sol Hipertrofi):</strong> Sol aks sapması yapar. **V5/V6'da yüksek R**, V1'de derin S dalgası (Sokolow-Lyon Kriteri).<br>
-            <strong>RVH (Sağ Hipertrofi):</strong> Sağ aks sapması yapar. V1'de R dalgası, S'ten uzun olur.
+        <div class="warning-box">
+            <strong>Görünümün Mekanizması:</strong> Bu hasar akımı, normalde düz olması gereken **ST segmentini yukarı kaldırır (Elevasyon)**. Bu, hücrelerin akut olarak can çekiştiğini ve acil müdahale gerektiğini gösteren alarmdır.
         </div>
 
         <div class="nav-area">
-            <a href="ekg2.html" class="btn prev" style="background:#7f8c8d">&larr; Bölüm 2: Aritmi Simülatörü</a>
-            <a href="ekg_test.html" class="btn">Ünite Testine Başla &rarr;</a>
+            <a href="ekg.html" class="btn prev" style="background:#7f8c8d">&larr; Bölüm 1: EKG Temelleri</a>
+            <a href="ekg3.html" class="btn">Bölüm 3: İleti Blokları &rarr;</a>
         </div>
     </main>
 
+    <script>
+        // --- SİMÜLATÖR KODLARI ---
+        const canvas = document.getElementById('ecgCanvas');
+        const ctx = canvas.getContext('2d');
+        const rhythmTitle = document.getElementById('rhythmTitle');
+        const hrValue = document.getElementById('hrValue');
+
+        function resize() { canvas.width = canvas.parentElement.offsetWidth; canvas.height = 200; }
+        window.addEventListener('resize', resize); resize();
+
+        let x = 0; let frame = 0; let activeRhythm = 'nsr'; let lastY = canvas.height / 2;
+        
+        // Ritim Parametreleri
+        const rhythms = {
+            nsr: { hr: 72, cycle: 60, p: true, st_elev: 0, chaos: 0, color: '#10b981' },
+            tachy: { hr: 140, cycle: 30, p: true, st_elev: 0, chaos: 0, color: '#10b981' },
+            afib: { hr: 110, cycle: 60, p: false, st_elev: 0, chaos: 3, color: '#10b981' },
+            stemi: { hr: 88, cycle: 60, p: true, st_elev: 20, chaos: 0, color: '#ef4444' },
+            vfib: { hr: 0, cycle: 10, p: false, st_elev: 0, chaos: 25, color: '#ef4444' },
+            asystole: { hr: 0, cycle: 20, p: false, st_elev: 0, chaos: 0.5, color: '#ef4444' }
+        };
+
+        function getECGValue(t, type) {
+            let p = rhythms[type];
+            let y = 0;
+            
+            if(type === 'vfib') return Math.sin(t/5)*20 + Math.sin(t/2)*10 + (Math.random()-0.5)*10;
+            if(type === 'asystole') return (Math.random()-0.5)*p.chaos;
+
+            let cycle = p.cycle;
+            let localT = t % cycle;
+
+            if(type !== 'afib') { if(localT > 5 && localT < 15) y -= Math.sin((localT-5)/10*Math.PI)*5; } 
+            else { y += (Math.random()-0.5)*3; } 
+
+            if(localT > 35 && localT < 43) { 
+                if(localT > 37 && localT < 40) y -= 50; 
+                else if (localT > 40) y += 10;
+                else y += 5; 
+            } else if (type === 'afib' && Math.random() < 0.01) { y -= 50; } 
+
+            if(localT > 45 && localT < 70) {
+                let stH = p.st_elev;
+                let tWave = Math.sin((localT - 45) / 25 * Math.PI) * 8;
+                y -= (tWave + stH); 
+            }
+            
+            return y + (Math.random()-0.5) * p.chaos; 
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(15, 23, 42, 1)"; 
+            ctx.fillRect(x, 0, 3, canvas.height); 
+            
+            let yOffset = getECGValue(frame, activeRhythm);
+            let mid = canvas.height / 2;
+
+            ctx.strokeStyle = rhythms[activeRhythm].color;
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(x - 2, lastY); 
+            ctx.lineTo(x, mid + yOffset);
+            ctx.stroke();
+            
+            lastY = mid + yOffset;
+            x += 2;
+            frame++;
+
+            if(x > canvas.width) x = 0;
+            requestAnimationFrame(animate);
+        }
+
+        function setRhythm(type) {
+            activeRhythm = type;
+            const params = rhythms[type];
+            
+            document.querySelectorAll('.btn-rhythm').forEach(b => b.classList.remove('active', 'danger'));
+            event.target.classList.add('active');
+            if(type === 'vfib' || type === 'asystole') event.target.classList.add('danger');
+
+            rhythmTitle.innerText = type.toUpperCase().replace('NSR', 'NORMAL SINUS RHYTHM');
+            hrValue.innerText = params.hr === 0 ? '---' : `HR: ${params.hr + Math.floor(Math.random()*5 - 2)}`;
+        }
+
+        animate();
+        setRhythm('nsr');
+    </script>
 </body>
 </html>
