@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ünite Testi | Dolaşım Final</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root { --paper: #f8fafc; --ink: #0f172a; --blue-ink: #0369a1; --correct: #059669; --wrong: #dc2626; }
+        body { margin: 0; background-color: var(--paper); color: var(--ink); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 260px; background: #1e293b; color: #e2e8f0; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid #334155; }
+        .brand { font-weight: bold; font-size: 1.2rem; color: white; text-decoration: none; margin-bottom: 40px; }
+        .menu-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        .menu-item.active { background: var(--blue-ink); color: white; font-weight: bold; }
+        .quiz-area { flex: 1; padding: 20px 40px; overflow-y: auto; max-width: 900px; margin: 0 auto; }
+        .quiz-header { border-bottom: 2px solid #cbd5e1; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .score-badge { background: #e0f2fe; color: var(--blue-ink); padding: 8px 16px; border-radius: 20px; font-weight: bold; }
+        .question-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; animation: fadeIn 0.4s ease; }
+        .q-text { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; line-height: 1.6; }
+        .options-grid { display: grid; gap: 12px; }
+        .option-btn { padding: 15px 20px; border: 2px solid #e2e8f0; background: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 1rem; transition: all 0.2s; position: relative; }
+        .option-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+        .option-btn.correct { border-color: var(--correct); background: #ecfdf5; color: var(--correct); font-weight: bold; }
+        .option-btn.wrong { border-color: var(--wrong); background: #fef2f2; color: var(--wrong); opacity: 0.7; }
+        .explanation-box { margin-top: 25px; padding: 20px; background: #f8fafc; border-left: 5px solid var(--blue-ink); border-radius: 4px; display: none; }
+        .btn-nav { background: var(--ink); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; }
+        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+        .result-screen { text-align: center; display: none; padding-top: 50px; }
+        .final-score { font-size: 4rem; font-weight: 900; color: var(--blue-ink); }
+        @media (max-width: 768px) { body { flex-direction: column; overflow: auto; } .sidebar { width: 100%; height: auto; flex-direction: row; padding: 15px; justify-content: space-between; } .brand { margin: 0; } .menu-item { display: none; } .quiz-area { padding: 20px; } }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="index.html" class="brand"><i class="fa-solid fa-chevron-left"></i> Ana Menü</a>
+        <a href="dolasim.html" class="menu-item"><i class="fa-solid fa-book-open"></i> Konu 1</a>
+        <a href="dolasim2.html" class="menu-item"><i class="fa-solid fa-water"></i> Konu 2</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
+    </nav>
+    <main class="quiz-area">
+        <div class="quiz-header" id="quizHeader">
+            <div><h2 style="margin:0;">Dolaşım Fizyolojisi Final Sınavı</h2><small>Bölüm: Akım, Direnç ve Regülasyon</small></div>
+            <div class="score-badge">Soru: <span id="currentQ">1</span> / <span id="totalQ">50</span></div>
+        </div>
+        <div id="quizContainer">
+            <div class="question-card">
+                <div class="q-text" id="questionText">Yükleniyor...</div>
+                <div class="options-grid" id="optionsArea"></div>
+                <div class="explanation-box" id="expBox"><span style="font-weight:bold; display:block; color:#64748b;">AÇIKLAMA:</span><span id="expText"></span></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end;"><button class="btn-nav" id="nextBtn" onclick="nextQuestion()" disabled>Sonraki &rarr;</button></div>
+        </div>
+        <div class="result-screen" id="resultScreen">
+            <h1>Sınav Tamamlandı!</h1>
+            <div class="final-score" id="finalScoreDisplay">0</div>
+            <p id="finalMessage" style="font-size:1.2rem; margin-top:20px;"></p>
+            <button class="btn-nav" onclick="location.reload()">Tekrar Dene ↻</button>
+        </div>
+    </main>
+        <script>
+        const questions = [
+            { q: "Poiseuille yasasına göre, damar yarıçapı ($r$) iki katına çıkarsa (2r) kan akımı ($Q$) nasıl değişir?", opt: ["İki katına çıkar", "Dört katına çıkar", "Sekiz katına çıkar", "On altı katına çıkar"], correct: 3, exp: "Akım yarıçapın 4. kuvvetiyle orantılıdır ($2^4 = 16$). Damar çapı, direnci belirleyen en önemli faktördür." },
+            { q: "Dolaşım sisteminde 'Direncin' ($R$) en yüksek olduğu damar tipi hangisidir?", opt: ["Arterler", "Arteriyoller", "Kapillerler", "Venler"], correct: 1, exp: "Arteriyoller, çaplarını değiştirerek (vazokonstriksiyon) sistemik direncin (SVR) çoğunu oluşturur." },
+            { q: "Kanın Viskozitesini (kıvamını) artıran ve direnci yükselten ana faktör nedir?", opt: ["Albumin konsantrasyonu", "Hematokrit değeri", "Nabız basıncı", "Kalsiyum iyonları"], correct: 1, exp: "Kırmızı kan hücrelerinin hacmi (Hematokrit) arttıkça, kan daha koyu hale gelir." },
+            { q: "Starling Güçlerine göre, ödem oluşumunun EN SIK karşılaşılan mekanizması nedir?", opt: ["İnterstisyel sıvı onkotik basıncının artması", "Kapiller Hidrostatik Basıncın ($P_c$) artması", "Plazma Onkotik Basıncının ($\pi_p$) artması", "Lenfatik akımın hızlanması"], correct: 1, exp: "Kalp yetmezliği veya venöz tıkanıklık sonucu $P_c$ yükselir ve sıvı dışarı itilir." },
+            { q: "Anjiyotensin II'nin (RAAS'ın ürünü) dolaşım sistemi üzerindeki iki ana etkisi nedir?", opt: ["Tuz ve su atılımı / Vazodilatasyon", "Vazokonstriksiyon / Tuz ve su tutulumu", "Kalp hızını artırma / Kan hacmini azaltma", "Potasyum tutulumu / Antidiürez"], correct: 1, exp: "Anjiyotensin II, güçlü bir vazokonstriktördür ve Aldosteron salgılatarak su/tuz tutulumunu sağlar." },
+            { q: "Ortalama Arter Basıncı (MAP) en doğru şekilde nasıl hesaplanır?", opt: ["(Sistolik + Diyastolik) / 2", "$(\text{Diyastolik}) + \frac{1}{3} \times (\text{Nabız Basıncı})$", "Sistolik / 3", "Diyastolik + Nabız Basıncı"], correct: 1, exp: "Kalp döngüsünde diyastol süresi sistolden uzun olduğu için ortalama, diyastole daha yakındır." },
+            { q: "Kan akımının türbülanslı (gürültülü) hale gelmesi hangi sayı ile ilişkilidir?", opt: ["Fick Yasası", "Ohm Yasası", "Reynolds Sayısı", "Laplace Yasası"], correct: 2, exp: "Reynolds sayısı 2000'i geçtiğinde akım türbülanslı olur (Üfürüm duyulur)." },
+            { q: "Kılcal damarın arteriyel ucunda Net Filtrasyon Basıncı nasıl oluşur?", opt: ["$P_c$ ve $\pi_p$ dengededir", "$P_c$ ($\approx 30 \text{ mmHg}$) $\pi_p$'den daha yüksektir", "$P_c$ çok düşüktür", "$\pi_p$ çok yüksektir"], correct: 1, exp: "Arteriyel uçta kan basıncı yüksek ($P_c \approx 30$) olduğu için suyu dışarı iter (Net Filtrasyon)." },
+            { q: "Nabız Basıncını (Sistolik - Diyastolik) belirleyen iki temel faktör nedir?", opt: ["Uzun süreli MAP / Yaş", "Stroke Volume / Arter duvarının esnekliği (Uyum)", "Total periferik direnç / Viskozite", "K+ konsantrasyonu / Kalp hızı"], correct: 1, exp: "SV ne kadar artarsa ve damar ne kadar sertse (uyum azalırsa) nabız basıncı o kadar artar." },
+            { q: "Baroreseptörlerin (Basınç alıcılar) görevi nedir?", opt: ["Uzun süreli kan hacmini ayarlamak", "Böbreklere sinyal göndermek", "Tansiyondaki ani düşüş ve yükselişleri (örn. ayağa kalkma) kompanse etmek", "Kanın ozmolaritesini ölçmek"], correct: 2, exp: "Boyunda ve aortta bulunurlar. Anlık tansiyon dalgalanmalarını nöral yoldan (sempatik/vagal) düzeltirler." },
+            { q: "Lenfatik sistemin temel görevi nedir?", opt: ["Sadece bağışıklık", "Kaçan su ve proteinleri doku aralığından toplayıp kana geri vermek", "Oksijen taşımak", "Hızlı kan basıncı düşüşünü sağlamak"], correct: 1, exp: "Ödem oluşumunu engelleyen ana mekanizmadır." },
+            { q: "Aşağıdakilerden hangisi kısa süreli tansiyon regülasyonunda rol OYNAMAZ?", opt: ["Baroreseptörler", "Kemoreseptörler", "RAAS", "Adrenalin/Norepinefrin"], correct: 2, exp: "RAAS, böbrekler üzerinden çalışan uzun süreli (saatler/günler) regülasyon sistemidir." },
+            { q: "Kan basıncının kronik olarak ayarlanmasında en etkili organ sistemi hangisidir?", opt: ["Karaciğer", "Kalp", "Böbrekler", "Akciğerler"], correct: 2, exp: "Böbrekler, su/tuz atılımını ayarlayarak kan hacmini, dolayısıyla tansiyonu uzun süreli kontrol eder." },
+            { q: "Anjiyotensin dönüştürücü enzim (ACE) nerede bulunur ve görevi nedir?", opt: ["Böbrek / Aldosteron salgılatır", "Karaciğer / Renin üretir", "Akciğer / Anjiyotensin I'i, Anjiyotensin II'ye dönüştürür", "Kalp / Sempatik aktiviteyi artırır"], correct: 2, exp: "ACE, akciğerdeki endotel hücrelerinde Anjiyotensin I'i aktif Anjiyotensin II'ye çevirir." },
+            { q: "Kalp yetmezliğinde ödem oluşumunun temel nedeni nedir?", opt: ["Vazokonstriksiyon", "Artan plazma proteinleri", "Artan Kapiller Hidrostatik Basınç ($P_c$) ve azalan lenfatik akım", "Azalan $P_c$"], correct: 2, exp: "Kalp yetersiz pompaladığı için kan venöz sistemde birikir, $P_c$ artar ve sıvı dışarı sızar." },
+            { q: "Dolaşım sisteminde 'Velocity of Flow' (Akım Hızı) nerede en yavaştır?", opt: ["Aort", "Arterler", "Kapillerler", "Venler"], correct: 2, exp: "Toplam kesit alanı en geniş olduğu için (Binlerce kılcal damar) hız en düşüktür. Bu, besin değişimine zaman tanır." },
+            { q: "Oksijen azlığı (Hipoksi) durumunda lokal dokular ne yapar?", opt: ["Vazokonstriksiyon (Damar büzülmesi)", "Vazodilatasyon (Damar genişlemesi)", "Direnci artırır", "Kan akımını azaltır"], correct: 1, exp: "Vücut, oksijensiz kalan dokuya daha çok kan göndermek için damarları genişletir (Lokal metabolik kontrol)." },
+            { q: "Starling Güçlerine göre, yanık veya ağır protein kaybında oluşan ödemin temel nedeni nedir?", opt: ["$P_c$ artışı", "Plazma Onkotik Basıncının ($\pi_p$) azalması", "Lenfatik tıkanıklık", "Total kan hacminin azalması"], correct: 1, exp: "Albumin kaybı nedeniyle kanın suyu tutma gücü ($\pi_p$) azalır ve sıvı dışarı kaçar." },
+            { q: "Nabız Basıncının yaşla birlikte artmasının ana nedeni nedir?", opt: ["Kalp debisinin artması", "Arteriyel duvarın esnekliğini (Uyumunu) kaybetmesi", "Böbrek yetmezliği", "Kan viskozitesinin azalması"], correct: 1, exp: "Aort sertleşir. Bu, kalp atınca oluşan basınç dalgasını absorbe edememesi demektir, basınç farkı artar." },
+            { q: "Baroreseptör refleksi devreye girdiğinde (Tansiyon düşünce) vücut ne yapar?", opt: ["Vazokonstriksiyon ve Kalp Hızı artışı", "Vazodilatasyon ve Kalp Hızı artışı", "Hız azalması ve Vazokonstriksiyon", "İdrar söktürme"], correct: 0, exp: "Sempatik sistemi aktive eder; damarları sıkar (direnç artar) ve kalbi hızlandırır (debiyi artırır)." },
+            { q: "Aşağıdakilerden hangisi bir 'Basınç yükü' (Afterload) hastalığıdır?", opt: ["Aort Yetmezliği", "Mitral Yetmezliği", "Aort Darlığı", "Anemi"], correct: 2, exp: "Aort darlığı, kalbin kanı atarken yenmek zorunda olduğu direnci artırır (Yüksek Afterload)." },
+            { q: "Goldman-Hodgkin-Katz denklemi hesaplaması için hangi bilgi gereklidir?", opt: ["Kanın viskozitesi", "Her bir iyonun denge potansiyeli", "Her bir iyonun hücre zarındaki geçirgenliği ($P$)", "Nabız basıncı"], correct: 2, exp: "GHK denklemi, geçirgenlik (P) oranlarına göre membran potansiyelini hesaplar." },
+            { q: "Uzun süreli tansiyon düzenlemesinde 'Sıfır Basınç Noktası' (Pressure-Volume Output Curve) neyi ifade eder?", opt: ["Basıncın asla sıfır olmadığı", "Ne kadar idrar çıkardığı", "Kan hacminin değişmediği denge noktası", "Vazokonstriksiyonun sıfır olduğu"], correct: 2, exp: "Guyton'un teorisine göre, tansiyonun sonsuza kadar korunduğu ve net sıvı çıkışının/girişinin olmadığı tek basınç seviyesidir." },
+            { q: "Kanın $\text{Vena Cava}$'da yerçekimine karşı kalbe dönmesini sağlayan temel mekanizma nedir?", opt: ["Sadece kalp emiş gücü", "Arterlerin itme gücü", "İskelet kası pompası ve solunum pompası", "Tek başına elastikiyet"], correct: 2, exp: "Özellikle bacaklarda kaslar damarları sıkıştırır ve kapaklar kanın geri kaçmasını engeller." },
+            { q: "Arteriyollerin damar duvarı kalınlığının kas tabakasına oranı nasıldır?", opt: ["Çok incedir", "Çok kalındır (Çapa göre en kalın)", "Değişkendir", "Yoktur"], correct: 1, exp: "Arteriyoller, çaplarına oranla en kalın kas tabakasına sahiptir (Basınç kontrolü için)." },
+            { q: "Nabız Basıncının artması (örneğin 140/60 mmHg) hangi durumda görülür?", opt: ["Kalp yetmezliği", "Aort yetmezliği (Regürjitasyon)", "Şok", "Koroner tıkanıklık"], correct: 1, exp: "Aort Yetmezliğinde kan geri kaçtığı için diyastolik basınç düşer. Kalp çok attığı için sistolik artar. Fark (Nabız Basıncı) açılır." },
+            { q: "Kan akımının türbülanslı olması için hangi koşul gereklidir?", opt: ["Kanın yavaş akması", "Viskozitenin artması", "Damar çapının küçülmesi ve hızın artması", "Diyastol süresinin uzaması"], correct: 2, exp: "Türbülans, kanın hızlı akması ve dar bir alandan geçmesiyle (anemi de viskoziteyi düşürerek yapar) olur." },
+            { q: "Serebral Kan Akımı (Beyin) regülasyonunda temel kontrol mekanizması nedir?", opt: ["Sadece sempatik sinir sistemi", "CO2 konsantrasyonu (Lokal metabolik kontrol)", "RAAS", "Baroreseptörler"], correct: 1, exp: "Beyin, $P_{CO2}$'ye çok hassastır. $CO_2$ artarsa damarlar genişler." },
+            { q: "Starling Güçlerinde, sıvıların doku aralığında kalmasını sağlayan temel etki nedir?", opt: ["$P_c$ ($P_{kapiller}$)", "$\pi_p$ ($\pi_{plazma}$)", "$P_i$ ($P_{interstisyel}$)", "Lenfatik akım"], correct: 1, exp: "Albuminin suya olan onkotik (emme) gücüdür. Sıvıyı damar içinde tutar." },
+            { q: "Angiotensin I'in aktif hale gelmesi (Angiotensin II) nerede gerçekleşir?", opt: ["Böbreklerde", "Karaciğerde", "Adrenal bezde", "Akciğerlerin Endoteli"], correct: 3, exp: "ACE (Anjiyotensin Dönüştürücü Enzim) esas olarak akciğerlerin kılcal damarlarının yüzeyinde bulunur." },
+            { q: "Vazopressin (ADH) salınımının dolaşımdaki temel fizyolojik etkisi nedir?", opt: ["Vazodilatasyon", "Kan hacmini artırarak basıncı yükseltme", "Sodyum atılımı", "Sadece atriyum kasılması"], correct: 1, exp: "ADH, böbreklerden su emilimini artırır (V2 reseptör) ve kan hacmini artırır." },
+            { q: "Guyton'a göre, Baroreseptörler bir 'yüksek basınç sensörü'dür ve en iyi hangi durumda çalışır?", opt: ["Yüksek basınçta", "Düşük basınçta", "Basınç değişimlerinde", "Nabız basıncında"], correct: 2, exp: "Basıncın kendisinden çok, basınçtaki hızlı düşme ve yükselmelere (değişim hızına) hassastırlar." },
+            { q: "Koroner damar akımı üzerindeki lokal kontrol mekanizması nedir?", opt: ["Sadece sempatik uyarı", "Oksijen azaldığında adenozin salınımı", "Anjiyotensin", "Vazopressin"], correct: 1, exp: "Kalp kası oksijensiz kalırsa, adenozin damarları genişleterek akımı artırır." },
+            { q: "Aşağıdakilerden hangisi bir 'Hacim yükü' (Preload) hastalığıdır?", opt: ["Aort yetmezliği", "Aort darlığı", "Hipertansiyon", "Anemi"], correct: 0, exp: "Aort yetmezliğinde (Regürjitasyon) kan geri kaçar, ventrikül aşırı dolar (Hacim yükü)." },
+            { q: "Damar yatağının en büyük esnekliğe (Compliance) sahip kısmı hangisidir?", opt: ["Arterler", "Arteriyoller", "Kapillerler", "Venler"], correct: 3, exp: "Venler büyük hacimleri düşük basınçta depolayabilir (Rezervuar görevi)." },
+            { q: "MAP'ın normalin altına düşmesi neyi tetikler?", opt: ["Baroreseptörleri bloke eder", "Kemoreseptörleri uyarır", "RAAS'ı inhibe eder", "Böbrek su çıkışını artırır"], correct: 1, exp: "Basınç çok düşünce doku perfüzyonu bozulur. Kemoreseptörler (Oksijen/CO2) uyarılır." },
+            { q: "Kanın hidrolik basıncı ile ilgili ifade hangisidir?", opt: ["Arterlerde en düşüktür", "Kapillerden venlere doğru artar", "Kapillerden venlere doğru azalır", "Atriyumda en yüksektir"], correct: 2, exp: "Kalpten uzaklaştıkça sürtünme ve iş kaybı nedeniyle basınç düşer." },
+            { q: "Nabız basıncının azalmasının (örn. 90/80 mmHg) en sık nedeni nedir?", opt: ["Aort yetmezliği", "Kardiyojenik şok / Sıvı kaybı (Düşük SV)", "Hipertansiyon", "Yaşlılık"], correct: 1, exp: "Şokta SV çok düşer, tansiyonlar birbirine yaklaşır." },
+            { q: "Lenfatik akış ne zaman artar?", opt: ["Kapiller basıncı düşerse", "Dokuda protein ve sıvı birikimi (Ödem) artarsa", "Kan viskozitesi artarsa", "Vazokonstriksiyon olursa"], correct: 1, exp: "Doku aralığına sızan sıvı ve protein artınca, lenfatik damarların basınç farkı artar ve akış hızlanır." },
+            { q: "Renal arterin stenozu (daralması) neye yol açar?", opt: ["Hiponatremi", "Primer Hipertansiyon", "Sekonder Hipertansiyon (RAAS aktivasyonu)", "Hipovolemi"], correct: 2, exp: "Böbrek, kan akımı azaldığı için vücudun tansiyonu düşük sanar ve RAAS'ı devreye sokar." },
+            { q: "Anti-diüretik hormon (ADH) hangi basınç dengesini sağlar?", opt: ["Sadece $P_c$", "Sadece $P_i$", "Ozmolarite ve Hacim", "Total periferik direnç"], correct: 2, exp: "Ozmolarite yükselince (su eksikliği) hipotalamus uyarılır ve ADH salınır." },
+            { q: "Aşağıdakilerden hangisi vazokonstriktör (damar büzücü) etkiye sahiptir?", opt: ["Nitrik Oksit (NO)", "Anjiyotensin II", "Histamin", "Adenozin"], correct: 1, exp: "Anjiyotensin II, vücudun en güçlü vazokonstriktörlerindendir." },
+            { q: "Boyundaki karotid sinüsün masajı (Vagal Manevra) neye neden olur?", opt: ["Sempatik aktivasyon", "Parasempatik aktivasyon (Bradikardi)", "Tansiyon artışı", "VFib"], correct: 1, exp: "Basınç artışı algılanır (simülasyon), Vagus uyarılır, kalp yavaşlar." },
+            { q: "Kapiller (Kılcal) damarın duvar geçirgenliğini (permeabilite) en çok artıran madde nedir?", opt: ["Histamin", "NO", "Asetilkolin", "Epinefrin"], correct: 0, exp: "Alerjik reaksiyonlarda histamin sızmayı artırarak ödeme neden olur." },
+            { q: "Kanın hacmi arttığında (Hacim yükü), Baroreseptörler refleks olarak ne yapar?", opt: ["Kalp hızını ve damar direncini azaltır", "Kalp hızını artırır", "Vazokonstriksiyon yapar", "RAAS'ı aktive eder"], correct: 0, exp: "Basınç yükselir. Refleks olarak parasempatik sistem hızlanır, sempatik frenlenir." },
+            { q: "End-Sistolik Basınç-Hacim İlişkisi (ESPVR) neyi temsil eder?", opt: ["Preload'u", "Afterload'u", "Kontraktiliteyi", "Kalp hızını"], correct: 2, exp: "Grafiğin eğimi, kalbin o hacimde üretebileceği maksimum basıncı (gücü) gösterir." },
+            { q: "Tansiyonun aniden düşmesi (Hemoraji), Hipotalamusu uyararak hangi hormonu salgılatır?", opt: ["Aldosteron", "ANP", "Kortizol", "ADH (Vazopressin)"], correct: 3, exp: "Kan hacmi azalınca ozmolarite artar ve ADH su tutar." },
+            { q: "Büyük damarların esnekliği (Compliance) azalırsa, Nabız Basıncı nasıl etkilenir?", opt: ["Azalır", "Artar", "Değişmez", "Önce azalır sonra artar"], correct: 1, exp: "Damar sertleşirse (esneklik azalırsa), basınç dalgasını absorbe edemez, fark (Nabız Basıncı) artar." },
+            { q: "Kardiyojenik şokta vücudun ilk yanıtı nedir?", opt: ["Vazodilatasyon", "Sempatik aktivasyon ve vazokonstriksiyon", "RAAS'ın inhibisyonu", "Sıvı kaybı"], correct: 1, exp: "Hayatta kalmak için tansiyonu tutmaya çalışır (Adrenalin patlaması)." },
+            { q: "Lenfatik akış hızı ne zaman en düşüktür?", opt: ["Egzersiz sırasında", "Dokuda ödem varken", "Dinlenme ve uyku sırasında", "Derin nefes alırken"], correct: 2, exp: "Lenfatikler kas pompasına bağımlıdır. Aktiviteler ve nefes alıp verme hızlandırır." },
+            { q: "Normalde Total Periferik Direnci (SVR) kim belirler?", opt: ["Arterler", "Arteriyoller", "Kapillerler", "Venler"], correct: 1, exp: "Arteriyoller, çaplarını en çok değiştiren (ayarlayan) damarlardır." },
+            { q: "End-Diastolik Hacim (EDV) neden her zaman End-Systolic Volume (ESV)'den büyüktür?", opt: ["SV her zaman pozitiftir", "Kalp tam boşalmaz", "Kan basıncı sabittir", "Kapaklar kapalıdır"], correct: 0, exp: "Stroke Volume (SV) her zaman pozitif bir değer olduğu için EDV > ESV olmak zorundadır." },
+            { q: "Vagal (Parasempatik) uyarım tansiyonu nasıl düşürür?", opt: ["Vazokonstriksiyon ile", "Hız artışı ile", "Kalp hızını düşürüp (CO'yu azaltarak)", "Hacim artışı"], correct: 2, exp: "CO = SV x HR. HR'yi düşürerek CO'yu düşürür." }
+        ];
+        </script>
+            <script>
+        let qIdx = 0; let score = 0;
+        const qArea = document.getElementById('optionsArea');
+        const qTxt = document.getElementById('questionText');
+        const expBox = document.getElementById('expBox');
+
+        function loadQ() {
+            const q = questions[qIdx];
+            qTxt.innerHTML = (qIdx+1) + ". " + q.q;
+            qArea.innerHTML = '';
+            expBox.style.display = 'none';
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('currentQ').innerText = qIdx+1;
+
+            q.opt.forEach((o, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = o;
+                btn.onclick = () => check(i, btn, q);
+                qArea.appendChild(btn);
+            });
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function check(i, btn, q) {
+            const btns = qArea.querySelectorAll('button');
+            btns.forEach(b => b.disabled = true);
+            if(i === q.correct) { btn.classList.add('correct'); score++; }
+            else { btn.classList.add('wrong'); btns[q.correct].classList.add('correct'); }
+            
+            document.getElementById('expText').innerHTML = q.exp;
+            expBox.style.display = 'block';
+            document.getElementById('nextBtn').disabled = false;
+            if(window.MathJax) MathJax.typeset();
+        }
+
+        function nextQuestion() {
+            if(qIdx < questions.length - 1) { qIdx++; loadQ(); }
+            else {
+                document.getElementById('quizContainer').style.display = 'none';
+                document.getElementById('resultScreen').style.display = 'block';
+                document.getElementById('finalScoreDisplay').innerText = score + " / 50";
+                let msg = score >= 40 ? "Tebrikler Doktor! Finali başarıyla tamamladın." : score >= 25 ? "İdare eder. Ama bu ünitede tekrar yapmalısın." : "Kaldın. Bu ünitede ciddi tekrar şart.";
+                document.getElementById('finalMessage').innerText = msg;
+            }
+        }
+        loadQ();
+    </script>
+</body>
+</html>
