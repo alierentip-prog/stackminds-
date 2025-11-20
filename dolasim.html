@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dolaşım Fiziği | Stackminds Kütüphanesi</title>
+    <title>Dolaşım Fiziği ve Akış | Stackminds Kütüphanesi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };</script>
@@ -29,6 +29,7 @@
         /* ÖZEL KUTULAR */
         .formula-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; text-align: center; font-family: 'Courier New', monospace; font-weight: bold; color: var(--blue-ink); margin: 20px 0; border-radius: 8px; font-size: 1.1rem; }
         .def-box { background: #fef2f2; border-left: 4px solid var(--accent); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #7f1d1d; }
+        .success-box { background: #f0fdf4; border-left: 4px solid var(--success); padding: 20px; margin: 30px 0; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; color: #065f46; }
 
         /* SİMÜLATÖR */
         .sim-container { background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 10px; margin: 20px 0; }
@@ -52,72 +53,85 @@
         <div style="font-size:0.8rem; color:#9ca3af; text-transform:uppercase; margin-bottom:10px; letter-spacing:1px;">Bu Ünite</div>
         <a href="dolasim.html" class="chapter-link active">1. Akışın Temel Fiziği</a>
         <a href="dolasim2.html" class="chapter-link">2. Mikro Dolaşım ve RAAS</a>
+        <a href="dolasim3.html" class="chapter-link">3. Baroreseptörler</a>
         <a href="dolasim_test.html" class="chapter-link" style="color:#b91c1c;"><i class="fa-solid fa-pencil"></i> Ünite Testi</a>
     </nav>
 
     <main class="page-content">
         <div style="color:#6b7280; font-size:0.9rem;">Ünite 4: Dolaşım Fizyolojisi</div>
-        <h1>Bölüm 1: Akım, Basınç ve Direnç</h1>
+        <h1>Bölüm 1: Akım, Basınç ve Hidrolik Direnç</h1>
 
         <p>
-            Dolaşım sisteminin temel amacı, dokuların metabolik ihtiyacına uygun miktarda kan akımını sağlamaktır. 
-            Bu akım, kalbin pompaladığı basınç ile damarların gösterdiği direnç arasındaki ilişkiyle açıklanır.
+            Dolaşım sistemi, kalbin yarattığı potansiyel enerjiyi, dokulara **kan akımı ($Q$)** olarak çeviren kapalı bir hidrolik sistemdir. Bu süreç elektrikteki **Ohm Yasası** ile açıklanır.
         </p>
 
-        <h2>1. Ohm Yasası: Dolaşım Sisteminin Temel Prensibi</h2>
+        <h2>1. Dolaşımın Ohm Yasası</h2>
         <p>
-            Kan akımı ($Q$), tıpkı elektrik akımı gibi, potansiyel farkına (Basınç farkı $\Delta P$) doğru orantılı, direnç ($R$) ile ters orantılıdır.
+            Akım ($Q$), kalbin pompaladığı kanın damarlar boyunca akışıdır. Bu, Basınç Farkı ($\Delta P$) ve Total Periferik Direnç ($R$) tarafından belirlenir.
         </p>
         
         <div class="formula-box">
-            $$Q = \frac{\Delta P}{R}$$
-            <p style="font-size:0.9rem; margin:5px 0;">(Akım = Basınç Farkı / Direnç)</p>
-        </div>
-        
-        <div class="def-box">
-            <strong>Klinik Not:</strong> Vücut, damarları büzerek veya genişleterek ($R$'yi değiştirerek) kan akımını ($Q$) kontrol eder. Kalp nadiren akımı artırmak için basıncı ($P$) kullanır.
-        </div>
-        
-        <h2>2. Poiseuille Yasası: Damar Çapının Gücü</h2>
-        <p>
-            Direnci ($R$) belirleyen en kritik faktör, damarın yarıçapıdır ($r$). Bu ilişki dördüncü kuvvet (kuvvet $r^4$) ile açıklanır.
-        </p>
-        <p>
-            Bu yasaya göre, damar yarıçapı ($r$) iki katına çıkarsa, akım ($Q$) on altı kat ($\mathbf{2^4 = 16}$) artar!
-        </p>
-        <div class="formula-box">
-            $$R \propto \frac{L \eta}{r^4}$$
-            <p style="font-size:0.9rem; margin:5px 0;">(Direnç, Yarıçapın 4. kuvveti ile ters orantılıdır)</p>
+            $$Q = \frac{\Delta P}{R} \quad \text{veya} \quad \text{Kalp Debisi} (CO) = \frac{\text{Ort. Arter Basıncı} (MAP)}{\text{Total Periferik Direnç} (TPR)}$$
         </div>
 
-        <h3>İnteraktif Simülatör: Direnç ve Akım</h3>
-        <p>Aşağıdaki simülatörde damar yarıçapını değiştirerek Akımın nasıl dramatik şekilde değiştiğini inceleyin.</p>
+        <h3>Kritik Tanımlar:</h3>
+        <ul>
+            <li>**$Q$ (Akım/Debi):** Dolaşım sisteminde **Kalp Debisi** ($CO$) olarak adlandırılır. ($CO = Stroke \text{ } Volume \times \text{ } Heart \text{ } Rate$).</li>
+            <li>**$\Delta P$ (Basınç Farkı):** Sistemin başlangıcı (Aort) ile sonu (Sağ Atriyum, $\approx 0 \text{ mmHg}$) arasındaki farktır. Pratik olarak MAP kullanılır.</li>
+            <li>**$R$ (Direnç / TPR):** Kanın akmaya karşı karşılaştığı sürtünmedir. Esas olarak **Arteriyollerde** oluşur.</li>
+        </ul>
+        
+        <h2>2. Poiseuille Yasası: Direncin Detaylı Analizi</h2>
+        <p>
+            Tüm direnç ($R$), tek bir silindirik damarda (kılcal boru) kanın akmaya karşı gösterdiği sürtünmeyle hesaplanır. Bu yasa, bir damarın direncini belirleyen anatomik ve fiziksel faktörleri ortaya koyar.
+        </p>
+        
+        <div class="formula-box">
+            $$R = \frac{8 \eta L}{\pi r^4}$$
+            <p style="font-size:0.9rem; margin:5px 0;">(8/$\pi$ sabittir. $\eta$: Viskozite, $L$: Damar Uzunluğu, $r$: Yarıçap)</p>
+        </div>
+
+        <h3>Faktörlerin Direnç Üzerindeki Etkisi:</h3>
+        <ol>
+            <li>**Yarıçap ($r$):** Direnç, yarıçapın dördüncü kuvveti ($r^4$) ile ters orantılıdır. Bu demektir ki, kan akımını **kontrol eden ana faktör** damar çapıdır. Otokontrol için vazokonstriksiyon/vazodilatasyon bu yüzden çok etkilidir.</li>
+            <li>**Viskozite ($\eta$):** Kanın kalınlığıdır. Esas olarak **Hematokrit** (Htc: Kanın hücre/sıvı oranı) tarafından belirlenir. Htc artarsa Viskozite ve $R$ artar. (Örn: Polisitemi, Dehidratasyon).</li>
+            <li>**Uzunluk ($L$):** Damarın uzunluğu uzadıkça direnç artar. Bu durum genellikle obezitede, yeni damar yatakları oluştuğu için önemlidir.</li>
+        </ol>
+
+        <h3>İnteraktif Simülatör: $r^4$ Gücü</h3>
+        <p>Aşağıdaki simülatörde damar yarıçapını değiştirerek Akımın nasıl dramatik şekilde değiştiğini inceleyin. Akım (Q) yarıçapın 4. kuvveti ile orantılıdır.</p>
         
         <div class="sim-container">
             <div class="control-group">
-                <label>Damar Yarıçapı ($r$): <span id="valRadius" style="float:right;">5 mm</span></label>
-                <input type="range" id="sldRadius" min="2" max="10" value="5" oninput="updateFlow()">
+                <label>Damar Yarıçapı ($r$): <span id="valRadius" style="float:right;">5.0 birim</span></label>
+                <input type="range" id="sldRadius" min="2" max="10" value="5" step="0.5" oninput="updateFlow()">
             </div>
 
             <div class="readout">
-                Kan Akımı (Q): <span id="valFlow">625</span> ünite
+                Akım (Q) $\propto r^4$: <span id="valFlow">625</span> ünite
             </div>
             
             <div class="vessel-visual"><div class="vessel-inner" id="vessel"></div></div>
         </div>
 
-        <h2>3. Nabız ve Ortalama Basınç</h2>
-        <ul>
-            <li><strong>Nabız Basıncı:</strong> Sistolik basınç - Diyastolik basınçtır ($120 - 80 = 40 \text{ mmHg}$). Nabız basıncını belirleyen temel faktörler Atım Hacmi (SV) ve Arteriyel Uyumdur (Compliance).</li>
-            <li><strong>Ortalama Arter Basıncı (MAP):</strong> Kanı dokulara ulaştıran ortalama basınçtır. Diyastol süresi daha uzun olduğu için, ortalama basınç diyastolik basınca daha yakındır.</li>
-        </ul>
-        <div class="formula-box">
-            $$MAP \approx \text{Diyastolik} + \frac{1}{3} \times \text{Nabız Basıncı}$$
+        <h2>3. Akış Tipleri ve Hız</h2>
+        
+        <h3>Laminer ve Türbülanslı Akım</h3>
+        <p>
+            Normalde kan, damar merkezinde en hızlı, duvara yakın en yavaş olacak şekilde pürüzsüz katmanlar halinde akar (**Laminer Akım**). Akım hızı çok artarsa (örn. Aort darlığı, Anemi) veya damarda keskin virajlar varsa, akım düzensizleşir (**Türbülanslı Akım**).
+        </p>
+        <div class="def-box">
+            <strong>Reynolds Sayısı ($Re$):</strong> Akımın türbülanslı olup olmadığını belirler. Yüksek $Re$ (özellikle $ > 2000$) **gürültüye (üfürüm/bruit)** neden olur. Anemide (Düşük Viskozite) $Re$ yükselir ve üfürüm duyulabilir.
         </div>
+
+        <h3>Akım Hızı (Velocity)</h3>
+        <p>
+            Akım hızı ($v$), toplam kan akımının ($Q$) damar yatağının toplam kesit alanına ($A$) bölünmesiyle bulunur ($v = Q/A$). Kan, **en yavaş** toplam kesit alanının en geniş olduğu yerde, yani **Kapillerlerde** akar. Bu yavaşlama, besin ve oksijen değişimine zaman tanır.
+        </p>
 
         <div class="page-nav">
             <a href="index.html" class="nav-btn prev" style="background:#f3f4f6; color:#374151;">&larr; Ana Menü</a>
-            <a href="dolasim2.html" class="nav-btn next">Bölüm 2: Mikro Dolaşım &rarr;</a>
+            <a href="dolasim2.html" class="nav-btn next">Bölüm 2: Mikro Dolaşım ve RAAS &rarr;</a>
         </div>
     </main>
 
@@ -127,24 +141,19 @@
         const valFlow = document.getElementById('valFlow');
         const vessel = document.getElementById('vessel');
         
-        // Simülatör Logiği
         function updateFlow() {
             const r = parseFloat(sldRadius.value);
-            valRadius.innerText = r.toFixed(1) + " mm";
+            valRadius.innerText = r.toFixed(1) + " birim";
             
-            // Poiseuille Yasası: Akım (Q) yarıçapın 4. kuvveti ile orantılıdır.
-            // Q = r^4 (Basınç ve Viskozite sabit kabul edildi)
+            // Akım (Q) yarıçapın 4. kuvveti ile orantılıdır.
             const flow = Math.pow(r, 4);
-
-            // Akımı göster (daha anlamlı hale getirmek için normalize edilebilir, ama r^4'ü görmek yeterli)
             valFlow.innerText = Math.round(flow) + " ünite";
 
-            // Görselleştirme: Damar çapı küçülünce akım azalır
-            const newHeight = 10 + r * 6; // Yarıçapa göre yüksekliği ayarla (10mm max yükseklik)
+            // Görselleştirme: Yarıçapa göre yüksekliği ayarla
+            const newHeight = 10 + r * 6;
             vessel.style.height = newHeight + 'px';
         }
 
-        // Başlangıçta çalıştır
         updateFlow();
     </script>
 </body>
